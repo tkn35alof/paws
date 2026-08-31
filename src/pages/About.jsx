@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
 function ContentPage({ keyName, title }) {
   const [body, setBody] = useState('')
   useEffect(() => {
+    if (!supabaseReady) return
+    const db = requireSupabase()
     ;(async () => {
-      const { data } = await supabase.from('site_content').select('body').eq('key', keyName).single()
+      const { data } = await db.from('site_content').select('body').eq('key', keyName).single()
       setBody(data?.body || '')
     })()
   }, [keyName])

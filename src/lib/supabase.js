@@ -3,13 +3,18 @@ import { createClient } from '@supabase/supabase-js'
 const url = import.meta.env.VITE_SUPABASE_URL
 const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-if (!url || !anonKey) {
-  throw new Error('Missing Supabase env vars. Copy .env.example to .env and fill in.')
-}
+// Don't throw at import time if env vars are missing (Vercel builds fine; we
+// surface a clean error on first use instead of a white screen).
+export const supabase = (url && anonKey)
+  ? createClient(url, anonKey, {
+      auth: { persistSession: true, autoRefreshToken: true },
+    })
+  : null
 
-export const supabase = createClient(url, anonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-  },
-})
+export const supabaseReady = Boolean(supabase)
+export function requireSupabase() {
+  if (!supabase) throw new Error(
+    'Supabase env vars missing. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Vercel (or .env locally).'
+  )
+  return supabase
+}

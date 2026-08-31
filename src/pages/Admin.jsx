@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
@@ -9,20 +9,24 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!supabaseReady) { setLoading(false); return }
+    const db = requireSupabase()
     ;(async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await db.auth.getUser()
       if (!user) { setLoading(false); return }
-      const { data: me } = await supabase.from('members').select('is_owner').eq('id', user.id).single()
+      const { data: me } = await db.from('members').select('is_owner').eq('id', user.id).single()
       if (!me?.is_owner) { setLoading(false); return }
       setOk(true)
-      const { data } = await supabase.from('members').select('*').order('display_order')
+      const { data } = await db.from('members').select('*').order('display_order')
       setMembers(data || [])
       setLoading(false)
     })()
   }, [])
 
   async function togglePublish(id, val) {
-    await supabase.from('members').update({ published: val }).eq('id', id)
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    await db.from('members').update({ published: val }).eq('id', id)
     setMembers((ms) => ms.map((m) => (m.id === id ? { ...m, published: val } : m)))
   }
 

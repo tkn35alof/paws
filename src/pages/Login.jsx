@@ -1,18 +1,19 @@
 import { useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
 export default function Login() {
   const [email, setEmail] = useState('')
-  const [code, setCode] = useState('')
-  const [step, setStep] = useState('email') // email -> code -> portal
+  const [step, setStep] = useState('email')
   const [msg, setMsg] = useState('')
 
   async function sendLink(e) {
     e.preventDefault()
+    if (!supabaseReady) { setMsg('Supabase not configured.'); return }
+    const db = requireSupabase()
     setMsg('Sending…')
-    const { error } = await supabase.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin + '/portal' } })
+    const { error } = await db.auth.signInWithOtp({ email, options: { emailRedirectTo: window.location.origin + '/portal' } })
     if (error) setMsg(error.message)
     else { setMsg('Check your email for the magic link.'); setStep('link') }
   }

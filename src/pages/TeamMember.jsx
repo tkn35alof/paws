@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { supabase } from '../lib/supabase.js'
+import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
@@ -10,8 +10,10 @@ export default function TeamMember() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (!supabaseReady) { setLoading(false); return }
+    const db = requireSupabase()
     ;(async () => {
-      const { data } = await supabase.from('members').select('*').eq('slug', slug).eq('published', true).single()
+      const { data } = await db.from('members').select('*').eq('slug', slug).eq('published', true).single()
       setM(data)
       setLoading(false)
     })()

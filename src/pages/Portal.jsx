@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
@@ -10,10 +10,12 @@ export default function Portal() {
   const [saving, setSaving] = useState(false)
 
   useEffect(() => {
+    if (!supabaseReady) { setStatus('Supabase not configured.'); return }
+    const db = requireSupabase()
     ;(async () => {
-      const { data: { user } } = await supabase.auth.getUser()
+      const { data: { user } } = await db.auth.getUser()
       if (!user) { setStatus('Not signed in. Use /login.'); return }
-      const { data } = await supabase.from('members').select('*').eq('id', user.id).single()
+      const { data } = await db.from('members').select('*').eq('id', user.id).single()
       setMember(data)
       setForm(data || {})
     })()
@@ -22,7 +24,8 @@ export default function Portal() {
   async function save(e) {
     e.preventDefault()
     setSaving(true)
-    // Members CANNOT change published / is_owner / member_visible.
+    if (!supabaseReady) { setStatus('Supabase not configured.'); setSaving(false); return }
+    const db = requireSupabase()
     const patch = {
       display_name: form.display_name,
       tagline: form.tagline,
@@ -33,7 +36,7 @@ export default function Portal() {
       availability: form.availability,
       photo_raw: form.photo_raw,
     }
-    const { error } = await supabase.from('members').update(patch).eq('id', member.id)
+    const { error } = await db.from('members').update(patch).eq('id', member.id)
     setStatus(error ? error.message : 'Saved.')
     setSaving(false)
   }

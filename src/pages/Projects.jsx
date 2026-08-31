@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
@@ -7,8 +7,10 @@ export default function Projects() {
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   useEffect(() => {
+    if (!supabaseReady) { setLoading(false); return }
+    const db = requireSupabase()
     ;(async () => {
-      const { data } = await supabase.from('projects').select('*').eq('published', true).order('display_order')
+      const { data } = await db.from('projects').select('*').eq('published', true).order('display_order')
       setProjects(data || [])
       setLoading(false)
     })()

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { supabase, supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
@@ -7,15 +7,20 @@ export default function Home() {
   const [members, setMembers] = useState([])
   const [testimonials, setTestimonials] = useState([])
   const [loading, setLoading] = useState(true)
+  const [err, setErr] = useState(null)
 
   useEffect(() => {
+    if (!supabaseReady) { setLoading(false); setErr('Supabase not configured.'); return }
+    const db = requireSupabase()
     ;(async () => {
-      const [{ data: m }, { data: t }] = await Promise.all([
-        supabase.from('members').select('*').eq('published', true).order('display_order'),
-        supabase.from('testimonials').select('*').eq('published', true).order('display_order'),
-      ])
-      setMembers(m || [])
-      setTestimonials(t || [])
+      try {
+        const [{ data: m }, { data: t }] = await Promise.all([
+          db.from('members').select('*').eq('published', true).order('display_order'),
+          db.from('testimonials').select('*').eq('published', true).order('display_order'),
+        ])
+        setMembers(m || [])
+        setTestimonials(t || [])
+      } catch (e) { setErr(e.message) }
       setLoading(false)
     })()
   }, [])
@@ -35,6 +40,7 @@ export default function Home() {
 
       <section className="section">
         <h2>The team</h2>
+        {err && <p style={{ color: 'var(--paws-muted)' }}>{err}</p>}
         {loading ? (
           <p>Loading…</p>
         ) : members.length === 0 ? (
@@ -71,7 +77,6 @@ export default function Home() {
       <section className="section" id="work">
         <h2>Work with us</h2>
         <p>Tell us what you need. Book a discovery call or send a message — we'll respond like the professionals we are.</p>
-        {/* GHL calendar + chat widget embed goes here (Phase 4). Placeholder: */}
         <div style={{ border: '1px dashed var(--paws-line)', padding: 32, color: 'var(--paws-muted)' }}>
           [ GHL calendar + chat widget embed — Phase 4 ]
         </div>
