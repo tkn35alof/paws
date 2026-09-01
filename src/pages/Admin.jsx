@@ -62,25 +62,19 @@ export default function Admin() {
     setBusy(id)
     const m = members.find((x) => x.id === id)
     if (!m?.photo_raw) { setBusy(null); return }
-
-    // Call our edge function (service_role bypasses RLS).
-    const { data: { session } } = await db.auth.getSession()
-    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/standardize-photo`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session?.access_token}`,
-      },
-      body: JSON.stringify({ memberId: id, photoRaw: m.photo_raw }),
+    // Direct browser flow (Option A): download raw, upload to public bucket, update row.
+    const { data: blob, error: dlErr } = await db.storage.from('member-photos').download(m.photo_raw)
+    if (dlErr) { alert(`Download failed: ${dlErr.message}`); setBusy(null); return }
+    const stdPath = `${id}/std-${Date.now()}.jpg`
+    const { error: upErr } = await db.storage.from('member-photos-public').upload(stdPath, blob, {
+      cacheControl: '3600', upsert: true, contentType: 'image/jpeg',
     })
-    if (!res.ok) {
-      const err = await res.text()
-      alert(`Standardize failed: ${err}`)
-      setBusy(null)
-      return
-    }
-    const { photo_std } = await res.json()
-    setMembers((ms) => ms.map((x) => (x.id === id ? { ...x, photo_std } : x)))
+    if (upErr) { alert(`Upload failed: ${upErr.message}`); setBusy(null); return }
+    const { data: pub } = db.storage.from('member-photos-public').getPublicUrl(stdPath)
+    const stdUrl = pub.publicUrl
+    const { error: dbErr } = await db.from('members').update({ photo_std: stdUrl }).eq('id', id)
+    if (dbErr) { alert(`Update failed: ${dbErr.message}`); setBusy(null); return }
+    setMembers((ms) => ms.map((x) => (x.id === id ? { ...x, photo_std: stdUrl } : x)))
     setBusy(null)
   }
 
