@@ -59,28 +59,20 @@ export default function Admin() {
 
   async function standardize(id) {
     if (!supabaseReady) return
-    const db = requireSupabase()
     setBusy(id)
-    // v1: copy raw -> public bucket as photo_std path. Owner can later replace
-    // with a properly-cropped standardized version (P5 can do this server-side
-    // via an Edge Function + Image Transformations).
-    const m = members.find((x) => x.id === id)
-    if (!m?.photo_raw) { setBusy(null); return }
-    // Download the raw photo
-    const { data: blob, error: dlErr } = await db.storage.from('member-photos').download(m.photo_raw)
-    if (dlErr) { alert(dlErr.message); setBusy(null); return }
-    // Upload to public bucket
-    const stdPath = `${id}/std-${Date.now()}.jpg`
-    const { error: upErr } = await db.storage.from('member-photos-public').upload(stdPath, blob, {
-      cacheControl: '3600', upsert: true, contentType: 'image/jpeg',
-    })
-    if (upErr) { alert(upErr.message); setBusy(null); return }
-    // Get the public URL and store it on the member row
-    const { data: pub } = db.storage.from('member-photos-public').getPublicUrl(stdPath)
-    const stdUrl = pub.publicUrl
-    const { error: dbErr } = await db.from('members').update({ photo_std: stdUrl }).eq('id', id)
-    if (dbErr) { alert(dbErr.message); setBusy(null); return }
-    setMembers((ms) => ms.map((x) => (x.id === id ? { ...x, photo_std: stdUrl } : x)))
+    const db = requireSupabase()
+    try {
+      // Use the server-side Supabase Edge Function — it runs with service_role
+      // and bypasses client-side storage RLS entirely.
+      const { data, error } = await db.functions.invoke('standardize-photo', {
+        body: { memberId: id },
+      })
+      if (error) { alert('Standardize failed: ' + error.message); setBusy(null); return }
+      if (data?.error) { alert('Standardize failed: ' + data.error); setBusy(null); return }
+      await refreshOne(id)
+    } catch (e) {
+      alert('Network error: ' + (e?.message || String(e)))
+    }
     setBusy(null)
   }
 
