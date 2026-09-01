@@ -42,6 +42,21 @@ export default function Admin() {
     setMembers((ms) => ms.map((m) => (m.id === id ? { ...m, published: val } : m)))
   }
 
+  async function refreshOne(id) {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    const { data } = await db.from('members').select('*').eq('id', id).single()
+    if (data) {
+      setMembers((ms) => ms.map((m) => (m.id === id ? data : m)))
+      const u = { ...(photoUrls[id] || {}) }
+      if (data.photo_raw) {
+        const { data: s } = await db.storage.from('member-photos').createSignedUrl(data.photo_raw, 3600)
+        u.raw = s?.signedUrl
+      } else { u.raw = undefined }
+      setPhotoUrls((p) => ({ ...p, [id]: u }))
+    }
+  }
+
   async function standardize(id) {
     if (!supabaseReady) return
     const db = requireSupabase()
@@ -79,7 +94,11 @@ export default function Admin() {
         <h1>Admin — PAWS</h1>
         <p style={{ color: 'var(--paws-muted)' }}>Owner control. Publish profiles, standardize photos, manage permissions.</p>
 
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '24px 0 12px' }}>
+          <h2 style={{ margin: 0 }}>Members</h2>
+          <button className="btn" style={smallBtn} onClick={() => window.location.reload()}>Refresh all</button>
+        </div>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--paws-line)' }}>
               <th style={th}>Photo</th>
@@ -115,6 +134,7 @@ export default function Admin() {
                         {busy === m.id ? 'Working…' : 'Standardize photo'}
                       </button>
                     )}
+                    <button className="btn" style={smallBtn} onClick={() => refreshOne(m.id)} title="Re-fetch this member's data">↻</button>
                   </div>
                 </td>
               </tr>
