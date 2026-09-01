@@ -7,8 +7,8 @@ export default function Admin() {
   const [ok, setOk] = useState(false)
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
-  const [photoUrls, setPhotoUrls] = useState({})  // { [memberId]: { raw?: url, std?: url } }
-  const [busy, setBusy] = useState(null)           // memberId being acted on
+  const [photoUrls, setPhotoUrls] = useState({})
+  const [busy, setBusy] = useState(null)
 
   useEffect(() => {
     if (!supabaseReady) { setLoading(false); return }
@@ -21,12 +21,11 @@ export default function Admin() {
       setOk(true)
       const { data } = await db.from('members').select('*').order('display_order')
       setMembers(data || [])
-      // Resolve signed URLs for any photo_raw
       const urls = {}
       for (const m of (data || [])) {
         urls[m.id] = {}
         if (m.photo_raw) {
-          const { data: s } = await db.storage.from('member-photos').createSignedUrl(m.photo_raw, 600)
+          const { data: s } = await db.storage.from('member-photos').createSignedUrl(m.photo_raw, 3600)
           urls[m.id].raw = s?.signedUrl
         }
       }
@@ -59,20 +58,29 @@ export default function Admin() {
 
   async function standardize(id) {
     if (!supabaseReady) return
-    setBusy(id)
     const db = requireSupabase()
-    try {
-      // Use the server-side Supabase Edge Function — it runs with service_role
-      // and bypasses client-side storage RLS entirely.
-      const { data, error } = await db.functions.invoke('standardize-photo', {
-        body: { memberId: id },
-      })
-      if (error) { alert('Standardize failed: ' + error.message); setBusy(null); return }
-      if (data?.error) { alert('Standardize failed: ' + data.error); setBusy(null); return }
-      await refreshOne(id)
-    } catch (e) {
-      alert('Network error: ' + (e?.message || String(e)))
+    setBusy(id)
+    const m = members.find((x) => x.id === id)
+    if (!m?.photo_raw) { setBusy(null); return }
+
+    // Call our edge function (service_role bypasses RLS).
+    const { data: { session } } = await db.auth.getSession()
+    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/standardize-photo`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session?.access_token}`,
+      },
+      body: JSON.stringify({ memberId: id, photoRaw: m.photo_raw }),
+    })
+    if (!res.ok) {
+      const err = await res.text()
+      alert(`Standardize failed: ${err}`)
+      setBusy(null)
+      return
     }
+    const { photo_std } = await res.json()
+    setMembers((ms) => ms.map((x) => (x.id === id ? { ...x, photo_std } : x)))
     setBusy(null)
   }
 
