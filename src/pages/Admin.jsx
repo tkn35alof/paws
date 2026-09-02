@@ -96,21 +96,29 @@ export default function Admin() {
   async function generateInvite() {
     if (!supabaseReady) return
     const db = requireSupabase()
-    // Generate a readable 8-char code
-    const code = (newInvite.code || Math.random().toString(36).slice(2, 10).toUpperCase()).trim()
-    if (!code) { alert('Enter a code or leave blank to auto-generate'); return }
+    const email = (newInvite.email || '').trim().toLowerCase()
+    if (!email) { alert('Enter the invitee\'s email address.'); return }
+    // Validate email shape
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { alert('That email doesn\'t look right.'); return }
+    // Generate a 16-char code
+    const code = Array.from(crypto.getRandomValues(new Uint8Array(12)))
+      .map((b) => b.toString(36)).join('').slice(0, 12).toUpperCase()
     const { data: { user } } = await db.auth.getUser()
     const { error } = await db.from('invites').insert({
       code,
+      email,                  // bound to this email only
       created_by: user.id,
     })
     if (error) { alert(error.message); return }
     setNewInvite({ code: '', email: '' })
     await loadInvites(db)
-    // Copy the invite link to clipboard
     const link = `${window.location.origin}/login?invite=${code}`
-    try { await navigator.clipboard.writeText(link); alert(`Invite created. Link copied to clipboard:\n${link}`) }
-    catch { alert(`Invite created. Share this link:\n${link}`) }
+    try {
+      await navigator.clipboard.writeText(link)
+      alert(`Invite created for ${email}.\n\nLink copied to clipboard. Send it to them yourself (via your messaging app, SMS, etc.):\n\n${link}`)
+    } catch {
+      alert(`Invite created for ${email}.\n\nShare this link with them:\n${link}`)
+    }
   }
 
   async function revokeInvite(id) {
@@ -231,19 +239,21 @@ export default function Admin() {
           <>
             <div style={{ display: 'flex', gap: 12, alignItems: 'center', margin: '0 0 24px' }}>
               <input
-                style={{ ...inputStyle, maxWidth: 240 }}
-                placeholder="Code (blank = auto)"
-                value={newInvite.code}
-                onChange={(e) => setNewInvite({ ...newInvite, code: e.target.value })}
+                style={{ ...inputStyle, maxWidth: 320 }}
+                type="email"
+                placeholder="Invitee email address"
+                value={newInvite.email}
+                onChange={(e) => setNewInvite({ ...newInvite, email: e.target.value })}
               />
               <button className="btn btn-pink" style={smallBtn} onClick={generateInvite}>Generate invite</button>
               <span style={{ color: 'var(--paws-muted)', fontSize: 13 }}>
-                A link like <code>/login?invite=CODE</code> will be copied to your clipboard.
+                A single-use link tied to this email will be copied to your clipboard.
               </span>
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--paws-line)' }}>
+                  <th style={th}>Email</th>
                   <th style={th}>Code</th>
                   <th style={th}>Created</th>
                   <th style={th}>Redeemed</th>
@@ -252,9 +262,10 @@ export default function Admin() {
               </thead>
               <tbody>
                 {invites.length === 0 ? (
-                  <tr><td style={td} colSpan={4}><em style={{ color: 'var(--paws-muted)' }}>No invites yet.</em></td></tr>
+                  <tr><td style={td} colSpan={5}><em style={{ color: 'var(--paws-muted)' }}>No invites yet.</em></td></tr>
                 ) : invites.map((inv) => (
                   <tr key={inv.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
+                    <td style={td}>{inv.email || <em style={{ color: 'var(--paws-muted)' }}>(any)</em>}</td>
                     <td style={td}><code>{inv.code}</code></td>
                     <td style={td}>{new Date(inv.created_at).toLocaleString()}</td>
                     <td style={td}>{inv.redeemed_at ? new Date(inv.redeemed_at).toLocaleString() : <em style={{ color: 'var(--paws-muted)' }}>not yet</em>}</td>

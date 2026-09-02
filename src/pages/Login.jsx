@@ -15,7 +15,19 @@ export default function Login() {
   const [msg, setMsg] = useState(inviteCode ? `You've been invited! Create your account to join PAWS.` : '')
   const [busy, setBusy] = useState(false)
 
-  useEffect(() => { if (inviteCode) setMode('signup') }, [inviteCode])
+  useEffect(() => {
+    if (inviteCode) {
+      setMode('signup')
+      // Pre-fill email from the invite record (so the invitee just sets a password)
+      ;(async () => {
+        if (!supabaseReady) return
+        const db = requireSupabase()
+        const { data: inv } = await db.from('invites').select('email, redeemed_at').eq('code', inviteCode).single()
+        if (inv?.email) setEmail(inv.email)
+        if (inv?.redeemed_at) { setMsg('This invite has already been used.'); setMode('password') }
+      })()
+    }
+  }, [inviteCode])
 
   async function signInPassword(e) {
     e.preventDefault()
@@ -49,14 +61,16 @@ export default function Login() {
     setBusy(true); setMsg('Creating your account…')
     const db = requireSupabase()
 
-    // 1) Verify the invite exists and is unclaimed (anon-readable policy).
+    // 1) Verify the invite exists, is unclaimed, and (if email-bound) matches.
     const { data: inv, error: invErr } = await db.from('invites')
-      .select('id, redeemed_at').eq('code', inviteCode).single()
+      .select('id, redeemed_at, email').eq('code', inviteCode).single()
     if (invErr || !inv) { setBusy(false); setMsg('Invalid or revoked invite code.'); return }
     if (inv.redeemed_at) { setBusy(false); setMsg('This invite has already been used.'); return }
+    if (inv.email && inv.email.toLowerCase() !== email.toLowerCase()) {
+      setBusy(false); setMsg(`This invite is for ${inv.email}, not ${email}.`); return
+    }
 
-    // 2) Create the auth user. The data object lets us pre-set the slug/display_name
-    //    on the eventual members row, but we'll do that in step 3.
+    // 2) Create the auth user.
     const { data: signUpData, error: signUpErr } = await db.auth.signUp({
       email, password,
       options: { emailRedirectTo: window.location.origin + '/portal' }
@@ -68,14 +82,14 @@ export default function Login() {
     }
     const newUserId = signUpData.user.id
 
-    // 3) Create the members row for this user, link it to the invite.
+    // 3) Create the members row.
     const slug = (name || email.split('@')[0]).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
     const { error: memErr } = await db.from('members').insert({
       id: newUserId,
       slug,
       display_name: name || email.split('@')[0],
       member_visible: true,
-      published: false,    // owner decides when to publish
+      published: false,
       is_owner: false,
       display_order: 99,
     })
@@ -92,8 +106,8 @@ export default function Login() {
     }).eq('id', inv.id)
 
     setBusy(false)
-    setMsg('Account created! You can sign in now.')
-    setMode('password')
+    // Go directly to portal — they're already signed in.
+    window.location.href = '/portal'
   }
 
   return (
@@ -103,7 +117,7 @@ export default function Login() {
         <h1>{mode === 'signup' ? 'Join PAWS' : 'Member sign in'}</h1>
         <p style={{ color: 'var(--paws-muted)' }}>
           {mode === 'signup' && inviteCode
-            ? <>You've been invited with code <code>{inviteCode}</code>. Create your account to join.</>
+            ? <>You've been invited. Create your account to join.</>
             : 'Invite-only. Use the email on your invite.'}
         </p>
 
