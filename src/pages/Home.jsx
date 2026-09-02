@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { supabase, supabaseReady, requireSupabase } from '../lib/supabase.js'
+import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
@@ -76,14 +76,44 @@ export default function Home() {
 
       <section className="section" id="work">
         <h2>Work with us</h2>
-        <p>Tell us what you need. Book a discovery call or send a message — we'll respond like the professionals we are.</p>
-        <div style={{ border: '1px dashed var(--paws-line)', padding: 32, color: 'var(--paws-muted)' }}>
-          [ GHL calendar + chat widget embed — Phase 4 ]
+        <p>
+          Tell us what you need. Book a discovery call below, or send a message — we'll respond like the professionals we are.
+        </p>
+
+        <div style={{ marginTop: 32, marginBottom: 16 }}>
+          <h3 style={{ fontSize: 20, marginBottom: 12 }}>Book a discovery call</h3>
+          <div style={{
+            border: '1px solid var(--paws-line)',
+            background: '#fff',
+            maxWidth: 900, margin: '0 auto',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+          }}>
+            <iframe
+              src="https://api.leadconnectorhq.com/widget/booking/YrYXL1dDWGNvci77AyUb"
+              style={{ width: '100%', border: 'none', overflow: 'hidden', display: 'block' }}
+              scrolling="no"
+              id="YrYXL1dDWGNvci77AyUb_1788371872912"
+              title="Book a discovery call"
+              loading="lazy"
+            />
+          </div>
+          <script src="https://link.msgsndr.com/js/form_embed.js" type="text/javascript" async></script>
         </div>
-        <a className="btn" href="#contact" style={{ marginTop: 24 }}>Or send a message</a>
+
+        <p style={{ color: 'var(--paws-muted)', fontSize: 14, textAlign: 'center', marginTop: 16 }}>
+          Prefer to chat first? Use the chat bubble in the bottom-right corner.
+        </p>
       </section>
 
       <Footer />
+
+      {/* GHL chat widget — loads site-wide as a floating bubble */}
+      <script
+        src="https://widgets.leadconnectorhq.com/loader.js"
+        data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
+        data-widget-id="6a9863fe673e2602e6988a68"
+        async
+      />
     </div>
   )
 }
