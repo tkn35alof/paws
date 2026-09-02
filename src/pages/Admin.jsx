@@ -13,7 +13,8 @@ export default function Admin() {
   const [invites, setInvites] = useState([])
   const [testimonials, setTestimonials] = useState([])
   const [projects, setProjects] = useState([])
-  const [editingProject, setEditingProject] = useState(null)   // null = list, 'new' = new form, id = edit form
+  const [siteContent, setSiteContent] = useState({ about: '', mission: '', vision: '', contact: '' })
+  const [editingProject, setEditingProject] = useState(null)
   const [newInvite, setNewInvite] = useState({ code: '', email: '' })
 
   useEffect(() => {
@@ -25,7 +26,7 @@ export default function Admin() {
       const { data: me } = await db.from('members').select('is_owner').eq('id', user.id).single()
       if (!me?.is_owner) { setLoading(false); return }
       setOk(true)
-      await Promise.all([loadMembers(db), loadInvites(db), loadTestimonials(db), loadProjects(db)])
+      await Promise.all([loadMembers(db), loadInvites(db), loadTestimonials(db), loadProjects(db), loadSiteContent(db)])
       setLoading(false)
     })()
   }, [])
@@ -54,6 +55,14 @@ export default function Admin() {
   async function loadProjects(db) {
     const { data } = await db.from('projects').select('*').order('display_order')
     setProjects(data || [])
+  }
+  async function loadSiteContent(db) {
+    const { data } = await db.from('site_content').select('*')
+    const map = { about: '', mission: '', vision: '', contact: '' }
+    for (const row of (data || [])) {
+      if (row.key in map) map[row.key] = row.body || ''
+    }
+    setSiteContent(map)
   }
 
   async function togglePublish(id, val) {
@@ -203,6 +212,14 @@ export default function Admin() {
     await loadProjects(db)
   }
 
+  async function saveSiteContent(key, body) {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    const { error } = await db.from('site_content').upsert({ key, body, updated_at: new Date().toISOString() }, { onConflict: 'key' })
+    if (error) { alert(error.message); return }
+    setSiteContent((sc) => ({ ...sc, [key]: body }))
+  }
+
   async function uploadProjectCover(p, file) {
     if (!file) return
     const db = requireSupabase()
@@ -226,7 +243,7 @@ export default function Admin() {
         <p style={{ color: 'var(--paws-muted)' }}>Owner control panel.</p>
 
         <div style={{ display: 'flex', gap: 16, margin: '24px 0', borderBottom: '1px solid var(--paws-line)', flexWrap: 'wrap' }}>
-          {['members', 'invites', 'testimonials', 'projects'].map((t) => (
+          {['members', 'invites', 'testimonials', 'projects', 'content'].map((t) => (
             <button
               key={t}
               type="button"
@@ -441,11 +458,82 @@ export default function Admin() {
           )
         )}
 
+        {tab === 'content' && (
+          <ContentEditor siteContent={siteContent} onSave={saveSiteContent} />
+        )}
+
         <p style={{ color: 'var(--paws-muted)', marginTop: 24, fontSize: 14 }}>
-          P3b: projects CRUD shipped. Next: site content editor for About/Mission/Vision/Contact.
+          P3b: projects + content shipped. P3b.3: permissions matrix — next.
         </p>
       </section>
       <Footer />
+    </div>
+  )
+}
+
+function ContentEditor({ siteContent, onSave }) {
+  const [draft, setDraft] = useState(siteContent)
+  const [busy, setBusy] = useState(null)
+
+  // Re-sync if data refreshes
+  useEffect(() => { setDraft(siteContent) }, [siteContent])
+
+  const sections = [
+    { key: 'about',   title: 'About',   page: '/about',   hint: 'Who PAWS is, what we do, who we serve.' },
+    { key: 'mission', title: 'Mission', page: '/mission', hint: 'Why PAWS exists; the problem we solve.' },
+    { key: 'vision',  title: 'Vision',  page: '/vision',  hint: 'Where PAWS is going in 1-3 years.' },
+    { key: 'contact', title: 'Contact', page: '/contact', hint: 'How clients reach you (shown on the Contact page).' },
+  ]
+
+  return (
+    <div style={{ display: 'grid', gap: 24 }}>
+      <p style={{ color: 'var(--paws-muted)' }}>
+        Edits appear on the public pages immediately. Use plain text — line breaks are preserved.
+      </p>
+      {sections.map((s) => (
+        <div key={s.key} style={{ background: 'var(--paws-paper-2)', padding: 20, border: '1px solid var(--paws-line)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <label style={{ fontSize: 14, fontFamily: 'var(--font-display)', fontWeight: 600 }}>
+              {s.title}
+            </label>
+            <a href={s.page} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'var(--paws-muted)' }}>
+              view page →
+            </a>
+          </div>
+          <p style={{ fontSize: 12, color: 'var(--paws-muted)', margin: '0 0 8px' }}>{s.hint}</p>
+          <textarea
+            value={draft[s.key]}
+            onChange={(e) => setDraft({ ...draft, [s.key]: e.target.value })}
+            rows={6}
+            style={{ ...inputStyle, width: '100%', resize: 'vertical', fontFamily: 'inherit' }}
+            placeholder={`Write the ${s.title.toLowerCase()} content…`}
+          />
+          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+            <button
+              type="button"
+              className="btn btn-pink"
+              style={smallBtn}
+              disabled={busy === s.key || draft[s.key] === siteContent[s.key]}
+              onClick={async () => {
+                setBusy(s.key)
+                await onSave(s.key, draft[s.key])
+                setBusy(null)
+              }}
+            >
+              {busy === s.key ? 'Saving…' : (draft[s.key] === siteContent[s.key] ? 'Saved' : 'Save')}
+            </button>
+            <button
+              type="button"
+              className="btn"
+              style={smallBtn}
+              disabled={draft[s.key] === siteContent[s.key]}
+              onClick={() => setDraft({ ...draft, [s.key]: siteContent[s.key] })}
+            >
+              Revert
+            </button>
+          </div>
+        </div>
+      ))}
     </div>
   )
 }
