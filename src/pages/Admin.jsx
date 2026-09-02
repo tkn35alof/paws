@@ -15,6 +15,7 @@ export default function Admin() {
   const [projects, setProjects] = useState([])
   const [siteContent, setSiteContent] = useState({ about: '', mission: '', vision: '', contact: '' })
   const [editingProject, setEditingProject] = useState(null)
+  const [editingMemberPerms, setEditingMemberPerms] = useState(null)  // member id or null
   const [newInvite, setNewInvite] = useState({ code: '', email: '' })
 
   useEffect(() => {
@@ -73,19 +74,6 @@ export default function Admin() {
   }
 
   async function refreshOne(id) {
-    if (!supabaseReady) return
-    const db = requireSupabase()
-    const { data } = await db.from('members').select('*').eq('id', id).single()
-    if (data) {
-      setMembers((ms) => ms.map((m) => (m.id === id ? data : m)))
-      const u = { ...(photoUrls[id] || {}) }
-      if (data.photo_raw) {
-        const { data: s } = await db.storage.from('member-photos').createSignedUrl(data.photo_raw, 3600)
-        u.raw = s?.signedUrl
-      } else { u.raw = undefined }
-      setPhotoUrls((p) => ({ ...p, [id]: u }))
-    }
-  }
 
   async function standardize(id) {
     if (!supabaseReady) return
@@ -106,6 +94,30 @@ export default function Admin() {
     if (dbErr) { alert(`Update failed: ${dbErr.message}`); setBusy(null); return }
     setMembers((ms) => ms.map((x) => (x.id === id ? { ...x, photo_std: stdUrl } : x)))
     setBusy(null)
+  }
+
+  async function refreshOne(id) {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    const { data } = await db.from('members').select('*').eq('id', id).single()
+    if (data) {
+      setMembers((ms) => ms.map((m) => (m.id === id ? data : m)))
+      const u = { ...(photoUrls[id] || {}) }
+      if (data.photo_raw) {
+        const { data: s } = await db.storage.from('member-photos').createSignedUrl(data.photo_raw, 3600)
+        u.raw = s?.signedUrl
+      } else { u.raw = undefined }
+      setPhotoUrls((p) => ({ ...p, [id]: u }))
+    }
+  }
+
+  async function savePermissions(id, permissions) {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    const { error } = await db.from('members').update({ permissions }).eq('id', id)
+    if (error) { alert(error.message); return }
+    setMembers((ms) => ms.map((m) => (m.id === id ? { ...m, permissions } : m)))
+    setEditingMemberPerms(null)
   }
 
   async function generateInvite() {
@@ -259,7 +271,14 @@ export default function Admin() {
         </div>
 
         {tab === 'members' && (
-          <>
+          editingMemberPerms ? (
+            <PermissionsEditor
+              member={members.find((m) => m.id === editingMemberPerms)}
+              onSave={savePermissions}
+              onCancel={() => setEditingMemberPerms(null)}
+            />
+          ) : (
+            <>
             <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 12px' }}>
               <button className="btn" style={smallBtn} onClick={() => window.location.reload()}>Refresh all</button>
             </div>
@@ -300,13 +319,15 @@ export default function Admin() {
                           </button>
                         )}
                         <button className="btn" style={smallBtn} onClick={() => refreshOne(m.id)} title="Re-fetch this member's data">↻</button>
+                        <button className="btn" style={smallBtn} onClick={() => setEditingMemberPerms(m.id)} title="Edit permissions">⚙</button>
                       </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </>
+            </>
+          )
         )}
 
         {tab === 'invites' && (
@@ -534,6 +555,54 @@ function ContentEditor({ siteContent, onSave }) {
           </div>
         </div>
       ))}
+    </div>
+  )
+}
+
+function PermissionsEditor({ member, onSave, onCancel }) {
+  const PERMS = [
+    { key: 'can_edit_projects',     label: 'Edit projects',     hint: 'Create / edit / publish projects in /admin' },
+    { key: 'can_edit_testimonials', label: 'Edit testimonials', hint: 'Create / publish client testimonials' },
+    { key: 'can_invite',            label: 'Send invites',      hint: 'Create invite codes for new team members' },
+    { key: 'can_edit_site_content', label: 'Edit site content', hint: 'Edit About / Mission / Vision / Contact copy' },
+    { key: 'can_publish',           label: 'Self-publish',      hint: 'Toggle their own profile published/hidden' },
+    { key: 'can_manage_members',    label: 'Manage members',    hint: 'Edit / delete other members and their permissions' },
+  ]
+  const initial = { ...(member?.permissions || {}) }
+  const [draft, setDraft] = useState(initial)
+  if (!member) return <p>Member not found.</p>
+
+  function toggle(key) {
+    setDraft((d) => ({ ...d, [key]: !d[key] }))
+  }
+
+  return (
+    <div style={{ background: 'var(--paws-paper-2)', padding: 24, border: '1px solid var(--paws-line)' }}>
+      <h2 style={{ marginTop: 0 }}>Permissions — {member.display_name}</h2>
+      <p style={{ color: 'var(--paws-muted)', fontSize: 14, marginBottom: 16 }}>
+        Owner always has all permissions. These flags give <em>this member</em> extra capabilities
+        on top of editing their own profile.
+      </p>
+      <div style={{ display: 'grid', gap: 10 }}>
+        {PERMS.map((p) => (
+          <label key={p.key} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: 12, border: '1px solid var(--paws-line)', background: '#fff' }}>
+            <input
+              type="checkbox"
+              checked={!!draft[p.key]}
+              onChange={() => toggle(p.key)}
+              style={{ marginTop: 4 }}
+            />
+            <div>
+              <div style={{ fontWeight: 600, fontFamily: 'var(--font-display)' }}>{p.label}</div>
+              <div style={{ fontSize: 13, color: 'var(--paws-muted)' }}>{p.hint}</div>
+            </div>
+          </label>
+        ))}
+      </div>
+      <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
+        <button className="btn btn-pink" onClick={() => onSave(member.id, draft)}>Save permissions</button>
+        <button className="btn" onClick={onCancel}>Cancel</button>
+      </div>
     </div>
   )
 }
