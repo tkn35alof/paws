@@ -98,26 +98,34 @@ export default function Admin() {
     const db = requireSupabase()
     const email = (newInvite.email || '').trim().toLowerCase()
     if (!email) { alert('Enter the invitee\'s email address.'); return }
-    // Validate email shape
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { alert('That email doesn\'t look right.'); return }
-    // Generate a 16-char code
-    const code = Array.from(crypto.getRandomValues(new Uint8Array(12)))
-      .map((b) => b.toString(36)).join('').slice(0, 12).toUpperCase()
-    const { data: { user } } = await db.auth.getUser()
-    const { error } = await db.from('invites').insert({
-      code,
-      email,                  // bound to this email only
-      created_by: user.id,
+
+    setBusy('invite')
+    const { data: { session } } = await db.auth.getSession()
+    const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-invite`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session?.access_token}`,
+      },
+      body: JSON.stringify({ email }),
     })
-    if (error) { alert(error.message); return }
+    setBusy(null)
+
+    let payload = null
+    try { payload = await res.json() } catch {}
+
+    if (!res.ok || !payload?.ok) {
+      alert(payload?.error || `Failed to send invite (HTTP ${res.status}).`)
+      return
+    }
+
     setNewInvite({ code: '', email: '' })
     await loadInvites(db)
-    const link = `${window.location.origin}/login?invite=${code}`
-    try {
-      await navigator.clipboard.writeText(link)
-      alert(`Invite created for ${email}.\n\nLink copied to clipboard. Send it to them yourself (via your messaging app, SMS, etc.):\n\n${link}`)
-    } catch {
-      alert(`Invite created for ${email}.\n\nShare this link with them:\n${link}`)
+    if (payload.warning) {
+      alert(`Invite row created for ${email}, but email sending failed: ${payload.warning}\n\nManual link: ${payload.link}`)
+    } else {
+      alert(`Invite sent to ${email}. They should receive an email with a signup link.`)
     }
   }
 
@@ -245,7 +253,14 @@ export default function Admin() {
                 value={newInvite.email}
                 onChange={(e) => setNewInvite({ ...newInvite, email: e.target.value })}
               />
-              <button className="btn btn-pink" style={smallBtn} onClick={generateInvite}>Generate invite</button>
+              <button
+                className="btn btn-pink"
+                style={smallBtn}
+                onClick={generateInvite}
+                disabled={busy === 'invite'}
+              >
+                {busy === 'invite' ? 'Sending…' : 'Generate & send invite'}
+              </button>
               <span style={{ color: 'var(--paws-muted)', fontSize: 13 }}>
                 A single-use link tied to this email will be copied to your clipboard.
               </span>
