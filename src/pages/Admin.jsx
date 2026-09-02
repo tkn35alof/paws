@@ -9,9 +9,11 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [photoUrls, setPhotoUrls] = useState({})
   const [busy, setBusy] = useState(null)
-  const [tab, setTab] = useState('members')   // 'members' | 'invites' | 'testimonials'
+  const [tab, setTab] = useState('members')
   const [invites, setInvites] = useState([])
   const [testimonials, setTestimonials] = useState([])
+  const [projects, setProjects] = useState([])
+  const [editingProject, setEditingProject] = useState(null)   // null = list, 'new' = new form, id = edit form
   const [newInvite, setNewInvite] = useState({ code: '', email: '' })
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function Admin() {
       const { data: me } = await db.from('members').select('is_owner').eq('id', user.id).single()
       if (!me?.is_owner) { setLoading(false); return }
       setOk(true)
-      await Promise.all([loadMembers(db), loadInvites(db), loadTestimonials(db)])
+      await Promise.all([loadMembers(db), loadInvites(db), loadTestimonials(db), loadProjects(db)])
       setLoading(false)
     })()
   }, [])
@@ -48,6 +50,10 @@ export default function Admin() {
   async function loadTestimonials(db) {
     const { data } = await db.from('testimonials').select('*').order('display_order')
     setTestimonials(data || [])
+  }
+  async function loadProjects(db) {
+    const { data } = await db.from('projects').select('*').order('display_order')
+    setProjects(data || [])
   }
 
   async function togglePublish(id, val) {
@@ -166,6 +172,49 @@ export default function Admin() {
     await loadTestimonials(db)
   }
 
+  // -------- Projects CRUD --------
+  async function saveProject(p) {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    const payload = {
+      title: p.title,
+      summary: p.summary,
+      cover_image: p.cover_image,
+      member_ids: p.member_ids || [],
+      published: !!p.published,
+      display_order: p.display_order ?? projects.length,
+    }
+    if (p.id) {
+      const { error } = await db.from('projects').update(payload).eq('id', p.id)
+      if (error) { alert(error.message); return }
+    } else {
+      const { error } = await db.from('projects').insert(payload)
+      if (error) { alert(error.message); return }
+    }
+    setEditingProject(null)
+    await loadProjects(db)
+  }
+
+  async function deleteProject(id) {
+    if (!supabaseReady) return
+    if (!confirm('Delete this project?')) return
+    const db = requireSupabase()
+    await db.from('projects').delete().eq('id', id)
+    await loadProjects(db)
+  }
+
+  async function uploadProjectCover(p, file) {
+    if (!file) return
+    const db = requireSupabase()
+    const path = `project-${Date.now()}.${file.name.split('.').pop()}`
+    const { error: upErr } = await db.storage.from('member-photos-public').upload(path, file, {
+      cacheControl: '3600', upsert: true, contentType: file.type,
+    })
+    if (upErr) { alert(`Upload failed: ${upErr.message}`); return }
+    const { data: pub } = db.storage.from('member-photos-public').getPublicUrl(path)
+    return pub.publicUrl
+  }
+
   if (loading) return <div className="wrap" style={{ padding: 120 }}><Nav /><p>Checking access…</p></div>
   if (!ok) return <div className="wrap" style={{ padding: 120 }}><Nav /><p>Owner access required.</p></div>
 
@@ -176,12 +225,12 @@ export default function Admin() {
         <h1>Admin — PAWS</h1>
         <p style={{ color: 'var(--paws-muted)' }}>Owner control panel.</p>
 
-        <div style={{ display: 'flex', gap: 16, margin: '24px 0', borderBottom: '1px solid var(--paws-line)' }}>
-          {['members', 'invites', 'testimonials'].map((t) => (
+        <div style={{ display: 'flex', gap: 16, margin: '24px 0', borderBottom: '1px solid var(--paws-line)', flexWrap: 'wrap' }}>
+          {['members', 'invites', 'testimonials', 'projects'].map((t) => (
             <button
               key={t}
               type="button"
-              onClick={() => setTab(t)}
+              onClick={() => { setTab(t); setEditingProject(null) }}
               style={{
                 background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0',
                 borderBottom: tab === t ? '2px solid var(--paws-pink)' : '2px solid transparent',
@@ -245,7 +294,7 @@ export default function Admin() {
 
         {tab === 'invites' && (
           <>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center', margin: '0 0 24px' }}>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', margin: '0 0 24px', flexWrap: 'wrap' }}>
               <input
                 style={{ ...inputStyle, maxWidth: 320 }}
                 type="email"
@@ -262,7 +311,7 @@ export default function Admin() {
                 {busy === 'invite' ? 'Sending…' : 'Generate & send invite'}
               </button>
               <span style={{ color: 'var(--paws-muted)', fontSize: 13 }}>
-                A single-use link tied to this email will be copied to your clipboard.
+                A single-use link tied to this email will be sent automatically.
               </span>
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -338,14 +387,152 @@ export default function Admin() {
           </>
         )}
 
+        {tab === 'projects' && (
+          editingProject ? (
+            <ProjectEditor
+              project={editingProject === 'new' ? null : projects.find((p) => p.id === editingProject)}
+              members={members}
+              onSave={saveProject}
+              onCancel={() => setEditingProject(null)}
+              onUploadCover={uploadProjectCover}
+            />
+          ) : (
+            <>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 12px' }}>
+                <button className="btn btn-pink" style={smallBtn} onClick={() => setEditingProject('new')}>+ New project</button>
+              </div>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--paws-line)' }}>
+                    <th style={th}>Cover</th>
+                    <th style={th}>Title</th>
+                    <th style={th}>Summary</th>
+                    <th style={th}>Published</th>
+                    <th style={th}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {projects.length === 0 ? (
+                    <tr><td style={td} colSpan={5}><em style={{ color: 'var(--paws-muted)' }}>No projects yet.</em></td></tr>
+                  ) : projects.map((p) => (
+                    <tr key={p.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
+                      <td style={td}>
+                        {p.cover_image
+                          ? <img src={p.cover_image} alt={p.title} style={{ width: 60, height: 40, objectFit: 'cover', border: '1px solid var(--paws-line)' }} />
+                          : <div style={{ width: 60, height: 40, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)' }} />}
+                      </td>
+                      <td style={td}>{p.title}</td>
+                      <td style={{ ...td, maxWidth: 300 }}>{p.summary?.slice(0, 80)}{p.summary?.length > 80 ? '…' : ''}</td>
+                      <td style={td}>{p.published ? 'Yes' : 'No'}</td>
+                      <td style={td}>
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                          <button className="btn" style={smallBtn} onClick={() => setEditingProject(p.id)}>Edit</button>
+                          {p.published
+                            ? <button className="btn" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('projects').update({ published: false }).eq('id', p.id); await loadProjects(db) }}>Unpublish</button>
+                            : <button className="btn btn-pink" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('projects').update({ published: true }).eq('id', p.id); await loadProjects(db) }}>Publish</button>}
+                          <button className="btn" style={smallBtn} onClick={() => deleteProject(p.id)}>Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )
+        )}
+
         <p style={{ color: 'var(--paws-muted)', marginTop: 24, fontSize: 14 }}>
-          P3a: members + invites + testimonials. P3b: projects + permissions + site content — coming next.
+          P3b: projects CRUD shipped. Next: site content editor for About/Mission/Vision/Contact.
         </p>
       </section>
       <Footer />
     </div>
   )
 }
+
+function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
+  const [title, setTitle] = useState(project?.title || '')
+  const [summary, setSummary] = useState(project?.summary || '')
+  const [coverImage, setCoverImage] = useState(project?.cover_image || '')
+  const [memberIds, setMemberIds] = useState(project?.member_ids || [])
+  const [published, setPublished] = useState(project?.published || false)
+  const [uploading, setUploading] = useState(false)
+
+  async function onCoverFile(e) {
+    const f = e.target.files?.[0]
+    if (!f) return
+    setUploading(true)
+    const url = await onUploadCover(project, f)
+    setUploading(false)
+    if (url) setCoverImage(url)
+  }
+
+  function toggleMember(id) {
+    setMemberIds((ids) => ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id])
+  }
+
+  return (
+    <div style={{ background: 'var(--paws-paper-2)', padding: 24, border: '1px solid var(--paws-line)' }}>
+      <h2 style={{ marginTop: 0 }}>{project ? 'Edit project' : 'New project'}</h2>
+      <div style={{ display: 'grid', gap: 16, maxWidth: 720 }}>
+        <Field label="Title">
+          <input style={inputStyle} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Project name" />
+        </Field>
+        <Field label="Summary">
+          <textarea style={{ ...inputStyle, resize: 'vertical' }} rows={3} value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="One or two sentences" />
+        </Field>
+        <Field label="Cover image">
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+            {coverImage ? <img src={coverImage} alt="cover" style={{ width: 120, height: 80, objectFit: 'cover', border: '1px solid var(--paws-line)' }} /> : <div style={{ width: 120, height: 80, background: '#fff', border: '1px dashed var(--paws-line)' }} />}
+            <label className="btn" style={{ ...smallBtn, cursor: 'pointer' }}>
+              {uploading ? 'Uploading…' : (coverImage ? 'Replace' : 'Upload')}
+              <input type="file" accept="image/*" onChange={onCoverFile} style={{ display: 'none' }} />
+            </label>
+            {coverImage && <button type="button" className="btn" style={smallBtn} onClick={() => setCoverImage('')}>Remove</button>}
+          </div>
+        </Field>
+        <Field label="Team members on this project">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {members.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                onClick={() => toggleMember(m.id)}
+                style={{
+                  padding: '4px 10px', borderRadius: 999,
+                  border: '1px solid ' + (memberIds.includes(m.id) ? 'var(--paws-pink)' : 'var(--paws-line)'),
+                  background: memberIds.includes(m.id) ? 'var(--paws-pink-wash)' : '#fff',
+                  color: memberIds.includes(m.id) ? 'var(--paws-pink-deep)' : 'var(--paws-muted)',
+                  cursor: 'pointer', fontSize: 13, fontFamily: 'var(--font-display)', fontWeight: 600,
+                }}
+              >
+                {m.display_name}
+              </button>
+            ))}
+          </div>
+        </Field>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
+          <span>Publish on public site</span>
+        </label>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button type="button" className="btn btn-pink" onClick={() => onSave({ id: project?.id, title, summary, cover_image: coverImage, member_ids: memberIds, published })}>Save</button>
+          <button type="button" className="btn" onClick={onCancel}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Field({ label, children }) {
+  return (
+    <div>
+      <label style={{ display: 'block', fontSize: 13, color: 'var(--paws-muted)', marginBottom: 6 }}>{label}</label>
+      {children}
+    </div>
+  )
+}
+
 const th = { padding: '12px 8px', fontFamily: 'var(--font-display)' }
 const td = { padding: '12px 8px' }
 const smallBtn = { fontSize: 12, padding: '8px 14px' }
