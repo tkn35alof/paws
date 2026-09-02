@@ -4,7 +4,7 @@ import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
 export default function Contact() {
-  const [body, setBody] = useState('')
+  const [body, setBody] = useState(null)  // null = loading
 
   useEffect(() => {
     if (!supabaseReady) return
@@ -20,14 +20,10 @@ export default function Contact() {
       <Nav />
       <section className="section">
         <h1>Contact</h1>
-        {body && body.trim() !== '' ? (
+        {body && body.trim() !== '' && (
           <div style={{ maxWidth: 720, fontSize: 19, lineHeight: 1.7, whiteSpace: 'pre-wrap', marginBottom: 32 }}>
             {body}
           </div>
-        ) : (
-          <p style={{ maxWidth: 720, fontSize: 19, color: 'var(--paws-muted)' }}>
-            Tell us what you need. We read every message and reply like professionals.
-          </p>
         )}
 
         <h2 style={{ fontSize: 24, margin: '32px 0 16px' }}>Send a message</h2>
