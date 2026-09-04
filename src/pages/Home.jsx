@@ -80,7 +80,7 @@ export default function Home() {
           Tell us what you need. Book a discovery call below, or send a message — we'll respond like the professionals we are.
         </p>
 
-        <div style={{ marginTop: 32, marginBottom: 16 }}>
+        <div style={{ marginTop: 0, marginBottom: 16 }}>
           <h3 style={{ fontSize: 20, marginBottom: 12 }}>Book a discovery call</h3>
           <div style={{
             border: '1px solid var(--paws-line)',
@@ -91,7 +91,7 @@ export default function Home() {
           }}>
             <iframe
               src="https://api.leadconnectorhq.com/widget/booking/YrYXL1dDWGNvci77AyUb"
-              style={{ width: '100%', height: 700, border: 'none', display: 'block' }}
+              style={{ width: '100%', height: 710, border: 'none', display: 'block' }}
               scrolling="auto"
               id="YrYXL1dDWGNvci77AyUb_1788371872912"
               title="Book a discovery call"
