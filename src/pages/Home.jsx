@@ -87,11 +87,12 @@ export default function Home() {
             background: '#fff',
             maxWidth: 900, margin: '0 auto',
             boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+            overflow: 'hidden',
           }}>
             <iframe
               src="https://api.leadconnectorhq.com/widget/booking/YrYXL1dDWGNvci77AyUb"
-              style={{ width: '100%', border: 'none', overflow: 'hidden', display: 'block' }}
-              scrolling="no"
+              style={{ width: '100%', height: 1100, border: 'none', display: 'block' }}
+              scrolling="auto"
               id="YrYXL1dDWGNvci77AyUb_1788371872912"
               title="Book a discovery call"
               loading="lazy"
