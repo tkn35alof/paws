@@ -37,7 +37,7 @@ export function Nav() {
 
   return (
     <nav className="nav">
-      <Link className="brand" to="/">PAWS</Link>
+      <Link className="brand" to="/">PAWS<span className="brand-dot">.</span></Link>
       <Link to="/">Team</Link>
       <Link to="/projects">Work</Link>
       <Link to="/about">About</Link>
@@ -47,14 +47,7 @@ export function Nav() {
       <Link to="/portal">{user ? 'Portal' : 'Sign in'}</Link>
       {isOwner && <Link to="/admin" style={{ color: 'var(--paws-pink)' }}>Admin</Link>}
       {user && (
-        <button
-          onClick={signOut}
-          style={{
-            background: 'none', border: '1px solid var(--paws-line)', borderRadius: 2,
-            padding: '4px 12px', cursor: 'pointer', color: 'var(--paws-muted)',
-            fontFamily: 'var(--font-display)', fontSize: 13,
-          }}
-        >
+        <button onClick={signOut} className="signout">
           Sign out
         </button>
       )}
