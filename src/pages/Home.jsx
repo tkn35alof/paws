@@ -80,7 +80,7 @@ export default function Home() {
           Tell us what you need. Book a discovery call below, or send a message — we'll respond like the professionals we are.
         </p>
 
-        <div style={{ marginTop: 0, marginBottom: 48, overflow: 'hidden', maxWidth: 1100, margin: '0 auto' }}>
+        <div style={{ marginTop: 0, marginBottom: 0, overflow: 'hidden', maxWidth: 1100, margin: '0 auto' }}>
           <h3 style={{ fontSize: 20, marginBottom: 12 }}>Book a discovery call</h3>
           <div style={{
             border: '1px solid var(--paws-line)',
@@ -88,6 +88,7 @@ export default function Home() {
             boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
             overflow: 'hidden',
             height: 710,
+            marginBottom: 48,
           }}>
             <iframe
               src="https://api.leadconnectorhq.com/widget/booking/YrYXL1dDWGNvci77AyUb"
