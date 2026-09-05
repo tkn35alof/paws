@@ -3,13 +3,28 @@ import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
+const TAB_META = [
+  { key: 'members',     label: 'Members',     perms: ['can_manage_members'],           ownerOnly: true },
+  { key: 'invites',     label: 'Invites',     perms: ['can_invite'],                   ownerOnly: true },
+  { key: 'testimonials',label: 'Testimonials',perms: ['can_edit_testimonials'],         ownerOnly: false },
+  { key: 'projects',    label: 'Projects',    perms: ['can_edit_projects'],            ownerOnly: false },
+  { key: 'content',     label: 'Content',     perms: ['can_edit_site_content'],        ownerOnly: true },
+]
+
+function tabAllowed(meta, isOwner, perms) {
+  if (isOwner) return true
+  if (meta.ownerOnly) return false
+  return meta.perms.some((p) => perms?.[p])
+}
+
 export default function Admin() {
-  const [ok, setOk] = useState(false)
+  const [isOwner, setIsOwner] = useState(false)
+  const [memberPerms, setMemberPerms] = useState({})
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
   const [photoUrls, setPhotoUrls] = useState({})
   const [busy, setBusy] = useState(null)
-  const [tab, setTab] = useState('members')
+  const [tab, setTab] = useState(null)            // null until we know what's allowed
   const [invites, setInvites] = useState([])
   const [testimonials, setTestimonials] = useState([])
   const [projects, setProjects] = useState([])
@@ -24,10 +39,25 @@ export default function Admin() {
     ;(async () => {
       const { data: { user } } = await db.auth.getUser()
       if (!user) { setLoading(false); return }
-      const { data: me } = await db.from('members').select('is_owner').eq('id', user.id).single()
-      if (!me?.is_owner) { setLoading(false); return }
-      setOk(true)
-      await Promise.all([loadMembers(db), loadInvites(db), loadTestimonials(db), loadProjects(db), loadSiteContent(db)])
+      const { data: me } = await db.from('members').select('is_owner, permissions').eq('id', user.id).single()
+      if (!me) { setLoading(false); return }
+      setIsOwner(!!me.is_owner)
+      setMemberPerms(me.permissions || {})
+
+      const allowed = TAB_META.filter((m) => tabAllowed(m, !!me.is_owner, me.permissions || {}))
+      if (allowed.length === 0) { setLoading(false); return }
+      setTab(allowed[0].key)
+
+      // Load only what's needed (for perf + to avoid loading members for non-owner)
+      const tasks = []
+      if (me.is_owner) {
+        tasks.push(loadMembers(db), loadInvites(db), loadTestimonials(db), loadProjects(db), loadSiteContent(db))
+      } else {
+        if (allowed.find((m) => m.key === 'testimonials')) tasks.push(loadTestimonials(db))
+        if (allowed.find((m) => m.key === 'projects'))    tasks.push(loadProjects(db))
+        if (allowed.find((m) => m.key === 'content'))     tasks.push(loadSiteContent(db))
+      }
+      await Promise.all(tasks)
       setLoading(false)
     })()
   }, [])
@@ -230,35 +260,43 @@ export default function Admin() {
   }
 
   if (loading) return <div className="wrap" style={{ padding: 120 }}><Nav /><p>Checking access…</p></div>
-  if (!ok) return <div className="wrap" style={{ padding: 120 }}><Nav /><p>Owner access required.</p></div>
+  if (!tab) return <div className="wrap" style={{ padding: 120 }}><Nav /><p>No admin access. Sign in or ask the owner to grant you permissions.</p></div>
+
+  const visibleTabs = TAB_META.filter((m) => tabAllowed(m, isOwner, memberPerms))
 
   return (
     <div className="wrap">
       <Nav />
       <section className="section">
-        <h1>Admin — PAWS</h1>
-        <p style={{ color: 'var(--paws-muted)' }}>Owner control panel.</p>
+        <div className="kicker">Admin</div>
+        <h1>{isOwner ? 'Owner control panel' : 'Your access'}</h1>
+        {!isOwner && (
+          <p style={{ color: 'var(--paws-muted)' }}>
+            You can see only the sections the owner has given you access to.
+          </p>
+        )}
 
-        <div style={{ display: 'flex', gap: 16, margin: '24px 0', borderBottom: '1px solid var(--paws-line)', flexWrap: 'wrap' }}>
-          {['members', 'invites', 'testimonials', 'projects', 'content'].map((t) => (
+        <div style={{ display: 'flex', gap: 24, margin: '32px 0', borderBottom: '1px solid var(--paws-line)', flexWrap: 'wrap' }}>
+          {visibleTabs.map((t) => (
             <button
-              key={t}
+              key={t.key}
               type="button"
-              onClick={() => { setTab(t); setEditingProject(null) }}
+              onClick={() => { setTab(t.key); setEditingProject(null); setEditingMemberPerms(null) }}
               style={{
-                background: 'none', border: 'none', cursor: 'pointer', padding: '8px 0',
-                borderBottom: tab === t ? '2px solid var(--paws-pink)' : '2px solid transparent',
-                color: tab === t ? 'var(--paws-pink)' : 'var(--paws-muted)',
-                fontFamily: 'var(--font-display)', fontWeight: 600, textTransform: 'capitalize',
+                background: 'none', border: 'none', cursor: 'pointer', padding: '10px 0',
+                borderBottom: tab === t.key ? '2px solid var(--paws-pink)' : '2px solid transparent',
+                color: tab === t.key ? 'var(--paws-pink)' : 'var(--paws-ink-2)',
+                fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 15,
+                letterSpacing: '0.01em',
               }}
-            >{t}</button>
+            >{t.label}</button>
           ))}
         </div>
 
-        {tab === 'members' && (
+        {tab === 'members' && isOwner && (
           <>
             {editingMemberPerms && (
-              <div style={{ marginBottom: 24 }}>
+              <div style={{ marginBottom: 32 }}>
                 <PermissionsEditor
                   member={members.find((m) => m.id === editingMemberPerms)}
                   onSave={savePermissions}
@@ -266,8 +304,8 @@ export default function Admin() {
                 />
               </div>
             )}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 12px' }}>
-              <button className="btn" style={smallBtn} onClick={() => window.location.reload()}>Refresh all</button>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
+              <button className="btn btn-ghost" style={smallBtn} onClick={() => window.location.reload()}>Refresh</button>
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
@@ -298,15 +336,15 @@ export default function Admin() {
                     <td style={td}>
                       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                         {m.published
-                          ? <button className="btn" style={smallBtn} onClick={() => togglePublish(m.id, false)}>Unpublish</button>
+                          ? <button className="btn btn-ghost" style={smallBtn} onClick={() => togglePublish(m.id, false)}>Unpublish</button>
                           : <button className="btn btn-pink" style={smallBtn} onClick={() => togglePublish(m.id, true)}>Publish</button>}
                         {m.photo_raw && !m.photo_std && (
-                          <button className="btn" style={smallBtn} disabled={busy === m.id} onClick={() => standardize(m.id)}>
+                          <button className="btn btn-ghost" style={smallBtn} disabled={busy === m.id} onClick={() => standardize(m.id)}>
                             {busy === m.id ? 'Working…' : 'Standardize photo'}
                           </button>
                         )}
-                        <button className="btn" style={smallBtn} onClick={() => refreshOne(m.id)} title="Re-fetch this member's data">↻</button>
-                        <button className="btn" style={smallBtn} onClick={() => setEditingMemberPerms(m.id)} title="Edit permissions">⚙</button>
+                        <button className="btn btn-ghost" style={smallBtn} onClick={() => refreshOne(m.id)} title="Re-fetch">↻</button>
+                        <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditingMemberPerms(m.id)} title="Edit permissions">⚙</button>
                       </div>
                     </td>
                   </tr>
@@ -316,9 +354,9 @@ export default function Admin() {
           </>
         )}
 
-        {tab === 'invites' && (
+        {tab === 'invites' && isOwner && (
           <>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center', margin: '0 0 24px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: 12, alignItems: 'center', margin: '0 0 32px', flexWrap: 'wrap' }}>
               <input
                 style={{ ...inputStyle, maxWidth: 320 }}
                 type="email"
@@ -326,12 +364,7 @@ export default function Admin() {
                 value={newInvite.email}
                 onChange={(e) => setNewInvite({ ...newInvite, email: e.target.value })}
               />
-              <button
-                className="btn btn-pink"
-                style={smallBtn}
-                onClick={generateInvite}
-                disabled={busy === 'invite'}
-              >
+              <button className="btn btn-pink" style={smallBtn} onClick={generateInvite} disabled={busy === 'invite'}>
                 {busy === 'invite' ? 'Sending…' : 'Generate & send invite'}
               </button>
               <span style={{ color: 'var(--paws-muted)', fontSize: 13 }}>
@@ -358,13 +391,13 @@ export default function Admin() {
                     <td style={td}>{new Date(inv.created_at).toLocaleString()}</td>
                     <td style={td}>{inv.redeemed_at ? new Date(inv.redeemed_at).toLocaleString() : <em style={{ color: 'var(--paws-muted)' }}>not yet</em>}</td>
                     <td style={td}>
-                      <button className="btn" style={smallBtn} onClick={() => {
+                      <button className="btn btn-ghost" style={smallBtn} onClick={() => {
                         const link = `${window.location.origin}/login?invite=${inv.code}`
                         navigator.clipboard?.writeText(link)
                         alert(`Copied: ${link}`)
                       }}>Copy link</button>
                       {!inv.redeemed_at && (
-                        <button className="btn" style={{ ...smallBtn, marginLeft: 6 }} onClick={() => revokeInvite(inv.id)}>Revoke</button>
+                        <button className="btn btn-ghost" style={{ ...smallBtn, marginLeft: 6 }} onClick={() => revokeInvite(inv.id)}>Revoke</button>
                       )}
                     </td>
                   </tr>
@@ -376,7 +409,7 @@ export default function Admin() {
 
         {tab === 'testimonials' && (
           <>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
               <button className="btn btn-pink" style={smallBtn} onClick={addTestimonial}>+ Add testimonial</button>
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -399,9 +432,9 @@ export default function Admin() {
                     <td style={td}>
                       <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                         {t.published
-                          ? <button className="btn" style={smallBtn} onClick={() => toggleTestimonialPublish(t.id, false)}>Unpublish</button>
+                          ? <button className="btn btn-ghost" style={smallBtn} onClick={() => toggleTestimonialPublish(t.id, false)}>Unpublish</button>
                           : <button className="btn btn-pink" style={smallBtn} onClick={() => toggleTestimonialPublish(t.id, true)}>Publish</button>}
-                        <button className="btn" style={smallBtn} onClick={() => deleteTestimonial(t.id)}>Delete</button>
+                        <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteTestimonial(t.id)}>Delete</button>
                       </div>
                     </td>
                   </tr>
@@ -422,7 +455,7 @@ export default function Admin() {
             />
           ) : (
             <>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
                 <button className="btn btn-pink" style={smallBtn} onClick={() => setEditingProject('new')}>+ New project</button>
               </div>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -450,11 +483,11 @@ export default function Admin() {
                       <td style={td}>{p.published ? 'Yes' : 'No'}</td>
                       <td style={td}>
                         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                          <button className="btn" style={smallBtn} onClick={() => setEditingProject(p.id)}>Edit</button>
+                          <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditingProject(p.id)}>Edit</button>
                           {p.published
-                            ? <button className="btn" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('projects').update({ published: false }).eq('id', p.id); await loadProjects(db) }}>Unpublish</button>
+                            ? <button className="btn btn-ghost" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('projects').update({ published: false }).eq('id', p.id); await loadProjects(db) }}>Unpublish</button>
                             : <button className="btn btn-pink" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('projects').update({ published: true }).eq('id', p.id); await loadProjects(db) }}>Publish</button>}
-                          <button className="btn" style={smallBtn} onClick={() => deleteProject(p.id)}>Delete</button>
+                          <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteProject(p.id)}>Delete</button>
                         </div>
                       </td>
                     </tr>
@@ -465,13 +498,15 @@ export default function Admin() {
           )
         )}
 
-        {tab === 'content' && (
+        {tab === 'content' && isOwner && (
           <ContentEditor siteContent={siteContent} onSave={saveSiteContent} />
         )}
 
-        <p style={{ color: 'var(--paws-muted)', marginTop: 24, fontSize: 14 }}>
-          P3b: projects + content + permissions matrix — shipped.
-        </p>
+        {!isOwner && (
+          <p style={{ color: 'var(--paws-muted)', marginTop: 32, fontSize: 13 }}>
+            Your access is read-only for this section. Need more? Ask the owner to update your permissions.
+          </p>
+        )}
       </section>
       <Footer />
     </div>
@@ -480,7 +515,7 @@ export default function Admin() {
 
 function PermissionsEditor({ member, onSave, onCancel }) {
   const PERMS = [
-    { key: 'can_edit_projects',     label: 'Edit projects',     hint: 'Create / edit / publish projects in /admin' },
+    { key: 'can_edit_projects',     label: 'Edit projects',     hint: 'Create / edit / publish projects' },
     { key: 'can_edit_testimonials', label: 'Edit testimonials', hint: 'Create / publish client testimonials' },
     { key: 'can_invite',            label: 'Send invites',      hint: 'Create invite codes for new team members' },
     { key: 'can_edit_site_content', label: 'Edit site content', hint: 'Edit About / Mission / Vision / Contact copy' },
@@ -490,25 +525,17 @@ function PermissionsEditor({ member, onSave, onCancel }) {
   const initial = { ...(member?.permissions || {}) }
   const [draft, setDraft] = useState(initial)
   if (!member) return <p>Member not found.</p>
-
   function toggle(key) { setDraft((d) => ({ ...d, [key]: !d[key] })) }
-
   return (
     <div style={{ background: 'var(--paws-paper-2)', padding: 24, border: '1px solid var(--paws-line)' }}>
-      <h2 style={{ marginTop: 0 }}>Permissions — {member.display_name}</h2>
+      <h3 style={{ marginTop: 0 }}>Permissions — {member.display_name}</h3>
       <p style={{ color: 'var(--paws-muted)', fontSize: 14, marginBottom: 16 }}>
-        Owner always has all permissions. These flags give <em>this member</em> extra capabilities
-        on top of editing their own profile.
+        Owner always has all permissions. These flags give <em>this member</em> extra capabilities.
       </p>
       <div style={{ display: 'grid', gap: 10 }}>
         {PERMS.map((p) => (
           <label key={p.key} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: 12, border: '1px solid var(--paws-line)', background: '#fff' }}>
-            <input
-              type="checkbox"
-              checked={!!draft[p.key]}
-              onChange={() => toggle(p.key)}
-              style={{ marginTop: 4 }}
-            />
+            <input type="checkbox" checked={!!draft[p.key]} onChange={() => toggle(p.key)} style={{ marginTop: 4 }} />
             <div>
               <div style={{ fontWeight: 600, fontFamily: 'var(--font-display)' }}>{p.label}</div>
               <div style={{ fontSize: 13, color: 'var(--paws-muted)' }}>{p.hint}</div>
@@ -518,7 +545,7 @@ function PermissionsEditor({ member, onSave, onCancel }) {
       </div>
       <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
         <button className="btn btn-pink" onClick={() => onSave(member.id, draft)}>Save permissions</button>
-        <button className="btn" onClick={onCancel}>Cancel</button>
+        <button className="btn btn-ghost" onClick={onCancel}>Cancel</button>
       </div>
     </div>
   )
@@ -528,23 +555,19 @@ function ContentEditor({ siteContent, onSave }) {
   const [draft, setDraft] = useState(siteContent)
   const [busy, setBusy] = useState(null)
   useEffect(() => { setDraft(siteContent) }, [siteContent])
-
   const sections = [
     { key: 'about',   title: 'About',   page: '/about',   hint: 'Who PAWS is, what we do, who we serve.' },
     { key: 'mission', title: 'Mission', page: '/mission', hint: 'Why PAWS exists; the problem you solve.' },
     { key: 'vision',  title: 'Vision',  page: '/vision',  hint: 'Where PAWS is going in 1-3 years.' },
     { key: 'contact', title: 'Contact', page: '/contact', hint: 'How clients reach you (shown on the Contact page).' },
   ]
-
   return (
     <div style={{ display: 'grid', gap: 24 }}>
-      <p style={{ color: 'var(--paws-muted)' }}>
-        Edits appear on the public pages immediately. Use plain text — line breaks are preserved.
-      </p>
+      <p style={{ color: 'var(--paws-muted)' }}>Edits appear on the public pages immediately.</p>
       {sections.map((s) => (
         <div key={s.key} style={{ background: 'var(--paws-paper-2)', padding: 20, border: '1px solid var(--paws-line)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-            <label style={{ fontSize: 14, fontFamily: 'var(--font-display)', fontWeight: 600 }}>{s.title}</label>
+            <label style={{ fontSize: 15, fontFamily: 'var(--font-display)', fontWeight: 600 }}>{s.title}</label>
             <a href={s.page} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'var(--paws-muted)' }}>view page →</a>
           </div>
           <p style={{ fontSize: 12, color: 'var(--paws-muted)', margin: '0 0 8px' }}>{s.hint}</p>
@@ -571,13 +594,11 @@ function ContentEditor({ siteContent, onSave }) {
             </button>
             <button
               type="button"
-              className="btn"
+              className="btn btn-ghost"
               style={smallBtn}
               disabled={draft[s.key] === siteContent[s.key]}
               onClick={() => setDraft({ ...draft, [s.key]: siteContent[s.key] })}
-            >
-              Revert
-            </button>
+            >Revert</button>
           </div>
         </div>
       ))}
@@ -592,7 +613,6 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
   const [memberIds, setMemberIds] = useState(project?.member_ids || [])
   const [published, setPublished] = useState(project?.published || false)
   const [uploading, setUploading] = useState(false)
-
   async function onCoverFile(e) {
     const f = e.target.files?.[0]
     if (!f) return
@@ -601,14 +621,12 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
     setUploading(false)
     if (url) setCoverImage(url)
   }
-
   function toggleMember(id) {
     setMemberIds((ids) => ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id])
   }
-
   return (
     <div style={{ background: 'var(--paws-paper-2)', padding: 24, border: '1px solid var(--paws-line)' }}>
-      <h2 style={{ marginTop: 0 }}>{project ? 'Edit project' : 'New project'}</h2>
+      <h3 style={{ marginTop: 0 }}>{project ? 'Edit project' : 'New project'}</h3>
       <div style={{ display: 'grid', gap: 16, maxWidth: 720 }}>
         <Field label="Title">
           <input style={inputStyle} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Project name" />
@@ -619,40 +637,42 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
         <Field label="Cover image">
           <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
             {coverImage ? <img src={coverImage} alt="cover" style={{ width: 120, height: 80, objectFit: 'cover', border: '1px solid var(--paws-line)' }} /> : <div style={{ width: 120, height: 80, background: '#fff', border: '1px dashed var(--paws-line)' }} />}
-            <label className="btn" style={{ ...smallBtn, cursor: 'pointer' }}>
+            <label className="btn btn-ghost" style={{ ...smallBtn, cursor: 'pointer' }}>
               {uploading ? 'Uploading…' : (coverImage ? 'Replace' : 'Upload')}
               <input type="file" accept="image/*" onChange={onCoverFile} style={{ display: 'none' }} />
             </label>
-            {coverImage && <button type="button" className="btn" style={smallBtn} onClick={() => setCoverImage('')}>Remove</button>}
+            {coverImage && <button type="button" className="btn btn-ghost" style={smallBtn} onClick={() => setCoverImage('')}>Remove</button>}
           </div>
         </Field>
-        <Field label="Team members on this project">
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            {members.map((m) => (
-              <button
-                key={m.id}
-                type="button"
-                onClick={() => toggleMember(m.id)}
-                style={{
-                  padding: '4px 10px', borderRadius: 999,
-                  border: '1px solid ' + (memberIds.includes(m.id) ? 'var(--paws-pink)' : 'var(--paws-line)'),
-                  background: memberIds.includes(m.id) ? 'var(--paws-pink-wash)' : '#fff',
-                  color: memberIds.includes(m.id) ? 'var(--paws-pink-deep)' : 'var(--paws-muted)',
-                  cursor: 'pointer', fontSize: 13, fontFamily: 'var(--font-display)', fontWeight: 600,
-                }}
-              >
-                {m.display_name}
-              </button>
-            ))}
-          </div>
-        </Field>
+        {members.length > 0 && (
+          <Field label="Team members on this project">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {members.map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => toggleMember(m.id)}
+                  style={{
+                    padding: '4px 10px', borderRadius: 999,
+                    border: '1px solid ' + (memberIds.includes(m.id) ? 'var(--paws-pink)' : 'var(--paws-line)'),
+                    background: memberIds.includes(m.id) ? 'var(--paws-pink-wash)' : '#fff',
+                    color: memberIds.includes(m.id) ? 'var(--paws-pink-deep)' : 'var(--paws-muted)',
+                    cursor: 'pointer', fontSize: 13, fontFamily: 'var(--font-display)', fontWeight: 600,
+                  }}
+                >
+                  {m.display_name}
+                </button>
+              ))}
+            </div>
+          </Field>
+        )}
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
           <span>Publish on public site</span>
         </label>
         <div style={{ display: 'flex', gap: 8 }}>
           <button type="button" className="btn btn-pink" onClick={() => onSave({ id: project?.id, title, summary, cover_image: coverImage, member_ids: memberIds, published })}>Save</button>
-          <button type="button" className="btn" onClick={onCancel}>Cancel</button>
+          <button type="button" className="btn btn-ghost" onClick={onCancel}>Cancel</button>
         </div>
       </div>
     </div>
@@ -662,13 +682,13 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
 function Field({ label, children }) {
   return (
     <div>
-      <label style={{ display: 'block', fontSize: 13, color: 'var(--paws-muted)', marginBottom: 6 }}>{label}</label>
+      <label style={{ display: 'block', fontSize: 13, color: 'var(--paws-muted)', marginBottom: 6, fontWeight: 500 }}>{label}</label>
       {children}
     </div>
   )
 }
 
-const th = { padding: '12px 8px', fontFamily: 'var(--font-display)' }
-const td = { padding: '12px 8px' }
+const th = { padding: '12px 8px', fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 600, color: 'var(--paws-ink-3)' }
+const td = { padding: '12px 8px', fontSize: 14 }
 const smallBtn = { fontSize: 12, padding: '8px 14px' }
 const inputStyle = { font: 'inherit', padding: '10px 14px', border: '1px solid var(--paws-line)', borderRadius: 2, background: '#fff' }
