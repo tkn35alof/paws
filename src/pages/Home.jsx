@@ -88,7 +88,6 @@ export default function Home() {
             boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
             overflow: 'hidden',
             height: 710,
-            marginBottom: 48,
           }}>
             <iframe
               src="https://api.leadconnectorhq.com/widget/booking/YrYXL1dDWGNvci77AyUb"
