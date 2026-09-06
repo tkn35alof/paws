@@ -4,11 +4,11 @@ import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
 const TAB_META = [
-  { key: 'members',     label: 'Members',     perms: ['can_manage_members'],           ownerOnly: true },
-  { key: 'invites',     label: 'Invites',     perms: ['can_invite'],                   ownerOnly: true },
+  { key: 'members',     label: 'Members',     perms: ['can_manage_members'],           ownerOnly: false },
+  { key: 'invites',     label: 'Invites',     perms: ['can_invite'],                   ownerOnly: false },
   { key: 'testimonials',label: 'Testimonials',perms: ['can_edit_testimonials'],         ownerOnly: false },
   { key: 'projects',    label: 'Projects',    perms: ['can_edit_projects'],            ownerOnly: false },
-  { key: 'content',     label: 'Content',     perms: ['can_edit_site_content'],        ownerOnly: true },
+  { key: 'content',     label: 'Content',     perms: ['can_edit_site_content'],        ownerOnly: false },
 ]
 
 function tabAllowed(meta, isOwner, perms) {
@@ -56,6 +56,8 @@ export default function Admin() {
         if (allowed.find((m) => m.key === 'testimonials')) tasks.push(loadTestimonials(db))
         if (allowed.find((m) => m.key === 'projects'))    tasks.push(loadProjects(db))
         if (allowed.find((m) => m.key === 'content'))     tasks.push(loadSiteContent(db))
+        if (allowed.find((m) => m.key === 'invites'))     tasks.push(loadInvites(db))
+        if (allowed.find((m) => m.key === 'members'))     tasks.push(loadMembers(db)) // non-owners can see member list but not edit perms
       }
       await Promise.all(tasks)
       setLoading(false)
@@ -293,9 +295,9 @@ export default function Admin() {
           ))}
         </div>
 
-        {tab === 'members' && isOwner && (
+        {tab === 'members' && (
           <>
-            {editingMemberPerms && (
+            {isOwner && editingMemberPerms && (
               <div style={{ marginBottom: 32 }}>
                 <PermissionsEditor
                   member={members.find((m) => m.id === editingMemberPerms)}
@@ -304,8 +306,16 @@ export default function Admin() {
                 />
               </div>
             )}
+            {!isOwner && (
+              <div style={{ marginBottom: 24, padding: 16, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)' }}>
+                <p style={{ margin: 0, color: 'var(--paws-muted)' }}>
+                  You can view the member list below but cannot edit permissions. 
+                  <strong>Only the owner can manage member permissions.</strong>
+                </p>
+              </div>
+            )}
             <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
-              <button className="btn btn-ghost" style={smallBtn} onClick={() => window.location.reload()}>Refresh</button>
+              {isOwner && <button className="btn btn-ghost" style={smallBtn} onClick={() => window.location.reload()}>Refresh</button>}
             </div>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
@@ -338,13 +348,15 @@ export default function Admin() {
                         {m.published
                           ? <button className="btn btn-ghost" style={smallBtn} onClick={() => togglePublish(m.id, false)}>Unpublish</button>
                           : <button className="btn btn-pink" style={smallBtn} onClick={() => togglePublish(m.id, true)}>Publish</button>}
-                        {m.photo_raw && !m.photo_std && (
+                        {isOwner && m.photo_raw && !m.photo_std && (
                           <button className="btn btn-ghost" style={smallBtn} disabled={busy === m.id} onClick={() => standardize(m.id)}>
                             {busy === m.id ? 'Working…' : 'Standardize photo'}
                           </button>
                         )}
                         <button className="btn btn-ghost" style={smallBtn} onClick={() => refreshOne(m.id)} title="Re-fetch">↻</button>
-                        <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditingMemberPerms(m.id)} title="Edit permissions">⚙</button>
+                        {isOwner && (
+                          <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditingMemberPerms(m.id)} title="Edit permissions">⚙</button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -498,8 +510,20 @@ export default function Admin() {
           )
         )}
 
-        {tab === 'content' && isOwner && (
-          <ContentEditor siteContent={siteContent} onSave={saveSiteContent} />
+        {tab === 'content' && (
+          <>
+            {isOwner && (
+              <ContentEditor siteContent={siteContent} onSave={saveSiteContent} />
+            )}
+            {!isOwner && (
+              <div style={{ padding: 24, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)' }}>
+                <p style={{ margin: 0, color: 'var(--paws-muted)' }}>
+                  You can view the site content below but cannot edit it. 
+                  <strong>Only the owner or users with \"can_edit_site_content\" permission can edit site content.</strong>
+                </p>
+              </div>
+            )}
+          </>
         )}
 
         {!isOwner && (
