@@ -4,7 +4,7 @@ import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 
 export function Nav() {
   const [user, setUser] = useState(null)
-  const [isOwner, setIsOwner] = useState(false)
+  const [hasAdminAccess, setHasAdminAccess] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -12,17 +12,29 @@ export function Nav() {
     const db = requireSupabase()
     let mounted = true
     ;(async () => {
-      const { data: { user } } = await db.auth.getUser()
+      const { data: { user: authUser } } = await db.auth.getUser()
       if (!mounted) return
-      setUser(user)
-      if (user) {
-        const { data: me } = await db.from('members').select('is_owner').eq('id', user.id).single()
-        if (me?.is_owner && mounted) setIsOwner(true)
+      setUser(authUser)
+      if (authUser) {
+        // Check if user has any admin-tab permission
+        const { data: me } = await db.from('members').select('permissions').eq('id', authUser.id).single()
+        if (me && me.permissions) {
+          const perms = me.permissions
+          const adminPerms = [
+            'can_manage_members',
+            'can_invite',
+            'can_edit_testimonials',
+            'can_edit_projects',
+            'can_edit_site_content'
+          ]
+          const hasAnyAdminPerm = adminPerms.some(perm => perms[perm])
+          if (mounted) setHasAdminAccess(hasAnyAdminPerm)
+        }
       }
     })()
     const { data: sub } = db.auth.onAuthStateChange((_e, session) => {
       setUser(session?.user || null)
-      if (!session) setIsOwner(false)
+      if (!session) setHasAdminAccess(false)
     })
     return () => { mounted = false; sub.subscription.unsubscribe() }
   }, [])
@@ -31,7 +43,7 @@ export function Nav() {
     if (!supabaseReady) return
     const db = requireSupabase()
     await db.auth.signOut()
-    setUser(null); setIsOwner(false)
+    setUser(null); setHasAdminAccess(false)
     navigate('/')
   }
 
@@ -45,7 +57,7 @@ export function Nav() {
       <Link to="/vision">Vision</Link>
       <Link to="/contact">Contact</Link>
       <Link to="/portal">{user ? 'Portal' : 'Sign in'}</Link>
-      {isOwner && <Link to="/admin" style={{ color: 'var(--paws-pink)' }}>Admin</Link>}
+      {hasAdminAccess && <Link to="/admin" style={{ color: 'var(--paws-pink)' }}>Admin</Link>}
       {user && (
         <button onClick={signOut} className="signout">
           Sign out

@@ -53,6 +53,7 @@ export default function Admin() {
       if (me.is_owner) {
         tasks.push(loadMembers(db), loadInvites(db), loadTestimonials(db), loadProjects(db), loadSiteContent(db))
       } else {
+        // Load data for tabs the user has permission to view (and potentially edit)
         if (allowed.find((m) => m.key === 'testimonials')) tasks.push(loadTestimonials(db))
         if (allowed.find((m) => m.key === 'projects'))    tasks.push(loadProjects(db))
         if (allowed.find((m) => m.key === 'content'))     tasks.push(loadSiteContent(db))
@@ -366,7 +367,7 @@ export default function Admin() {
           </>
         )}
 
-        {tab === 'invites' && isOwner && (
+        {tab === 'invites' && (
           <>
             <div style={{ display: 'flex', gap: 12, alignItems: 'center', margin: '0 0 32px', flexWrap: 'wrap' }}>
               <input
@@ -512,17 +513,7 @@ export default function Admin() {
 
         {tab === 'content' && (
           <>
-            {isOwner && (
-              <ContentEditor siteContent={siteContent} onSave={saveSiteContent} />
-            )}
-            {!isOwner && (
-              <div style={{ padding: 24, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)' }}>
-                <p style={{ margin: 0, color: 'var(--paws-muted)' }}>
-                  You can view the site content below but cannot edit it. 
-                  <strong>Only the owner or users with \"can_edit_site_content\" permission can edit site content.</strong>
-                </p>
-              </div>
-            )}
+            <ContentEditor siteContent={siteContent} onSave={saveSiteContent} />
           </>
         )}
 
@@ -688,31 +679,4 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
                 </button>
               ))}
             </div>
-          </Field>
-        )}
-        <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
-          <span>Publish on public site</span>
-        </label>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button type="button" className="btn btn-pink" onClick={() => onSave({ id: project?.id, title, summary, cover_image: coverImage, member_ids: memberIds, published })}>Save</button>
-          <button type="button" className="btn btn-ghost" onClick={onCancel}>Cancel</button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function Field({ label, children }) {
-  return (
-    <div>
-      <label style={{ display: 'block', fontSize: 13, color: 'var(--paws-muted)', marginBottom: 6, fontWeight: 500 }}>{label}</label>
-      {children}
-    </div>
-  )
-}
-
-const th = { padding: '12px 8px', fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 600, color: 'var(--paws-ink-3)' }
-const td = { padding: '12px 8px', fontSize: 14 }
-const smallBtn = { fontSize: 12, padding: '8px 14px' }
-const inputStyle = { font: 'inherit', padding: '10px 14px', border: '1px solid var(--paws-line)', borderRadius: 2, background: '#fff' }
+          </Field
