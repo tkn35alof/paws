@@ -24,7 +24,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true)
   const [photoUrls, setPhotoUrls] = useState({})
   const [busy, setBusy] = useState(null)
-  const [tab, setTab] = useState(null)
+  const [tab, setTab] = useState(null)            // null until we know what's allowed
   const [invites, setInvites] = useState([])
   const [testimonials, setTestimonials] = useState([])
   const [projects, setProjects] = useState([])
@@ -48,6 +48,7 @@ export default function Admin() {
       if (allowed.length === 0) { setLoading(false); return }
       setTab(allowed[0].key)
 
+      // Load only what's needed (for perf + to avoid loading members for non-owner)
       const tasks = []
       if (me.is_owner) {
         tasks.push(loadMembers(db), loadInvites(db), loadTestimonials(db), loadProjects(db), loadSiteContent(db))
@@ -56,7 +57,7 @@ export default function Admin() {
         if (allowed.find((m) => m.key === 'projects'))    tasks.push(loadProjects(db))
         if (allowed.find((m) => m.key === 'content'))     tasks.push(loadSiteContent(db))
         if (allowed.find((m) => m.key === 'invites'))     tasks.push(loadInvites(db))
-        if (allowed.find((m) => m.key === 'members'))     tasks.push(loadMembers(db))
+        if (allowed.find((m) => m.key === 'members'))     tasks.push(loadMembers(db)) // non-owners can see member list but not edit perms
       }
       await Promise.all(tasks)
       setLoading(false)
@@ -153,8 +154,8 @@ export default function Admin() {
     if (!supabaseReady) return
     const db = requireSupabase()
     const email = (newInvite.email || '').trim().toLowerCase()
-    if (!email) { alert("Enter the invitee's email address."); return }
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { alert("That email doesn't look right."); return }
+    if (!email) { alert('Enter the invitee\'s email address.'); return }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) { alert('That email doesn\'t look right.'); return }
     setBusy('invite')
     const { data: { session } } = await db.auth.getSession()
     const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-invite`, {
@@ -271,6 +272,28 @@ export default function Admin() {
       <section className="section">
         <div className="kicker">Admin</div>
         <h1>{isOwner ? 'Owner control panel' : 'Your access'}</h1>
+        {!isOwner && (
+          <p style={{ color: 'var(--paws-muted)' }}>
+            You can see only the sections the owner has given you access to.
+          </p>
+        )}
+
+        <div style={{ display: 'flex', gap: 24, margin: '32px 0', borderBottom: '1px solid var(--paws-line)', flexWrap: 'wrap' }}>
+          {visibleTabs.map((t) => (
+            <button
+              key={t.key}
+              type="button"
+              onClick={() => { setTab(t.key); setEditingProject(null); setEditingMemberPerms(null) }}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer', padding: '10px 0',
+                borderBottom: tab === t.key ? '2px solid var(--paws-pink)' : '2px solid transparent',
+                color: tab === t.key ? 'var(--paws-pink)' : 'var(--paws-ink-2)',
+                fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: 15,
+                letterSpacing: '0.01em',
+              }}
+            >{t.label}</button>
+          ))}
+        </div>
 
         {tab === 'members' && (
           <>
@@ -286,7 +309,7 @@ export default function Admin() {
             {!isOwner && (
               <div style={{ marginBottom: 24, padding: 16, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)' }}>
                 <p style={{ margin: 0, color: 'var(--paws-muted)' }}>
-                  You can view the member list below but cannot edit permissions.
+                  You can view the member list below but cannot edit permissions. 
                   <strong>Only the owner can manage member permissions.</strong>
                 </p>
               </div>
@@ -343,7 +366,7 @@ export default function Admin() {
           </>
         )}
 
-        {tab === 'invites' && (
+        {tab === 'invites' && isOwner && (
           <>
             <div style={{ display: 'flex', gap: 12, alignItems: 'center', margin: '0 0 32px', flexWrap: 'wrap' }}>
               <input
@@ -360,14 +383,6 @@ export default function Admin() {
                 A single-use link tied to this email will be sent automatically.
               </span>
             </div>
-            {!isOwner && (
-              <div style={{ marginBottom: 24, padding: 16, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)' }}>
-                <p style={{ margin: 0, color: 'var(--paws-muted)' }}>
-                  You can view the invite list below but cannot edit it.
-                  <strong>Only the owner or users with "can_invite" permission can edit invites.</strong>
-                </p>
-              </div>
-            )}
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--paws-line)' }}>
@@ -380,4 +395,324 @@ export default function Admin() {
               </thead>
               <tbody>
                 {invites.length === 0 ? (
-                  <tr><td style={td} colSpan={5}><em style={{ color: 'var(--paws-muted)' }}>No invites yet.</em></td></tr
+                  <tr><td style={td} colSpan={5}><em style={{ color: 'var(--paws-muted)' }}>No invites yet.</em></td></tr>
+                ) : invites.map((inv) => (
+                  <tr key={inv.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
+                    <td style={td}>{inv.email || <em style={{ color: 'var(--paws-muted)' }}>(any)</em>}</td>
+                    <td style={td}><code>{inv.code}</code></td>
+                    <td style={td}>{new Date(inv.created_at).toLocaleString()}</td>
+                    <td style={td}>{inv.redeemed_at ? new Date(inv.redeemed_at).toLocaleString() : <em style={{ color: 'var(--paws-muted)' }}>not yet</em>}</td>
+                    <td style={td}>
+                      <button className="btn btn-ghost" style={smallBtn} onClick={() => {
+                        const link = `${window.location.origin}/login?invite=${inv.code}`
+                        navigator.clipboard?.writeText(link)
+                        alert(`Copied: ${link}`)
+                      }}>Copy link</button>
+                      {!inv.redeemed_at && (
+                        <button className="btn btn-ghost" style={{ ...smallBtn, marginLeft: 6 }} onClick={() => revokeInvite(inv.id)}>Revoke</button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+
+        {tab === 'testimonials' && (
+          <>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
+              <button className="btn btn-pink" style={smallBtn} onClick={addTestimonial}>+ Add testimonial</button>
+            </div>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--paws-line)' }}>
+                  <th style={th}>Author</th>
+                  <th style={th}>Body</th>
+                  <th style={th}>Published</th>
+                  <th style={th}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {testimonials.length === 0 ? (
+                  <tr><td style={td} colSpan={4}><em style={{ color: 'var(--paws-muted)' }}>No testimonials yet.</em></td></tr>
+                ) : testimonials.map((t) => (
+                  <tr key={t.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
+                    <td style={td}>{t.author_name}{t.author_title ? `, ${t.author_title}` : ''}</td>
+                    <td style={{ ...td, maxWidth: 400 }}>{t.body.slice(0, 120)}{t.body.length > 120 ? '…' : ''}</td>
+                    <td style={td}>{t.published ? 'Yes' : 'No'}</td>
+                    <td style={td}>
+                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                        {t.published
+                          ? <button className="btn btn-ghost" style={smallBtn} onClick={() => toggleTestimonialPublish(t.id, false)}>Unpublish</button>
+                          : <button className="btn btn-pink" style={smallBtn} onClick={() => toggleTestimonialPublish(t.id, true)}>Publish</button>}
+                        <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteTestimonial(t.id)}>Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+
+        {tab === 'projects' && (
+          editingProject ? (
+            <ProjectEditor
+              project={editingProject === 'new' ? null : projects.find((p) => p.id === editingProject)}
+              members={members}
+              onSave={saveProject}
+              onCancel={() => setEditingProject(null)}
+              onUploadCover={uploadProjectCover}
+            />
+          ) : (
+            <>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
+                <button className="btn btn-pink" style={smallBtn} onClick={() => setEditingProject('new')}>+ New project</button>
+              </div>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--paws-line)' }}>
+                    <th style={th}>Cover</th>
+                    <th style={th}>Title</th>
+                    <th style={th}>Summary</th>
+                    <th style={th}>Published</th>
+                    <th style={th}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {projects.length === 0 ? (
+                    <tr><td style={td} colSpan={5}><em style={{ color: 'var(--paws-muted)' }}>No projects yet.</em></td></tr>
+                  ) : projects.map((p) => (
+                    <tr key={p.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
+                      <td style={td}>
+                        {p.cover_image
+                          ? <img src={p.cover_image} alt={p.title} style={{ width: 60, height: 40, objectFit: 'cover', border: '1px solid var(--paws-line)' }} />
+                          : <div style={{ width: 60, height: 40, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)' }} />}
+                      </td>
+                      <td style={td}>{p.title}</td>
+                      <td style={{ ...td, maxWidth: 300 }}>{p.summary?.slice(0, 80)}{p.summary?.length > 80 ? '…' : ''}</td>
+                      <td style={td}>{p.published ? 'Yes' : 'No'}</td>
+                      <td style={td}>
+                        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                          <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditingProject(p.id)}>Edit</button>
+                          {p.published
+                            ? <button className="btn btn-ghost" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('projects').update({ published: false }).eq('id', p.id); await loadProjects(db) }}>Unpublish</button>
+                            : <button className="btn btn-pink" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('projects').update({ published: true }).eq('id', p.id); await loadProjects(db) }}>Publish</button>}
+                          <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteProject(p.id)}>Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </>
+          )
+        )}
+
+        {tab === 'content' && (
+          <>
+            {isOwner && (
+              <ContentEditor siteContent={siteContent} onSave={saveSiteContent} />
+            )}
+            {!isOwner && (
+              <div style={{ padding: 24, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)' }}>
+                <p style={{ margin: 0, color: 'var(--paws-muted)' }}>
+                  You can view the site content below but cannot edit it. 
+                  <strong>Only the owner or users with \"can_edit_site_content\" permission can edit site content.</strong>
+                </p>
+              </div>
+            )}
+          </>
+        )}
+
+        {!isOwner && (
+          <p style={{ color: 'var(--paws-muted)', marginTop: 32, fontSize: 13 }}>
+            Your access is read-only for this section. Need more? Ask the owner to update your permissions.
+          </p>
+        )}
+      </section>
+      <Footer />
+    </div>
+  )
+}
+
+function PermissionsEditor({ member, onSave, onCancel }) {
+  const PERMS = [
+    { key: 'can_edit_projects',     label: 'Edit projects',     hint: 'Create / edit / publish projects' },
+    { key: 'can_edit_testimonials', label: 'Edit testimonials', hint: 'Create / publish client testimonials' },
+    { key: 'can_invite',            label: 'Send invites',      hint: 'Create invite codes for new team members' },
+    { key: 'can_edit_site_content', label: 'Edit site content', hint: 'Edit About / Mission / Vision / Contact copy' },
+    { key: 'can_publish',           label: 'Self-publish',      hint: 'Toggle their own profile published/hidden' },
+    { key: 'can_manage_members',    label: 'Manage members',    hint: 'Edit / delete other members and their permissions' },
+  ]
+  const initial = { ...(member?.permissions || {}) }
+  const [draft, setDraft] = useState(initial)
+  if (!member) return <p>Member not found.</p>
+  function toggle(key) { setDraft((d) => ({ ...d, [key]: !d[key] })) }
+  return (
+    <div style={{ background: 'var(--paws-paper-2)', padding: 24, border: '1px solid var(--paws-line)' }}>
+      <h3 style={{ marginTop: 0 }}>Permissions — {member.display_name}</h3>
+      <p style={{ color: 'var(--paws-muted)', fontSize: 14, marginBottom: 16 }}>
+        Owner always has all permissions. These flags give <em>this member</em> extra capabilities.
+      </p>
+      <div style={{ display: 'grid', gap: 10 }}>
+        {PERMS.map((p) => (
+          <label key={p.key} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: 12, border: '1px solid var(--paws-line)', background: '#fff' }}>
+            <input type="checkbox" checked={!!draft[p.key]} onChange={() => toggle(p.key)} style={{ marginTop: 4 }} />
+            <div>
+              <div style={{ fontWeight: 600, fontFamily: 'var(--font-display)' }}>{p.label}</div>
+              <div style={{ fontSize: 13, color: 'var(--paws-muted)' }}>{p.hint}</div>
+            </div>
+          </label>
+        ))}
+      </div>
+      <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
+        <button className="btn btn-pink" onClick={() => onSave(member.id, draft)}>Save permissions</button>
+        <button className="btn btn-ghost" onClick={onCancel}>Cancel</button>
+      </div>
+    </div>
+  )
+}
+
+function ContentEditor({ siteContent, onSave }) {
+  const [draft, setDraft] = useState(siteContent)
+  const [busy, setBusy] = useState(null)
+  useEffect(() => { setDraft(siteContent) }, [siteContent])
+  const sections = [
+    { key: 'about',   title: 'About',   page: '/about',   hint: 'Who PAWS is, what we do, who we serve.' },
+    { key: 'mission', title: 'Mission', page: '/mission', hint: 'Why PAWS exists; the problem you solve.' },
+    { key: 'vision',  title: 'Vision',  page: '/vision',  hint: 'Where PAWS is going in 1-3 years.' },
+    { key: 'contact', title: 'Contact', page: '/contact', hint: 'How clients reach you (shown on the Contact page).' },
+  ]
+  return (
+    <div style={{ display: 'grid', gap: 24 }}>
+      <p style={{ color: 'var(--paws-muted)' }}>Edits appear on the public pages immediately.</p>
+      {sections.map((s) => (
+        <div key={s.key} style={{ background: 'var(--paws-paper-2)', padding: 20, border: '1px solid var(--paws-line)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
+            <label style={{ fontSize: 15, fontFamily: 'var(--font-display)', fontWeight: 600 }}>{s.title}</label>
+            <a href={s.page} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'var(--paws-muted)' }}>view page →</a>
+          </div>
+          <p style={{ fontSize: 12, color: 'var(--paws-muted)', margin: '0 0 8px' }}>{s.hint}</p>
+          <textarea
+            value={draft[s.key]}
+            onChange={(e) => setDraft({ ...draft, [s.key]: e.target.value })}
+            rows={6}
+            style={{ ...inputStyle, width: '100%', resize: 'vertical', fontFamily: 'inherit' }}
+            placeholder={`Write the ${s.title.toLowerCase()} content…`}
+          />
+          <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+            <button
+              type="button"
+              className="btn btn-pink"
+              style={smallBtn}
+              disabled={busy === s.key || draft[s.key] === siteContent[s.key]}
+              onClick={async () => {
+                setBusy(s.key)
+                await onSave(s.key, draft[s.key])
+                setBusy(null)
+              }}
+            >
+              {busy === s.key ? 'Saving…' : (draft[s.key] === siteContent[s.key] ? 'Saved' : 'Save')}
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              style={smallBtn}
+              disabled={draft[s.key] === siteContent[s.key]}
+              onClick={() => setDraft({ ...draft, [s.key]: siteContent[s.key] })}
+            >Revert</button>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
+  const [title, setTitle] = useState(project?.title || '')
+  const [summary, setSummary] = useState(project?.summary || '')
+  const [coverImage, setCoverImage] = useState(project?.cover_image || '')
+  const [memberIds, setMemberIds] = useState(project?.member_ids || [])
+  const [published, setPublished] = useState(project?.published || false)
+  const [uploading, setUploading] = useState(false)
+  async function onCoverFile(e) {
+    const f = e.target.files?.[0]
+    if (!f) return
+    setUploading(true)
+    const url = await onUploadCover(project, f)
+    setUploading(false)
+    if (url) setCoverImage(url)
+  }
+  function toggleMember(id) {
+    setMemberIds((ids) => ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id])
+  }
+  return (
+    <div style={{ background: 'var(--paws-paper-2)', padding: 24, border: '1px solid var(--paws-line)' }}>
+      <h3 style={{ marginTop: 0 }}>{project ? 'Edit project' : 'New project'}</h3>
+      <div style={{ display: 'grid', gap: 16, maxWidth: 720 }}>
+        <Field label="Title">
+          <input style={inputStyle} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Project name" />
+        </Field>
+        <Field label="Summary">
+          <textarea style={{ ...inputStyle, resize: 'vertical' }} rows={3} value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="One or two sentences" />
+        </Field>
+        <Field label="Cover image">
+          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+            {coverImage ? <img src={coverImage} alt="cover" style={{ width: 120, height: 80, objectFit: 'cover', border: '1px solid var(--paws-line)' }} /> : <div style={{ width: 120, height: 80, background: '#fff', border: '1px dashed var(--paws-line)' }} />}
+            <label className="btn btn-ghost" style={{ ...smallBtn, cursor: 'pointer' }}>
+              {uploading ? 'Uploading…' : (coverImage ? 'Replace' : 'Upload')}
+              <input type="file" accept="image/*" onChange={onCoverFile} style={{ display: 'none' }} />
+            </label>
+            {coverImage && <button type="button" className="btn btn-ghost" style={smallBtn} onClick={() => setCoverImage('')}>Remove</button>}
+          </div>
+        </Field>
+        {members.length > 0 && (
+          <Field label="Team members on this project">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+              {members.map((m) => (
+                <button
+                  key={m.id}
+                  type="button"
+                  onClick={() => toggleMember(m.id)}
+                  style={{
+                    padding: '4px 10px', borderRadius: 999,
+                    border: '1px solid ' + (memberIds.includes(m.id) ? 'var(--paws-pink)' : 'var(--paws-line)'),
+                    background: memberIds.includes(m.id) ? 'var(--paws-pink-wash)' : '#fff',
+                    color: memberIds.includes(m.id) ? 'var(--paws-pink-deep)' : 'var(--paws-muted)',
+                    cursor: 'pointer', fontSize: 13, fontFamily: 'var(--font-display)', fontWeight: 600,
+                  }}
+                >
+                  {m.display_name}
+                </button>
+              ))}
+            </div>
+          </Field>
+        )}
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
+          <span>Publish on public site</span>
+        </label>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button type="button" className="btn btn-pink" onClick={() => onSave({ id: project?.id, title, summary, cover_image: coverImage, member_ids: memberIds, published })}>Save</button>
+          <button type="button" className="btn btn-ghost" onClick={onCancel}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Field({ label, children }) {
+  return (
+    <div>
+      <label style={{ display: 'block', fontSize: 13, color: 'var(--paws-muted)', marginBottom: 6, fontWeight: 500 }}>{label}</label>
+      {children}
+    </div>
+  )
+}
+
+const th = { padding: '12px 8px', fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 600, color: 'var(--paws-ink-3)' }
+const td = { padding: '12px 8px', fontSize: 14 }
+const smallBtn = { fontSize: 12, padding: '8px 14px' }
+const inputStyle = { font: 'inherit', padding: '10px 14px', border: '1px solid var(--paws-line)', borderRadius: 2, background: '#fff' }
