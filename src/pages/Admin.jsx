@@ -393,7 +393,6 @@ function MembersTab({ members, photoUrls, isOwner, busy, editingMemberPerms, set
           />
         </div>
       )}
-      {!isOwner && <ReadOnlyNotice />}
       <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
         {isOwner && <button className="btn btn-ghost" style={smallBtn} onClick={() => window.location.reload()}>Refresh</button>}
       </div>
