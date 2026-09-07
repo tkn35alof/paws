@@ -572,14 +572,19 @@ function ProjectsTab({ projects, members, editingProject, setEditingProject, sav
               <th style={th}>Cover</th>
               <th style={th}>Title</th>
               <th style={th}>Summary</th>
+              <th style={th}>Team</th>
               <th style={th}>Published</th>
               <th style={th}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {projects.length === 0 ? (
-              <tr><td style={td} colSpan={5}><em style={{ color: 'var(--paws-muted)' }}>No projects yet.</em></td></tr>
-            ) : projects.map((p) => (
+              <tr><td style={td} colSpan={6}><em style={{ color: 'var(--paws-muted)' }}>No projects yet.</em></td></tr>
+            ) : projects.map((p) => {
+              const teamNames = (p.member_ids || [])
+                .map((id) => members.find((m) => m.id === id)?.display_name)
+                .filter(Boolean)
+              return (
               <tr key={p.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
                 <td style={td}>
                   {p.cover_image
@@ -588,6 +593,11 @@ function ProjectsTab({ projects, members, editingProject, setEditingProject, sav
                 </td>
                 <td style={td}>{p.title}</td>
                 <td style={{ ...td, maxWidth: 300 }}>{p.summary?.slice(0, 80)}{p.summary?.length > 80 ? '…' : ''}</td>
+                <td style={td}>
+                  {teamNames.length === 0
+                    ? <em style={{ color: 'var(--paws-muted)' }}>none</em>
+                    : teamNames.join(', ')}
+                </td>
                 <td style={td}>{p.published ? 'Yes' : 'No'}</td>
                 <td style={td}>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -599,7 +609,8 @@ function ProjectsTab({ projects, members, editingProject, setEditingProject, sav
                   </div>
                 </td>
               </tr>
-            ))}
+              )
+            })}
           </tbody>
         </table>
       )}
