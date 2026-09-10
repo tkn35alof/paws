@@ -214,34 +214,35 @@ export default function Admin() {
     await loadTestimonials(db)
   }
 
-  async function saveProject(p) {
-    if (!supabaseReady) return
-    const db = requireSupabase()
-    const payload = {
-      title: p.title, summary: p.summary, cover_image: p.cover_image,
-      member_ids: p.member_ids || [], published: !!p.published,
-      display_order: p.display_order ?? projects.length,
+    async function saveProject(p) {
+      if (!supabaseReady) return
+      const db = requireSupabase()
+      const payload = {
+        title: p.title, summary: p.summary, cover_image: p.cover_image,
+        member_ids: p.member_ids || [], published: !!p.published,
+        team_public: p.team_public !== false,
+        display_order: p.display_order ?? projects.length,
+      }
+      if (p.id) {
+        const { error } = await db.from('projects').update(payload).eq('id', p.id)
+        if (error) { alert(error.message); return }
+      } else {
+        const { error } = await db.from('projects').insert(payload)
+        if (error) { alert(error.message); return }
+      }
+      setEditingProject(null)
+      await loadProjects(db)
     }
-    if (p.id) {
-      const { error } = await db.from('projects').update(payload).eq('id', p.id)
-      if (error) { alert(error.message); return }
-    } else {
-      const { error } = await db.from('projects').insert(payload)
-      if (error) { alert(error.message); return }
+
+    async function deleteProject(id) {
+      if (!supabaseReady) return
+      if (!confirm('Delete this project?')) return
+      const db = requireSupabase()
+      await db.from('projects').delete().eq('id', id)
+      await loadProjects(db)
     }
-    setEditingProject(null)
-    await loadProjects(db)
-  }
 
-  async function deleteProject(id) {
-    if (!supabaseReady) return
-    if (!confirm('Delete this project?')) return
-    const db = requireSupabase()
-    await db.from('projects').delete().eq('id', id)
-    await loadProjects(db)
-  }
-
-  async function saveSiteContent(key, body) {
+    async function saveSiteContent(key, body) {
     if (!supabaseReady) return
     const db = requireSupabase()
     const { error } = await db.from('site_content').upsert({ key, body, updated_at: new Date().toISOString() }, { onConflict: 'key' })
@@ -582,23 +583,24 @@ function ProjectsTab({ projects, members, editingProject, setEditingProject, sav
               <tr><td style={td} colSpan={6}><em style={{ color: 'var(--paws-muted)' }}>No projects yet.</em></td></tr>
             ) : projects.map((p) => {
               const teamNames = (p.member_ids || [])
-                .map((id) => members.find((m) => m.id === id)?.display_name)
-                .filter(Boolean)
-              return (
-              <tr key={p.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
-                <td style={td}>
-                  {p.cover_image
-                    ? <img src={p.cover_image} alt={p.title} style={{ width: 60, height: 40, objectFit: 'cover', border: '1px solid var(--paws-line)' }} />
-                    : <div style={{ width: 60, height: 40, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)' }} />}
-                </td>
-                <td style={td}>{p.title}</td>
-                <td style={{ ...td, maxWidth: 300 }}>{p.summary?.slice(0, 80)}{p.summary?.length > 80 ? '…' : ''}</td>
-                <td style={td}>
-                  {teamNames.length === 0
-                    ? <em style={{ color: 'var(--paws-muted)' }}>none</em>
-                    : teamNames.join(', ')}
-                </td>
-                <td style={td}>{p.published ? 'Yes' : 'No'}</td>
+                              .map((id) => members.find((m) => m.id === id)?.display_name)
+                              .filter(Boolean)
+                            const isTeamPublic = p.team_public !== false
+                            return (
+                            <tr key={p.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
+                              <td style={td}>
+                                {p.cover_image
+                                  ? <img src={p.cover_image} alt={p.title} style={{ width: 60, height: 40, objectFit: 'cover', border: '1px solid var(--paws-line)' }} />
+                                  : <div style={{ width: 60, height: 40, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)' }} />}
+                              </td>
+                              <td style={td}>{p.title}</td>
+                              <td style={{ ...td, maxWidth: 300 }}>{p.summary?.slice(0, 80)}{p.summary?.length > 80 ? '…' : ''}</td>
+                              <td style={td}>
+                                {teamNames.length === 0
+                                  ? <em style={{ color: 'var(--paws-muted)' }}>none</em>
+                                  : <span>{teamNames.join(', ')} {isTeamPublic ? '' : <span style={{ color: 'var(--paws-muted)', marginLeft: 8, fontSize: 11 }}>🔒 private</span>}</span>}
+                              </td>
+                              <td style={td}>{p.published ? 'Yes' : 'No'}</td>
                 <td style={td}>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                     {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditingProject(p.id)}>Edit</button>}
@@ -726,6 +728,7 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
   const [coverImage, setCoverImage] = useState(project?.cover_image || '')
   const [memberIds, setMemberIds] = useState(project?.member_ids || [])
   const [published, setPublished] = useState(project?.published || false)
+  const [teamPublic, setTeamPublic] = useState(project?.team_public !== false)
   const [uploading, setUploading] = useState(false)
   async function onCoverFile(e) {
     const f = e.target.files?.[0]
@@ -781,13 +784,19 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
           </Field>
         )}
         <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
-          <span>Publish on public site</span>
-        </label>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button type="button" className="btn btn-pink" onClick={() => onSave({ id: project?.id, title, summary, cover_image: coverImage, member_ids: memberIds, published })}>Save</button>
-          <button type="button" className="btn btn-ghost" onClick={onCancel}>Cancel</button>
-        </div>
+                  <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
+                  <span>Publish on public site</span>
+                </label>
+                {memberIds.length > 0 && (
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <input type="checkbox" checked={teamPublic} onChange={(e) => setTeamPublic(e.target.checked)} />
+                    <span>Show team on public site</span>
+                  </label>
+                )}
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button type="button" className="btn btn-pink" onClick={() => onSave({ id: project?.id, title, summary, cover_image: coverImage, member_ids: memberIds, published, team_public: teamPublic })}>Save</button>
+                  <button type="button" className="btn btn-ghost" onClick={onCancel}>Cancel</button>
+                </div>
       </div>
     </div>
   )

@@ -21,8 +21,9 @@ export default function Projects() {
     })()
   }, [])
   function teamNames(p) {
-    return (p.member_ids || []).map((id) => members.find((m) => m.id === id)?.display_name).filter(Boolean)
-  }
+      if (!p.team_public) return []
+      return (p.member_ids || []).map((id) => members.find((m) => m.id === id)?.display_name).filter(Boolean)
+    }
   return (
     <div className="wrap">
       <Nav />
