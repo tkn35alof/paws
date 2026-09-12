@@ -63,6 +63,7 @@ create table if not exists public.projects (
   cover_image   text,
   member_ids    uuid[] default '{}',   -- who worked on it
   published     boolean default false,
+  show_team_public boolean default true,
   display_order integer default 0,
   created_at    timestamptz default now()
 );

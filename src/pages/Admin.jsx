@@ -214,35 +214,35 @@ export default function Admin() {
     await loadTestimonials(db)
   }
 
-    async function saveProject(p) {
-      if (!supabaseReady) return
-      const db = requireSupabase()
-      const payload = {
-        title: p.title, summary: p.summary, cover_image: p.cover_image,
-        member_ids: p.member_ids || [], published: !!p.published,
-        team_public: p.team_public !== false,
-        display_order: p.display_order ?? projects.length,
-      }
-      if (p.id) {
-        const { error } = await db.from('projects').update(payload).eq('id', p.id)
-        if (error) { alert(error.message); return }
-      } else {
-        const { error } = await db.from('projects').insert(payload)
-        if (error) { alert(error.message); return }
-      }
-      setEditingProject(null)
-      await loadProjects(db)
+  async function saveProject(p) {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    const payload = {
+      title: p.title, summary: p.summary, cover_image: p.cover_image,
+      member_ids: p.member_ids || [], published: !!p.published,
+      show_team_public: p.show_team_public !== false,
+      display_order: p.display_order ?? projects.length,
     }
-
-    async function deleteProject(id) {
-      if (!supabaseReady) return
-      if (!confirm('Delete this project?')) return
-      const db = requireSupabase()
-      await db.from('projects').delete().eq('id', id)
-      await loadProjects(db)
+    if (p.id) {
+      const { error } = await db.from('projects').update(payload).eq('id', p.id)
+      if (error) { alert(error.message); return }
+    } else {
+      const { error } = await db.from('projects').insert(payload)
+      if (error) { alert(error.message); return }
     }
+    setEditingProject(null)
+    await loadProjects(db)
+  }
 
-    async function saveSiteContent(key, body) {
+  async function deleteProject(id) {
+    if (!supabaseReady) return
+    if (!confirm('Delete this project?')) return
+    const db = requireSupabase()
+    await db.from('projects').delete().eq('id', id)
+    await loadProjects(db)
+  }
+
+  async function saveSiteContent(key, body) {
     if (!supabaseReady) return
     const db = requireSupabase()
     const { error } = await db.from('site_content').upsert({ key, body, updated_at: new Date().toISOString() }, { onConflict: 'key' })
@@ -585,7 +585,7 @@ function ProjectsTab({ projects, members, editingProject, setEditingProject, sav
               const teamNames = (p.member_ids || [])
                               .map((id) => members.find((m) => m.id === id)?.display_name)
                               .filter(Boolean)
-                            const isTeamPublic = p.team_public !== false
+                            const isTeamPublic = p.show_team_public !== false
                             return (
                             <tr key={p.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
                               <td style={td}>
@@ -728,7 +728,7 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
   const [coverImage, setCoverImage] = useState(project?.cover_image || '')
   const [memberIds, setMemberIds] = useState(project?.member_ids || [])
   const [published, setPublished] = useState(project?.published || false)
-  const [teamPublic, setTeamPublic] = useState(project?.team_public !== false)
+  const [teamPublic, setTeamPublic] = useState(project?.show_team_public !== false)
   const [uploading, setUploading] = useState(false)
   async function onCoverFile(e) {
     const f = e.target.files?.[0]
@@ -794,7 +794,7 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
                   </label>
                 )}
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <button type="button" className="btn btn-pink" onClick={() => onSave({ id: project?.id, title, summary, cover_image: coverImage, member_ids: memberIds, published, team_public: teamPublic })}>Save</button>
+                  <button type="button" className="btn btn-pink" onClick={() => onSave({ id: project?.id, title, summary, cover_image: coverImage, member_ids: memberIds, published, show_team_public: teamPublic })}>Save</button>
                   <button type="button" className="btn btn-ghost" onClick={onCancel}>Cancel</button>
                 </div>
       </div>
