@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { supabaseReady, requireSupabase } from '../lib/supabase.js'
+import { analyzePhoto, photoErrorMessage } from '../lib/face-photo.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
 
@@ -83,7 +84,15 @@ export default function Portal() {
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [photoUrl, setPhotoUrl] = useState(null)
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState(null)
+  const [photoAnalysis, setPhotoAnalysis] = useState(null)
+  const [photoError, setPhotoError] = useState('')
   const fileRef = useRef(null)
+  const previewUrlRef = useRef(null)
+
+  useEffect(() => () => {
+    if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
+  }, [])
 
   useEffect(() => {
     if (!supabaseReady) { setStatus('Supabase not configured.'); return }
@@ -121,25 +130,91 @@ export default function Portal() {
     setSaving(false)
   }
 
+  function clearPhotoPreview() {
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current)
+      previewUrlRef.current = null
+    }
+    setPhotoPreviewUrl(null)
+    setPhotoAnalysis(null)
+    setPhotoError('')
+    if (fileRef.current) fileRef.current.value = ''
+  }
+
+  function retryPhotoCheck() {
+    clearPhotoPreview()
+    fileRef.current?.click()
+  }
+
   async function onFileChange(e) {
     const file = e.target.files?.[0]
     if (!file) return
-    if (!supabaseReady) { setStatus('Supabase not configured.'); return }
+
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current)
+      previewUrlRef.current = null
+    }
+    setPhotoPreviewUrl(null)
+    setPhotoAnalysis(null)
+    setPhotoError('')
     setUploading(true)
-    setStatus('Uploading photo…')
-    const db = requireSupabase()
-    const path = `${member.id}/raw-${Date.now()}.${file.name.split('.').pop()}`
-    const { error: upErr } = await db.storage.from('member-photos').upload(path, file, {
-      cacheControl: '3600', upsert: true, contentType: file.type,
-    })
-    if (upErr) { setStatus(upErr.message); setUploading(false); return }
-    const { error: dbErr } = await db.from('members').update({ photo_raw: path }).eq('id', member.id)
-    if (dbErr) { setStatus(dbErr.message); setUploading(false); return }
-    const { data: signed } = await db.storage.from('member-photos').createSignedUrl(path, 600)
-    setPhotoUrl(signed?.signedUrl || null)
-    setMember({ ...member, photo_raw: path })
-    setStatus('Photo uploaded. Owner will standardize for client view.')
-    setUploading(false)
+    setStatus('Checking the photo for a clear face…')
+
+    let blob = null
+        try {
+          const result = await analyzePhoto(file)
+          blob = result.blob
+          const previewUrl = URL.createObjectURL(blob)
+          previewUrlRef.current = previewUrl
+          setPhotoPreviewUrl(previewUrl)
+          setPhotoAnalysis({
+            crop: result.crop,
+            faceCount: result.faceCount,
+            score: result.score,
+          })
+          setStatus('Face detected. Uploading the standardized crop…')
+        } catch (error) {
+          const message = photoErrorMessage(error)
+          setPhotoError(message)
+          setStatus(message)
+          setUploading(false)
+          e.target.value = ''
+          return
+        }
+
+        // Upload the standardized crop and save the path to the member row.
+        if (!member) {
+          setStatus('Profile not loaded yet. Please wait and try again.')
+          setUploading(false)
+          e.target.value = ''
+          return
+        }
+        const db = requireSupabase()
+        const path = `${member.id}/std-${Date.now()}.jpg`
+        const { error: upErr } = await db.storage.from('member-photos').upload(path, blob, {
+          cacheControl: '3600', upsert: true, contentType: 'image/jpeg',
+        })
+        if (upErr) {
+          setPhotoError(upErr.message)
+          setStatus(`Upload failed: ${upErr.message}`)
+          setUploading(false)
+          e.target.value = ''
+          return
+        }
+        const { data: signed } = await db.storage.from('member-photos').createSignedUrl(path, 600)
+        const { error: dbErr } = await db.from('members').update({ photo_raw: path }).eq('id', member.id)
+        if (dbErr) {
+          setPhotoError(dbErr.message)
+          setStatus(`Save failed: ${dbErr.message}`)
+          setUploading(false)
+          e.target.value = ''
+          return
+        }
+        setPhotoUrl(signed?.signedUrl || null)
+        setMember({ ...member, photo_raw: path })
+        setStatus('Photo saved. The owner can standardize it for the public team grid.')
+        setUploading(false)
+        e.target.value = ''
   }
 
   if (!member) return <div className="wrap" style={{ padding: 120 }}><Nav /><p>{status || 'Loading…'}</p></div>
@@ -156,9 +231,11 @@ export default function Portal() {
 
         <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', margin: '24px 0' }}>
           <div style={{ width: 160, height: 200, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            {photoUrl
-              ? <img src={photoUrl} alt="Your photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              : <span style={{ color: 'var(--paws-muted)', fontSize: 13 }}>No photo yet</span>}
+            {photoPreviewUrl
+              ? <img src={photoPreviewUrl} alt="Detected face crop preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              : photoUrl
+                ? <img src={photoUrl} alt="Your current photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : <span style={{ color: 'var(--paws-muted)', fontSize: 13 }}>No photo preview yet</span>}
           </div>
           <div style={{ display: 'grid', gap: 12, alignContent: 'center' }}>
             <input
@@ -169,11 +246,33 @@ export default function Portal() {
               style={{ display: 'none' }}
             />
             <button type="button" className="btn" disabled={uploading} onClick={() => fileRef.current?.click()}>
-              {uploading ? 'Uploading…' : (member.photo_raw ? 'Replace photo' : 'Upload photo')}
+              {uploading ? 'Checking face…' : (photoPreviewUrl ? 'Choose another photo' : 'Choose photo')}
             </button>
-            <p style={{ color: 'var(--paws-muted)', fontSize: 13, maxWidth: 280 }}>
-              Upload a professional portrait. The owner standardizes the framing for the public team grid.
-            </p>
+            {photoPreviewUrl && (
+                          <p style={{ color: 'var(--paws-muted)', fontSize: 13, maxWidth: 320 }}>
+                            Crop preview — saving uploads this automatically.
+                          </p>
+                        )}
+            {photoAnalysis && (
+              <span style={{ color: 'var(--paws-muted)', fontSize: 13, maxWidth: 320 }}>
+                {photoAnalysis.faceCount} face{photoAnalysis.faceCount === 1 ? '' : 's'} detected · confidence {(photoAnalysis.score * 100).toFixed(0)}% · output 800 × 1000
+              </span>
+            )}
+            {photoError && (
+              <div role="alert" style={{ color: 'var(--paws-pink-deep)', fontSize: 13, maxWidth: 320 }}>
+                {photoError}
+              </div>
+            )}
+            {photoError && (
+              <button type="button" className="btn btn-ghost" onClick={retryPhotoCheck}>
+                Try another photo
+              </button>
+            )}
+            {!photoPreviewUrl && !photoError && (
+              <p style={{ color: 'var(--paws-muted)', fontSize: 13, maxWidth: 280 }}>
+                Upload a professional portrait. We detect the face, crop it, and save the standardized crop to your profile.
+              </p>
+            )}
           </div>
         </div>
 
