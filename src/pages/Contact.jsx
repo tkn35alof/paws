@@ -27,22 +27,43 @@ export default function Contact() {
         )}
 
         <h2 style={{ fontSize: 24, margin: '32px 0 16px' }}>Send a message</h2>
-        <form style={{ maxWidth: 520, display: 'grid', gap: 16 }} onSubmit={(e) => e.preventDefault()}>
-          <input required placeholder="Name" style={inputStyle} />
-          <input required type="email" placeholder="Email" style={inputStyle} />
-          <textarea required rows={5} placeholder="What do you need?" style={{ ...inputStyle, resize: 'vertical' }} />
-          <button className="btn btn-pink" type="submit">Send message</button>
-        </form>
-        <p style={{ color: 'var(--paws-muted)', marginTop: 24, fontSize: 14 }}>
-          Messages route to our GHL/email. (Phase 4: wire to GHL.)
+        <p style={{ maxWidth: 560, color: 'var(--paws-muted)', marginBottom: 20, fontSize: 15, lineHeight: 1.6 }}>
+          Fill in the form below and we will get back to you. For scheduling, use the booking calendar on the home page.
         </p>
+        <div style={{ overflow: 'hidden', maxWidth: 760, margin: '0 auto' }}>
+          <div style={{
+            border: '1px solid var(--paws-line)',
+            background: '#fff',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+            overflow: 'hidden',
+            height: 735,
+          }}>
+            <iframe
+              src="https://api.leadconnectorhq.com/widget/form/oPMPnASHBwPh7v4snFu4"
+              style={{ width: '100%', height: 735, border: 'none', display: 'block' }}
+              scrolling="auto"
+              id="inline-oPMPnASHBwPh7v4snFu4"
+              data-layout="{'id':'INLINE'}"
+              data-trigger-type="alwaysShow"
+              data-trigger-value=""
+              data-activation-type="alwaysActivated"
+              data-activation-value=""
+              data-deactivation-type="neverDeactivate"
+              data-deactivation-value=""
+              data-form-name="PAWS"
+              data-height="735"
+              data-layout-iframe-id="inline-oPMPnASHBwPh7v4snFu4"
+              data-form-id="oPMPnASHBwPh7v4snFu4"
+              data-cookie-consent="true"
+              data-cookie-consent-provider="auto"
+              title="PAWS contact form"
+              loading="lazy"
+            />
+          </div>
+          <script src="https://link.msgsndr.com/js/form_embed.js" type="text/javascript" async></script>
+        </div>
       </section>
       <Footer />
     </div>
   )
-}
-
-const inputStyle = {
-  font: 'inherit', padding: '14px 16px', border: '1px solid var(--paws-line)',
-  borderRadius: 2, background: '#fff',
 }
