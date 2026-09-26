@@ -96,7 +96,7 @@ a:hover { color: var(--paws-pink); }
 .btn:focus-visible { outline: 2px solid var(--paws-pink); outline-offset: 2px; }
 .btn-pink { background: var(--paws-pink); }
 .btn-pink:hover { background: var(--paws-pink-deep); }
-.btn-ghost { background: transparent; color: var(--paws-ink); border: 1px solid var(--paws-line-2); }
+.btn:disabled, .btn-ghost:disabled, .btn-pink:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
 .btn-ghost:hover { background: var(--paws-paper-2); color: var(--paws-ink); }
 
 /* === Nav (sticky, blur) === */
