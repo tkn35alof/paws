@@ -88,11 +88,13 @@ Deno.serve(async (req) => {
       return json({ ok: true, code: finalCode, link: inviteLink, emailSent: true }, 200)
     }
 
-    // Fallback: Supabase OTP (may fail with otp_disabled if email not configured).
-    const { error: otpErr } = await adminClient.auth.signInWithOtp({
-      email: email.toLowerCase(),
-      options: { shouldCreateUser: false, emailRedirectTo: inviteLink },
-    })
+    // Fallback: Supabase OTP. shouldCreateUser: true because the invite flow
+        // creates the account — the user lands on /login?invite=CODE which then
+        // completes signup. shouldCreateUser: false returns otp_disabled.
+        const { error: otpErr } = await adminClient.auth.signInWithOtp({
+          email: email.toLowerCase(),
+          options: { shouldCreateUser: true, emailRedirectTo: inviteLink },
+        })
     if (otpErr) {
       console.log('OTP send failed:', otpErr.message)
       return json({ ok: true, code: finalCode, link: inviteLink, warning: `Email send failed: ${otpErr.message}. Share link manually.` }, 200)
