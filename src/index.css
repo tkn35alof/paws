@@ -183,6 +183,8 @@ a:hover { color: var(--paws-pink); }
 }
 .nav .brand .brand-dot { color: var(--paws-pink); }
 .nav-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.nav-signin { color: var(--paws-ink-2); text-decoration: none; font-size: 14px; }
+.nav-signin:hover { color: var(--paws-pink); }
 
 /* Burger — always visible */
 .nav-burger {

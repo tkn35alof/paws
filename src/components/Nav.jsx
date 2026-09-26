@@ -69,45 +69,61 @@ export function Nav() {
     <nav className="nav">
       <Link className="brand" to="/">PAWS<span className="brand-dot">.</span></Link>
 
-      {/* Desktop links */}
-      <div className="nav-links">
-        {links.map((l) => (
-          <Link key={l.to} to={l.to}>{l.label}</Link>
-        ))}
-      </div>
-
       <div className="nav-right" ref={menuRef}>
         {user ? (
-          <>
-            <button
-              type="button"
-              className="nav-burger"
-              onClick={() => setMenuOpen((o) => !o)}
-              aria-label="Toggle menu"
-              aria-expanded={menuOpen}
-            >
-              <span className="burger-line"></span>
-              <span className="burger-line"></span>
-              <span className="burger-line"></span>
-            </button>
-            {menuOpen && (
-              <div className="nav-dropdown">
-                <Link to="/portal" onClick={() => setMenuOpen(false)} className="nav-dd-item">
-                  <span className="nav-dd-icon">◈</span> My profile
-                </Link>
-                {hasAdminAccess && (
-                  <Link to="/admin" onClick={() => setMenuOpen(false)} className="nav-dd-item admin">
-                    <span className="nav-dd-icon">⚙</span> Admin
-                  </Link>
-                )}
-                <button onClick={signOut} className="nav-dd-item signout">
-                  <span className="nav-dd-icon">↛</span> Sign out
-                </button>
-              </div>
-            )}
-          </>
+          <button
+            type="button"
+            className="nav-burger"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+          >
+            <span className="burger-line"></span>
+            <span className="burger-line"></span>
+            <span className="burger-line"></span>
+          </button>
         ) : (
           <Link to="/portal" className="nav-signin">Sign in</Link>
+        )}
+        {menuOpen && (
+          <div className="nav-dropdown">
+            {links.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                onClick={() => setMenuOpen(false)}
+                className="nav-dd-item"
+              >
+                <span className="nav-dd-icon">◈</span>
+                {l.label}
+              </Link>
+            ))}
+            <Link
+              to="/portal"
+              onClick={() => setMenuOpen(false)}
+              className="nav-dd-item"
+            >
+              <span className="nav-dd-icon">◈</span>
+              My profile
+            </Link>
+            {hasAdminAccess && (
+              <Link
+                to="/admin"
+                onClick={() => setMenuOpen(false)}
+                className="nav-dd-item admin"
+              >
+                <span className="nav-dd-icon">⚙</span>
+                Admin
+              </Link>
+            )}
+            <button
+              onClick={signOut}
+              className="nav-dd-item signout"
+            >
+              <span className="nav-dd-icon">↛</span>
+              Sign out
+            </button>
+          </div>
         )}
       </div>
     </nav>
