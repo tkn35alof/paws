@@ -548,9 +548,21 @@ footer .foot-bottom {
   background: linear-gradient(135deg, rgba(255, 90, 138, 0.15), rgba(255, 90, 138, 0.05));
   font-size: 22px;
   margin-bottom: 20px;
+  transition: transform .3s ease, background .3s ease;
+  overflow: hidden;
+  position: relative;
+}
+.feature-icon svg {
+  width: 26px; height: 26px;
   transition: transform .3s ease;
 }
-.feature-card:hover .feature-icon { transform: translateY(-8px); }
+.feature-card:hover .feature-icon {
+  transform: translateY(-8px);
+  background: linear-gradient(135deg, rgba(255, 90, 138, 0.25), rgba(255, 90, 138, 0.08));
+}
+.feature-card:hover .feature-icon svg {
+  transform: translateY(-2px);
+}
 .feature-card h3 { font-size: 20px; margin-bottom: 8px; }
 .feature-card p { color: var(--paws-ink-2); font-size: 15px; line-height: 1.6; }
 

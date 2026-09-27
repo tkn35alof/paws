@@ -71,46 +71,24 @@ export default function Home() {
           <div style={{ overflow: 'hidden', position: 'relative' }}>
             <div className="marquee-fade" style={{ marginBottom: 24 }}>
               <div className="marquee">
-                {[
-                  { name: 'Hubspot', color: '#ff7a18' },
-                  { name: 'Intercom', color: '#1e88e5' },
-                  { name: 'Kickstarter', color: '#7ed6df' },
-                  { name: 'Hubspot', color: '#ff7a18' },
-                  { name: 'Intercom', color: '#1e88e5' },
-                  { name: 'Kickstarter', color: '#7ed6df' },
-                  { name: 'Hubspot', color: '#ff7a18' },
-                  { name: 'Intercom', color: '#1e88e5' },
-                  { name: 'Kickstarter', color: '#7ed6df' },
-                  { name: 'Hubspot', color: '#ff7a18' },
-                  { name: 'Intercom', color: '#1e88e5' },
-                  { name: 'Kickstarter', color: '#7ed6df' },
-                ].map((tool, i) => (
-                  <div key={`${tool.name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
-                    <div style={{ width: 56, height: 56, borderRadius: '50%', background: tool.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14 }}>{tool.name[0]}</div>
-                    <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{tool.name}</span>
+                {['Hubspot','Intercom','Kickstarter','Hubspot','Intercom','Kickstarter','Hubspot','Intercom','Kickstarter','Hubspot','Intercom','Kickstarter'].map((name, i) => (
+                  <div key={`${name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
+                    <div style={{ width: 56, height: 56, borderRadius: '50%', background: name==='Hubspot'?'#ff7a18':name==='Intercom'?'#1e88e5':'#7ed6df', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1.5 7.5h-3v3h-1.5v-3H6v-1.5h3V6h1.5v3h3v1.5z"/></svg>
+                    </div>
+                    <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{name}</span>
                   </div>
                 ))}
               </div>
             </div>
-            <div className="marquee-fade" style={{ animation: 'none' }}>
+            <div className="marquee-fade">
               <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
-                {[
-                  { name: 'Zapier', color: '#f45134' },
-                  { name: 'Mailchimp', color: '#f45134' },
-                  { name: 'Shopify', color: '#7ea45a' },
-                  { name: 'Slack', color: '#4a1e4e' },
-                  { name: 'Zapier', color: '#f45134' },
-                  { name: 'Mailchimp', color: '#f45134' },
-                  { name: 'Shopify', color: '#7ea45a' },
-                  { name: 'Slack', color: '#4a1e4e' },
-                  { name: 'Zapier', color: '#f45134' },
-                  { name: 'Mailchimp', color: '#f45134' },
-                  { name: 'Shopify', color: '#7ea45a' },
-                  { name: 'Slack', color: '#4a1e4e' },
-                ].map((tool, i) => (
-                  <div key={`${tool.name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
-                    <div style={{ width: 56, height: 56, borderRadius: '50%', background: tool.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14 }}>{tool.name[0]}</div>
-                    <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{tool.name}</span>
+                {['Zapier','Mailchimp','Shopify','Slack','Zapier','Mailchimp','Shopify','Slack','Zapier','Mailchimp','Shopify','Slack'].map((name, i) => (
+                  <div key={`${name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
+                    <div style={{ width: 56, height: 56, borderRadius: '50%', background: name==='Zapier'||name==='Mailchimp'?'#f45134':name==='Shopify'?'#7ea45a':'#4a1e4e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+                    </div>
+                    <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{name}</span>
                   </div>
                 ))}
               </div>
@@ -128,15 +106,15 @@ export default function Home() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
             {[
-              { icon: '⚡', title: 'Setup Everything Fast', desc: 'Our system continuously monitors your network and data environments for any suspicious activities.' },
-              { icon: '📅', title: 'Schedule Campaign', desc: 'We ensure that all sensitive data is encrypted and at rest, using industry-standard encryption protocols.' },
-              { icon: '📊', title: 'Live Reports', desc: 'In the event of a security incident, our automated response system takes immediate action.' },
-              { icon: '💬', title: 'Chat Module in Website', desc: 'Our system continuously monitors your network and data environments for any suspicious activities.' },
-              { icon: '🛍️', title: 'Unlimited Products', desc: 'We ensure that all sensitive data is encrypted and at rest, using industry-standard encryption protocols.' },
-              { icon: '👥', title: 'Collect Information', desc: 'In the event of a security incident, our automated response system takes immediate action.' },
+              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>', title: 'Setup Everything Fast', desc: 'Get your workspace configured and ready in minutes, not days.' },
+              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="2"/><rect x="3" y="8" width="18" height="2"/><rect x="3" y="12" width="18" height="2"/><rect x="3" y="16" width="18" height="2"/><circle cx="8" cy="19" r="1" fill="currentColor"/></svg>', title: 'Schedule Campaign', desc: 'Automated campaigns that reach the right people at the right time.' },
+              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg>', title: 'Live Reports', desc: 'Real-time dashboards showing exactly what is working and what needs attention.' },
+              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8z"/></svg>', title: 'Chat Module in Website', desc: 'Embedded chat so clients reach you instantly without leaving the page.' },
+              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12v20H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>', title: 'Unlimited Products', desc: 'No caps on what you can list, sell, or manage through our platform.' },
+              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><circle cx="17" cy="7" r="3"/><path d="M21 21v-2a4 4 0 00-4-4h-1"/></svg>', title: 'Collect Information', desc: 'Smart forms that capture leads and route them to the right team member.' },
             ].map((f) => (
               <div key={f.title} className="feature-card">
-                <div className="feature-icon">{f.icon}</div>
+                <div className="feature-icon" dangerouslySetInnerHTML={{ __html: f.svg }}></div>
                 <h3 style={{ fontSize: 20, marginBottom: 8 }}>{f.title}</h3>
                 <p style={{ color: 'var(--paws-ink-2)', fontSize: 15, lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
               </div>
