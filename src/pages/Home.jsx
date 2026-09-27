@@ -61,6 +61,69 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Integration logos grid — screenshot 1 style */}
+      <section className="section" style={{ padding: '80px 0' }}>
+        <div className="wrap">
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{ fontSize: 32, marginBottom: 12 }}>Connect with the tools your team already uses.</h2>
+            <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>We integrate with 100+ platforms so your workflows never skip a beat.</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 24, alignItems: 'center', justifyItems: 'center', opacity: 0.8 }}>
+            {[
+              { name: 'GoHighLevel', color: '#ea580c' },
+              { name: 'React', color: '#61dafb' },
+              { name: 'TypeScript', color: '#3178c6' },
+              { name: 'Supabase', color: '#3ecf8e' },
+              { name: 'Node.js', color: '#68a063' },
+              { name: 'Vercel', color: '#fff' },
+              { name: 'Stripe', color: '#635bff' },
+              { name: 'Zapier', color: '#f45134' },
+              { name: 'Mailchimp', color: '#f45134' },
+              { name: 'Shopify', color: '#7ea45a' },
+              { name: 'Slack', color: '#4a1e4e' },
+              { name: 'HubSpot', color: '#ff7a18' },
+            ].map((tool) => (
+              <div key={tool.name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 56, height: 56, borderRadius: '50%', background: tool.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14 }}>{tool.name[0]}</div>
+                <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)' }}>{tool.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Feature cards grid — screenshot 2 style */}
+      <section className="section" style={{ padding: '80px 0' }}>
+        <div className="wrap">
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{ fontSize: 32, marginBottom: 12 }}>Everything your team needs to deliver.</h2>
+            <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Built for professionals who need power without the bloat.</p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+            {[
+              { icon: '⚡', title: 'Setup Everything Fast', desc: 'Get your workspace configured and ready in minutes, not days.' },
+              { icon: '📅', title: 'Schedule Campaign', desc: 'Automated campaigns that reach the right people at the right time.' },
+              { icon: '📊', title: 'Live Reports', desc: 'Real-time dashboards showing exactly what is working and what needs attention.' },
+              { icon: '💬', title: 'Chat Module in Website', desc: 'Embedded chat so clients reach you instantly without leaving the page.' },
+              { icon: '🛍️', title: 'Unlimited Products', desc: 'No caps on what you can list, sell, or manage through our platform.' },
+              { icon: '👥', title: 'Collect Information', desc: 'Smart forms that capture leads and route them to the right team member.' },
+            ].map((f) => (
+              <div key={f.title} style={{ border: '1px solid var(--paws-line-2)', borderRadius: 'var(--radius-lg)', background: 'rgba(14, 14, 24, 0.6)', padding: 32, backdropFilter: 'blur(8px)', transition: 'border-color .3s ease, transform .3s ease' }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--paws-pink)'; e.currentTarget.style.transform = 'translateY(-4px)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--paws-line-2)'; e.currentTarget.style.transform = 'translateY(0)' }}
+              >
+                <div style={{ width: 48, height: 48, borderRadius: 'var(--radius-md)', background: 'linear-gradient(135deg, rgba(255, 90, 138, 0.15), rgba(255, 90, 138, 0.05))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, marginBottom: 20, transition: 'transform .3s ease' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-8px)' }}
+                  onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)' }}
+                >{f.icon}</div>
+                <h3 style={{ fontSize: 20, marginBottom: 8 }}>{f.title}</h3>
+                <p style={{ color: 'var(--paws-ink-2)', fontSize: 15, lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="section">
         <div className="wrap">
           <div className="section-head">
