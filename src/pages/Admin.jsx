@@ -395,7 +395,7 @@ function MembersTab({ members, photoUrls, isOwner, busy, editingMemberPerms, set
         </div>
       )}
       <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
-        {isOwner && <button  className="btn btn-ghost" style={smallBtn} onClick={() =><span class="btn-label"> window.location.reload()}>Refresh</span></button>}
+        {isOwner && <button className="btn btn-ghost" style={smallBtn} onClick={() => window.location.reload()}>Refresh</button>}
       </div>
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
@@ -426,16 +426,16 @@ function MembersTab({ members, photoUrls, isOwner, busy, editingMemberPerms, set
               <td style={td}>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   {m.published
-                    ? <button  className="btn btn-ghost" style={smallBtn} onClick={() =><span class="btn-label"> togglePublish(m.id, false)}>Unpublish</span></button>
-                    : <button  className="btn btn-pink" style={smallBtn} onClick={() =><span class="btn-label"> togglePublish(m.id, true)}>Publish</span></button>}
+                    ? <button className="btn btn-ghost" style={smallBtn} onClick={() => togglePublish(m.id, false)}>Unpublish</button>
+                    : <button className="btn btn-pink" style={smallBtn} onClick={() => togglePublish(m.id, true)}>Publish</button>}
                   {isOwner && m.photo_raw && !m.photo_std && (
                     <button className="btn btn-ghost" style={smallBtn} disabled={busy === m.id} onClick={() => standardize(m.id)}>
                       {busy === m.id ? 'Working…' : 'Standardize photo'}
                     </button>
                   )}
-                  <button  className="btn btn-ghost" style={smallBtn} onClick={() =><span class="btn-label"> refreshOne(m.id)} title="Re-fetch">↻</span></button>
+                  <button className="btn btn-ghost" style={smallBtn} onClick={() => refreshOne(m.id)} title="Re-fetch">↻</button>
                   {isOwner && (
-                    <button  className="btn btn-ghost" style={smallBtn} onClick={() =><span class="btn-label"> setEditingMemberPerms(m.id)} title="Edit permissions">⚙</span></button>
+                    <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditingMemberPerms(m.id)} title="Edit permissions">⚙</button>
                   )}
                 </div>
               </td>
@@ -495,7 +495,7 @@ function InvitesTab({ newInvite, setNewInvite, busy, invites, generateInvite, re
                     alert(`Copied: ${link}`)
                   }}>Copy link</button>
                   {canEdit && !inv.redeemed_at && (
-                    <button  className="btn btn-ghost" style={smallBtn} onClick={() =><span class="btn-label"> revokeInvite(inv.id)}>Revoke</span></button>
+                    <button className="btn btn-ghost" style={smallBtn} onClick={() => revokeInvite(inv.id)}>Revoke</button>
                   )}
                 </div>
               </td>
@@ -512,7 +512,7 @@ function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonia
     <>
       {canEdit && (
         <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
-          <button  className="btn btn-pink" style={smallBtn} onClick={addTestimonial}><span class="btn-label">+ Add testimonial</span></button>
+          <button className="btn btn-pink" style={smallBtn} onClick={addTestimonial}>+ Add testimonial</button>
         </div>
       )}
       {!canEdit && <ReadOnlyNotice />}
@@ -536,9 +536,9 @@ function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonia
               <td style={td}>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                   {t.published
-                    ? <button  className="btn btn-ghost" style={smallBtn} onClick={() =><span class="btn-label"> toggleTestimonialPublish(t.id, false)}>Unpublish</span></button>
-                    : <button  className="btn btn-pink" style={smallBtn} onClick={() =><span class="btn-label"> toggleTestimonialPublish(t.id, true)}>Publish</span></button>}
-                  {canEdit && <button  className="btn btn-ghost" style={smallBtn} onClick={() =><span class="btn-label"> deleteTestimonial(t.id)}>Delete</span></button>}
+                    ? <button className="btn btn-ghost" style={smallBtn} onClick={() => toggleTestimonialPublish(t.id, false)}>Unpublish</button>
+                    : <button className="btn btn-pink" style={smallBtn} onClick={() => toggleTestimonialPublish(t.id, true)}>Publish</button>}
+                  {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteTestimonial(t.id)}>Delete</button>}
                 </div>
               </td>
             </tr>
@@ -554,7 +554,7 @@ function ProjectsTab({ projects, members, editingProject, setEditingProject, sav
     <>
       {canEdit && !editingProject && (
         <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
-          <button  className="btn btn-pink" style={smallBtn} onClick={() =><span class="btn-label"> setEditingProject('new')}>+ New project</span></button>
+          <button className="btn btn-pink" style={smallBtn} onClick={() => setEditingProject('new')}>+ New project</button>
         </div>
       )}
       {!canEdit && <ReadOnlyNotice />}
@@ -603,11 +603,11 @@ function ProjectsTab({ projects, members, editingProject, setEditingProject, sav
                               <td style={td}>{p.published ? 'Yes' : 'No'}</td>
                 <td style={td}>
                   <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                    {canEdit && <button  className="btn btn-ghost" style={smallBtn} onClick={() =><span class="btn-label"> setEditingProject(p.id)}>Edit</span></button>}
+                    {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditingProject(p.id)}>Edit</button>}
                     {canEdit && (p.published
                       ? <button className="btn btn-ghost" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('projects').update({ published: false }).eq('id', p.id); await loadProjects(db) }}>Unpublish</button>
                       : <button className="btn btn-pink" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('projects').update({ published: true }).eq('id', p.id); await loadProjects(db) }}>Publish</button>)}
-                    {canEdit && <button  className="btn btn-ghost" style={smallBtn} onClick={() =><span class="btn-label"> deleteProject(p.id)}>Delete</span></button>}
+                    {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteProject(p.id)}>Delete</button>}
                   </div>
                 </td>
               </tr>
@@ -660,8 +660,8 @@ function PermissionsEditor({ member, onSave, onCancel }) {
         ))}
       </div>
       <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
-        <button  className="btn btn-pink" onClick={() =><span class="btn-label"> onSave(member.id, draft)}>Save permissions</span></button>
-        <button  className="btn btn-ghost" onClick={onCancel}><span class="btn-label">Cancel</span></button>
+        <button className="btn btn-pink" onClick={() => onSave(member.id, draft)}>Save permissions</button>
+        <button className="btn btn-ghost" onClick={onCancel}>Cancel</button>
       </div>
     </div>
   )
@@ -684,16 +684,16 @@ function ContentEditor({ siteContent, onSave }) {
         <div key={s.key} style={{ background: 'var(--paws-paper-2)', padding: 20, border: '1px solid var(--paws-line)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <label style={{ fontSize: 15, fontFamily: 'var(--font-display)', fontWeight: 600 }}>{s.title}</label>
-            <a  href={s.page} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'var(--paws-muted)' }}><span class="btn-label">view page →</span></a>
+            <a href={s.page} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: 'var(--paws-muted)' }}>view page →</a>
           </div>
           <p style={{ fontSize: 12, color: 'var(--paws-muted)', margin: '0 0 8px' }}>{s.hint}</p>
           <textarea
-                      value={draft[s.key]}
-                      onChange={(e) => setDraft({ ...draft, [s.key]: e.target.value })}
-                      rows={6}
-                      style={{ ...inputStyle, borderRadius: 'var(--radius-md)', width: '100%', resize: 'vertical', fontFamily: 'inherit' }}
-                      placeholder={`Write the ${s.title.toLowerCase()} content…`}
-                    />
+            value={draft[s.key]}
+            onChange={(e) => setDraft({ ...draft, [s.key]: e.target.value })}
+            rows={6}
+            style={{ ...inputStyle, borderRadius: 'var(--radius-md)', width: '100%', resize: 'vertical', fontFamily: 'inherit' }}
+            placeholder={`Write the ${s.title.toLowerCase()} content…`}
+          />
           <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
             <button
               type="button"
@@ -758,7 +758,7 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
               {uploading ? 'Uploading…' : (coverImage ? 'Replace' : 'Upload')}
               <input type="file" accept="image/*" onChange={onCoverFile} style={{ display: 'none' }} />
             </label>
-            {coverImage && <button  type="button" className="btn btn-ghost" style={smallBtn} onClick={() =><span class="btn-label"> setCoverImage('')}>Remove</span></button>}
+            {coverImage && <button type="button" className="btn btn-ghost" style={smallBtn} onClick={() => setCoverImage('')}>Remove</button>}
           </div>
         </Field>
         {members.length > 0 && (
@@ -795,7 +795,7 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
                 )}
                 <div style={{ display: 'flex', gap: 8 }}>
                   <button type="button" className="btn btn-pink" onClick={() => onSave({ id: project?.id, title, summary, cover_image: coverImage, member_ids: memberIds, published, show_team_public: teamPublic })}>Save</button>
-                  <button  type="button" className="btn btn-ghost" onClick={onCancel}><span class="btn-label">Cancel</span></button>
+                  <button type="button" className="btn btn-ghost" onClick={onCancel}>Cancel</button>
                 </div>
       </div>
     </div>
