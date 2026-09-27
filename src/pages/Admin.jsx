@@ -749,7 +749,7 @@ function ProjectEditor({ project, members, onSave, onCancel, onUploadCover }) {
           <input style={inputStyle} value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Project name" />
         </Field>
         <Field label="Summary">
-          <textarea style={{ ...inputStyle, resize: 'vertical' }} rows={3} value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="One or two sentences" />
+          <textarea style={{ ...inputStyle, borderRadius: 'var(--radius-md)', resize: 'vertical' }} rows={3} value={summary} onChange={(e) => setSummary(e.target.value)} placeholder="One or two sentences" />
         </Field>
         <Field label="Cover image">
           <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>

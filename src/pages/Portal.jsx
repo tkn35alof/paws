@@ -40,7 +40,7 @@ function TagInput({ label, values, onChange, placeholder }) {
       <label style={{ display: 'block', fontSize: 13, color: 'var(--paws-muted)', marginBottom: 6 }}>{label}</label>
       <div style={{
         display: 'flex', flexWrap: 'wrap', gap: 6,
-        padding: 10, border: '1px solid var(--paws-line)', borderRadius: 2, background: '#fff',
+        padding: 10, border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-pill)', background: 'rgba(14, 14, 24, 0.6)', color: 'var(--paws-ink)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
         minHeight: 44, alignItems: 'center',
       }}>
         {values.map((v, i) => (
@@ -284,7 +284,7 @@ export default function Portal() {
             <input style={inputStyle} value={form.tagline || ''} onChange={(e) => setForm({ ...form, tagline: e.target.value })} placeholder="Tagline" />
           </Field>
           <Field label="Bio">
-            <textarea style={{ ...inputStyle, resize: 'vertical' }} rows={5} value={form.bio || ''} onChange={(e) => setForm({ ...form, bio: e.target.value })} placeholder="Bio" />
+            <textarea style={textareaStyle} rows={5} value={form.bio || ''} onChange={(e) => setForm({ ...form, bio: e.target.value })} placeholder="Bio" />
           </Field>
           <TagInput
             label="Role tags"
@@ -327,3 +327,4 @@ function Field({ label, children }) {
 }
 
 const inputStyle = { font: 'inherit', padding: '12px 16px', border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-pill)', background: 'rgba(14, 14, 24, 0.6)', color: 'var(--paws-ink)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', width: '100%', boxSizing: 'border-box', transition: 'border-color .15s ease, box-shadow .15s ease' }
+const textareaStyle = { font: 'inherit', padding: '14px 16px', border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-md)', background: 'rgba(14, 14, 24, 0.6)', color: 'var(--paws-ink)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', width: '100%', boxSizing: 'border-box', transition: 'border-color .15s ease, box-shadow .15s ease', resize: 'vertical', fontFamily: 'inherit' }
