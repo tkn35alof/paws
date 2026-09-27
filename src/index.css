@@ -191,7 +191,7 @@ a:hover { color: var(--paws-pink); }
 /* === Nav: permanent burger, always === */
 .nav {
   position: sticky; top: 0; z-index: 50;
-  display: flex; align-items: center; padding: 18px 0;
+  display: flex; align-items: center; padding: 18px 24px;
   background: rgba(14, 14, 24, 0.85);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
@@ -201,7 +201,6 @@ a:hover { color: var(--paws-pink); }
   transition: border-color .25s ease, background .25s ease, box-shadow .25s ease;
   transform: translateZ(0);
   border-radius: var(--radius-pill);
-  margin: 0 24px;
 }
 .nav.scrolled {
   background: rgba(14, 14, 24, 0.97);
@@ -354,7 +353,7 @@ a:hover { color: var(--paws-pink); }
 
 /* === Team grid === */
 .team-row {
-  display: flex; gap: 28px; overflow-x: auto; padding: 4px 0 24px;
+  display: flex; gap: 28px; overflow-x: auto; padding: 8px 32px 24px 0;
   scroll-snap-type: x mandatory;
   scrollbar-width: thin; scrollbar-color: var(--paws-line-2) transparent;
 }
@@ -419,7 +418,7 @@ a:hover { color: var(--paws-pink); }
 .testimonial .who { font-family: var(--font-display); font-size: 14px; color: var(--paws-pink); font-weight: 500; }
 
 /* === Forms / inputs === */
-input, textarea, select {
+input[type="text"], input[type="email"], input[type="url"], input[type="number"], select {
   font: inherit; color: var(--paws-ink);
   padding: 14px 16px; border: 1px solid var(--paws-line-2); border-radius: var(--radius-pill);
   background: rgba(14, 14, 24, 0.6);
@@ -428,13 +427,33 @@ input, textarea, select {
   transition: border-color .15s ease, box-shadow .15s ease;
   font-size: 15px;
 }
+textarea {
+  font: inherit; color: var(--paws-ink);
+  padding: 14px 16px; border: 1px solid var(--paws-line-2); border-radius: var(--radius-md);
+  background: rgba(14, 14, 24, 0.6);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  width: 100%; box-sizing: border-box;
+  transition: border-color .15s ease, box-shadow .15s ease;
+  font-size: 15px; resize: vertical; font-family: inherit;
+}
 input::placeholder, textarea::placeholder { color: var(--paws-muted); }
 input:focus, textarea:focus, select:focus {
   outline: none; border-color: var(--paws-pink);
   box-shadow: 0 0 0 3px var(--paws-pink-rule);
 }
-textarea { resize: vertical; font-family: inherit; }
 label { font-size: 13px; color: var(--paws-ink-2); font-weight: 500; display: block; margin-bottom: 6px; }
+
+/* === Darkrise-style border animation glow for cards === */
+.border-glow {
+  position: relative;
+  border: 1px solid var(--paws-line-2);
+  border-radius: var(--radius-card);
+  transition: border-color .3s ease, box-shadow .3s ease;
+}
+.border-glow:hover {
+  border-color: var(--paws-pink);
+  box-shadow: 0 0 0 1px var(--paws-pink-rule), 0 8px 32px rgba(232, 82, 127, 0.15);
+}
 
 /* === Footer === */
 footer {
