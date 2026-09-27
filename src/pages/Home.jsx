@@ -61,58 +61,79 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Integration logos marquee — Darkrise style */}
-      <div className="marquee-fade" style={{ marginTop: 40, marginBottom: 40 }}>
-        <div className="marquee">
-          {[
-            { name: 'GoHighLevel', color: '#ea580c' },
-            { name: 'React', color: '#61dafb' },
-            { name: 'TypeScript', color: '#3178c6' },
-            { name: 'Supabase', color: '#3ecf8e' },
-            { name: 'Node.js', color: '#68a063' },
-            { name: 'Vercel', color: '#fff' },
-            { name: 'Stripe', color: '#635bff' },
-            { name: 'Zapier', color: '#f45134' },
-            { name: 'Mailchimp', color: '#f45134' },
-            { name: 'Shopify', color: '#7ea45a' },
-            { name: 'Slack', color: '#4a1e4e' },
-            { name: 'HubSpot', color: '#ff7a18' },
-            { name: 'GoHighLevel', color: '#ea580c' },
-            { name: 'React', color: '#61dafb' },
-            { name: 'TypeScript', color: '#3178c6' },
-            { name: 'Supabase', color: '#3ecf8e' },
-            { name: 'Node.js', color: '#68a063' },
-            { name: 'Vercel', color: '#fff' },
-            { name: 'Stripe', color: '#635bff' },
-            { name: 'Zapier', color: '#f45134' },
-            { name: 'Mailchimp', color: '#f45134' },
-            { name: 'Shopify', color: '#7ea45a' },
-            { name: 'Slack', color: '#4a1e4e' },
-            { name: 'HubSpot', color: '#ff7a18' },
-          ].map((tool, i) => (
-            <div key={`${tool.name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-              <div style={{ width: 56, height: 56, borderRadius: '50%', background: tool.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14 }}>{tool.name[0]}</div>
-              <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{tool.name}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Feature cards grid — Darkrise style with icon slide-up */}
+      {/* Integration logos marquee — Darkrise two-row staggered style */}
       <section className="section" style={{ padding: '80px 0' }}>
         <div className="wrap">
           <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h2 style={{ fontSize: 32, marginBottom: 12 }}>Everything your team needs to deliver.</h2>
-            <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Built for professionals who need power without the bloat.</p>
+            <h2 style={{ fontSize: 32, marginBottom: 12 }}>Connect with 100+ tools</h2>
+            <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Gain invaluable predictive analytics and actionable insights, empowering your team to make data-driven decisions.</p>
+          </div>
+          <div style={{ overflow: 'hidden', position: 'relative' }}>
+            <div className="marquee-fade" style={{ marginBottom: 24 }}>
+              <div className="marquee">
+                {[
+                  { name: 'Hubspot', color: '#ff7a18' },
+                  { name: 'Intercom', color: '#1e88e5' },
+                  { name: 'Kickstarter', color: '#7ed6df' },
+                  { name: 'Hubspot', color: '#ff7a18' },
+                  { name: 'Intercom', color: '#1e88e5' },
+                  { name: 'Kickstarter', color: '#7ed6df' },
+                  { name: 'Hubspot', color: '#ff7a18' },
+                  { name: 'Intercom', color: '#1e88e5' },
+                  { name: 'Kickstarter', color: '#7ed6df' },
+                  { name: 'Hubspot', color: '#ff7a18' },
+                  { name: 'Intercom', color: '#1e88e5' },
+                  { name: 'Kickstarter', color: '#7ed6df' },
+                ].map((tool, i) => (
+                  <div key={`${tool.name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
+                    <div style={{ width: 56, height: 56, borderRadius: '50%', background: tool.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14 }}>{tool.name[0]}</div>
+                    <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{tool.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="marquee-fade" style={{ animation: 'none' }}>
+              <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
+                {[
+                  { name: 'Zapier', color: '#f45134' },
+                  { name: 'Mailchimp', color: '#f45134' },
+                  { name: 'Shopify', color: '#7ea45a' },
+                  { name: 'Slack', color: '#4a1e4e' },
+                  { name: 'Zapier', color: '#f45134' },
+                  { name: 'Mailchimp', color: '#f45134' },
+                  { name: 'Shopify', color: '#7ea45a' },
+                  { name: 'Slack', color: '#4a1e4e' },
+                  { name: 'Zapier', color: '#f45134' },
+                  { name: 'Mailchimp', color: '#f45134' },
+                  { name: 'Shopify', color: '#7ea45a' },
+                  { name: 'Slack', color: '#4a1e4e' },
+                ].map((tool, i) => (
+                  <div key={`${tool.name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
+                    <div style={{ width: 56, height: 56, borderRadius: '50%', background: tool.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: 14 }}>{tool.name[0]}</div>
+                    <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{tool.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Feature cards grid — Darkrise 2x3 style */}
+      <section className="section" style={{ padding: '80px 0' }}>
+        <div className="wrap">
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{ fontSize: 32, marginBottom: 12, textTransform: 'lowercase' }}>and, more features</h2>
+            <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Gain invaluable predictive analytics and actionable insights, empowering your team to make data-driven decisions and close.</p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
             {[
-              { icon: '⚡', title: 'Setup Everything Fast', desc: 'Get your workspace configured and ready in minutes, not days.' },
-              { icon: '📅', title: 'Schedule Campaign', desc: 'Automated campaigns that reach the right people at the right time.' },
-              { icon: '📊', title: 'Live Reports', desc: 'Real-time dashboards showing exactly what is working and what needs attention.' },
-              { icon: '💬', title: 'Chat Module in Website', desc: 'Embedded chat so clients reach you instantly without leaving the page.' },
-              { icon: '🛍️', title: 'Unlimited Products', desc: 'No caps on what you can list, sell, or manage through our platform.' },
-              { icon: '👥', title: 'Collect Information', desc: 'Smart forms that capture leads and route them to the right team member.' },
+              { icon: '⚡', title: 'Setup Everything Fast', desc: 'Our system continuously monitors your network and data environments for any suspicious activities.' },
+              { icon: '📅', title: 'Schedule Campaign', desc: 'We ensure that all sensitive data is encrypted and at rest, using industry-standard encryption protocols.' },
+              { icon: '📊', title: 'Live Reports', desc: 'In the event of a security incident, our automated response system takes immediate action.' },
+              { icon: '💬', title: 'Chat Module in Website', desc: 'Our system continuously monitors your network and data environments for any suspicious activities.' },
+              { icon: '🛍️', title: 'Unlimited Products', desc: 'We ensure that all sensitive data is encrypted and at rest, using industry-standard encryption protocols.' },
+              { icon: '👥', title: 'Collect Information', desc: 'In the event of a security incident, our automated response system takes immediate action.' },
             ].map((f) => (
               <div key={f.title} className="feature-card">
                 <div className="feature-icon">{f.icon}</div>
