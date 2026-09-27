@@ -513,6 +513,9 @@ footer .foot-bottom {
   animation: marquee-scroll 30s linear infinite;
 }
 .marquee:hover { animation-play-state: paused; }
+@media (max-width: 600px) {
+  .marquee { gap: 16px; animation-duration: 20s; }
+}
 @keyframes marquee-scroll {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
@@ -531,6 +534,17 @@ footer .foot-bottom {
 .marquee-fade::after { right: 0; background: linear-gradient(90deg, transparent, var(--paws-void)); }
 
 /* === Feature card — icon slide-up on hover === */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+@media (max-width: 900px) {
+  .feature-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .feature-grid { grid-template-columns: 1fr; }
+}
 .feature-card {
   position: relative;
   overflow: hidden;
@@ -604,6 +618,12 @@ footer .foot-bottom {
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
   text-align: center;
+}
+@media (max-width: 768px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
 }
 .stat-item { padding: 40px 20px; }
 .stat-number {
