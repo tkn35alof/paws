@@ -370,7 +370,7 @@ export default function Admin() {
 const th = { padding: '12px 8px', fontFamily: 'var(--font-display)', fontSize: 13, fontWeight: 600, color: 'var(--paws-ink-3)' }
 const td = { padding: '12px 8px', fontSize: 14 }
 const smallBtn = { fontSize: 12, padding: '8px 14px' }
-const inputStyle = { font: 'inherit', padding: '10px 14px', border: '1px solid var(--paws-line)', borderRadius: 2, background: '#fff' }
+const inputStyle = { font: 'inherit', padding: '10px 14px', border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-pill)', background: 'rgba(14, 14, 24, 0.6)', color: 'var(--paws-ink)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', width: '100%', boxSizing: 'border-box', transition: 'border-color .15s ease, box-shadow .15s ease' }
 
 function ReadOnlyNotice({ feature }) {
   return (

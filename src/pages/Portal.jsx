@@ -308,7 +308,7 @@ export default function Portal() {
           <p style={{ color: 'var(--paws-muted)', fontSize: 14 }}>
             Publish state: <strong>{member.published ? 'Published' : 'Not published'}</strong> (owner-controlled)
           </p>
-          <button className="btn btn-pink" type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
+          <button className="btn btn-pink" type="submit" disabled={saving}><span className="btn-label">{saving ? 'Saving…' : 'Save'}</span></button>
           <span className="pink">{status}</span>
         </form>
       </section>
@@ -326,4 +326,4 @@ function Field({ label, children }) {
   )
 }
 
-const inputStyle = { font: 'inherit', padding: '12px 14px', border: '1px solid var(--paws-line)', borderRadius: 2, background: '#fff', width: '100%', boxSizing: 'border-box' }
+const inputStyle = { font: 'inherit', padding: '12px 16px', border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-pill)', background: 'rgba(14, 14, 24, 0.6)', color: 'var(--paws-ink)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', width: '100%', boxSizing: 'border-box', transition: 'border-color .15s ease, box-shadow .15s ease' }
