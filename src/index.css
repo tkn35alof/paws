@@ -170,6 +170,7 @@ a:hover { color: var(--paws-pink); }
   transition: border-color .25s ease, background .25s ease, box-shadow .25s ease;
   transform: translateZ(0);
   border-radius: var(--radius-pill);
+  margin: 0 24px;
 }
 .nav.scrolled {
   background: rgba(14, 14, 24, 0.97);
@@ -398,23 +399,11 @@ input, textarea, select {
 }
 input::placeholder, textarea::placeholder { color: var(--paws-muted); }
 input:focus, textarea:focus, select:focus {
-  outline: none; border-color: var(--paws-blue);
-  box-shadow: 0 0 0 3px var(--paws-blue-glow);
+  outline: none; border-color: var(--paws-pink);
+  box-shadow: 0 0 0 3px var(--paws-pink-rule);
 }
 textarea { resize: vertical; font-family: inherit; }
 label { font-size: 13px; color: var(--paws-ink-2); font-weight: 500; display: block; margin-bottom: 6px; }
-
-/* === Darkrise-style border animation for cards === */
-.border-glow {
-  position: relative;
-  border: 1px solid var(--paws-line-2);
-  border-radius: var(--radius-card);
-  transition: border-color .3s ease, box-shadow .3s ease;
-}
-.border-glow:hover {
-  border-color: var(--paws-blue);
-  box-shadow: 0 0 0 1px var(--paws-blue-glow), 0 8px 32px rgba(45, 87, 238, 0.15);
-}
 
 /* === Footer === */
 footer {
