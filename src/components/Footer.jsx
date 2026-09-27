@@ -25,7 +25,7 @@ export function Footer() {
             <h4>Work with us</h4>
             <Link to="/contact">Contact</Link>
             <Link to="/portal">Member portal</Link>
-            <a href="https://api.leadconnectorhq.com/widget/booking/YrYXL1dDWGNvci77AyUb" target="_blank" rel="noreferrer">Book a call</a>
+            <a  href="https://api.leadconnectorhq.com/widget/booking/YrYXL1dDWGNvci77AyUb" target="_blank" rel="noreferrer"><span class="btn-label">Book a call</span></a>
           </div>
         </div>
         <div className="foot-bottom">

@@ -264,9 +264,9 @@ export default function Portal() {
               </div>
             )}
             {photoError && (
-              <button type="button" className="btn btn-ghost" onClick={retryPhotoCheck}>
+              <button  type="button" className="btn btn-ghost" onClick={retryPhotoCheck}><span class="btn-label">
                 Try another photo
-              </button>
+              </span></button>
             )}
             {!photoPreviewUrl && !photoError && (
               <p style={{ color: 'var(--paws-muted)', fontSize: 13, maxWidth: 280 }}>

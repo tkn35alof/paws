@@ -40,7 +40,7 @@ export default function Home() {
             multi-skilled professionals, deployed on the work that actually moves
             your business forward.
           </p>
-          <a className="btn btn-pink" href="#work">Work with us</a>
+          <a  className="btn btn-pink" href="#work"><span class="btn-label">Work with us</span></a>
           <div className="meta">
             <span className="meta-item"><span className="dot" />7 specialists, 1 team</span>
             <span className="meta-item">International clients</span>

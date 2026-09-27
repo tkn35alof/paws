@@ -110,7 +110,7 @@ a:hover { color: var(--paws-pink); }
   box-shadow: 0 0 20px var(--paws-pink-glow);
 }
 .btn .btn-label {
-  position: relative; z-index: 1;
+  position: relative; z-index: 2;
   transition: transform .25s cubic-bezier(0.65, 0, 0.35, 1), color .25s ease;
 }
 .btn::before {
@@ -121,7 +121,6 @@ a:hover { color: var(--paws-pink); }
   z-index: 0;
 }
 .btn:hover { background: var(--paws-pink-deep); color: #fff; transform: translateY(-1px); box-shadow: 0 0 30px var(--paws-pink-glow); }
-.btn:hover .btn-label { transform: translateY(-100%); }
 .btn:hover::before { transform: translateY(0); }
 .btn:active { transform: translateY(0); }
 .btn:focus-visible { outline: 1px solid var(--paws-pink); outline-offset: 2px; }
