@@ -21,7 +21,7 @@ export function Nav() {
         const { data: me } = await db.from('members').select('is_owner, permissions').eq('id', authUser.id).single()
         if (me && mounted) {
           const perms = me.permissions || {}
-          const adminPerms = ['can_manage_members', 'can_invite', 'can_edit_testimonials', 'can_edit_projects', 'can_edit_site_content']
+          const adminPerms = ['can_manage_members', 'can_invite', 'can_edit_testimonials', 'can_edit_projects', 'can_edit_site_content', 'can_edit_logos', 'can_edit_features']
           const hasAnyAdminPerm = !!me.is_owner || adminPerms.some((perm) => perms[perm])
           setHasAdminAccess(hasAnyAdminPerm)
         }
