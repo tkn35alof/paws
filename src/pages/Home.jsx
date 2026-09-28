@@ -160,23 +160,35 @@ export default function Home() {
       </section>
 
       {testimonials.length > 0 && (
-        <section className="section">
-          <div className="wrap">
-            <div className="section-head">
-              <div>
-                <div className="kicker">Testimonials</div>
-                <h2>What clients say</h2>
-              </div>
-            </div>
-            {testimonials.map((t) => (
-              <blockquote key={t.id} className="testimonial">
-                <p>“{t.body}”</p>
-                <footer className="who">— {t.author_name}{t.author_title ? `, ${t.author_title}` : ''}</footer>
-              </blockquote>
-            ))}
-          </div>
-        </section>
-      )}
+              <section className="section">
+                <div className="wrap">
+                  <div className="section-head">
+                    <div>
+                      <div className="kicker">Testimonials</div>
+                      <h2>What clients say</h2>
+                    </div>
+                  </div>
+                  <div className="marquee-v-fade" style={{ height: 400, overflow: 'hidden' }}>
+                    <div className="marquee-vertical">
+                      {testimonials.map((t, i) => (
+                        <div key={t.id} style={{ border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-lg)', background: 'rgba(14, 14, 24, 0.6)', padding: 24, backdropFilter: 'blur(8px)' }}>
+                          <p style={{ margin: 0, color: 'var(--paws-ink)', fontSize: 16, lineHeight: 1.6, fontStyle: 'italic' }}>"{t.body}"</p>
+                          <p style={{ margin: '12px 0 0', color: 'var(--paws-pink)', fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 500 }}>- {t.author_name}</p>
+                          {t.author_title && <p style={{ margin: 0, color: 'var(--paws-ink-3)', fontSize: 12, fontFamily: 'var(--font-mono)' }}>{t.author_title}</p>}
+                        </div>
+                      ))}
+                      {testimonials.map((t, i) => (
+                        <div key={`${t.id}-dup`} style={{ border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-lg)', background: 'rgba(14, 14, 24, 0.6)', padding: 24, backdropFilter: 'blur(8px)' }}>
+                          <p style={{ margin: 0, color: 'var(--paws-ink)', fontSize: 16, lineHeight: 1.6, fontStyle: 'italic' }}>"{t.body}"</p>
+                          <p style={{ margin: '12px 0 0', color: 'var(--paws-pink)', fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 500 }}>- {t.author_name}</p>
+                          {t.author_title && <p style={{ margin: 0, color: 'var(--paws-ink-3)', fontSize: 12, fontFamily: 'var(--font-mono)' }}>{t.author_title}</p>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
 
       <section className="section" id="work">
         <div className="wrap">
