@@ -544,6 +544,13 @@ function InvitesTab({ newInvite, setNewInvite, busy, invites, generateInvite, re
 function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonial, deleteTestimonial, canEdit }) {
   const [editing, setEditing] = useState(null)
   const [editData, setEditData] = useState({ author_name: '', author_title: '', body: '', display_order: 0 })
+  const [marqueeDelays, setMarqueeDelays] = useState('0, -20, -40')
+
+  async function saveMarqueeDelays() {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    await db.from('site_content').upsert({ key: 'testimonial_marquee_delays', body: marqueeDelays, updated_at: new Date().toISOString() }, { onConflict: 'key' })
+  }
 
   async function handleEdit(t) {
     setEditData({ author_name: t.author_name, author_title: t.author_title || '', body: t.body, display_order: t.display_order || 0 })
@@ -579,8 +586,15 @@ function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonia
   return (
     <>
       {canEdit && (
-        <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
           <button className="btn btn-pink" style={smallBtn} onClick={addTestimonial}>+ Add testimonial</button>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: 'var(--paws-paper-2)', padding: '8px 12px', border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-md)' }}>
+            <span style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--paws-ink-3)' }}>Marquee delays (s):</span>
+            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[0]?.trim() || '0'} onChange={e => { const arr = marqueeDelays.split(','); arr[0] = e.target.value; setMarqueeDelays(arr.join(',')); }} placeholder="Col 1" />
+            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[1]?.trim() || '-20'} onChange={e => { const arr = marqueeDelays.split(','); arr[1] = e.target.value; setMarqueeDelays(arr.join(',')); }} placeholder="Col 2" />
+            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[2]?.trim() || '-40'} onChange={e => { const arr = marqueeDelays.split(','); arr[2] = e.target.value; setMarqueeDelays(arr.join(',')); }} placeholder="Col 3" />
+            <button className="btn btn-ghost" style={{ ...smallBtn, padding: '4px 10px', fontSize: 12 }} onClick={saveMarqueeDelays}>Save</button>
+          </div>
         </div>
       )}
       {!canEdit && <ReadOnlyNotice />}
@@ -769,7 +783,6 @@ function ContentEditor({ siteContent, onSave }) {
     { key: 'mission', title: 'Mission', page: '/mission', hint: 'Why PAWS exists; the problem you solve.' },
     { key: 'vision',  title: 'Vision',  page: '/vision',  hint: 'Where PAWS is going in 1-3 years.' },
     { key: 'contact', title: 'Contact', page: '/contact', hint: 'How clients reach you (shown on the Contact page).' },
-    { key: 'testimonial_marquee_delays', title: 'Testimonial Marquee Delays', page: '/', hint: 'Comma-separated animation delays (seconds) for each column, e.g. "0, -20, -40". Use negative values to stagger.' },
   ]
   return (
     <div style={{ display: 'grid', gap: 24 }}>
