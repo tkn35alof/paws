@@ -508,6 +508,7 @@ footer .foot-bottom {
 /* === Marquee — horizontal scrolling with fade edges === */
 .marquee {
   display: flex;
+  align-items: center;
   gap: 24px;
   width: max-content;
   animation: marquee-scroll 30s linear infinite;

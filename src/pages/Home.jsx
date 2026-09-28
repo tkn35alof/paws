@@ -74,9 +74,9 @@ export default function Home() {
                   <h2 style={{ fontSize: 32, marginBottom: 12 }}>Connect with 100+ tools</h2>
                   <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Gain invaluable predictive analytics and actionable insights, empowering your team to make data-driven decisions.</p>
                 </div>
-                <div style={{ overflow: 'hidden', position: 'relative' }}>
-                  <div className="marquee-fade" style={{ marginBottom: 24 }}>
-                    <div className="marquee">
+                <div style={{ overflow: 'hidden', position: 'relative', height: 264 }}>
+                                  <div className="marquee-fade" style={{ marginBottom: 24, height: 120, display: 'flex', alignItems: 'center' }}>
+                                    <div className="marquee">
                       {logos.filter(l => l.row_index === 1).map((l, i) => (
                         <div key={`${l.id}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
                           {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} width="56" height="56" style={{ display: 'block' }} /> : <div style={{ width: 56, height: 56, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)', borderRadius: '50%' }} />}
@@ -85,8 +85,8 @@ export default function Home() {
                       ))}
                     </div>
                   </div>
-                  <div className="marquee-fade">
-                    <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
+                  <div className="marquee-fade" style={{ height: 120, display: 'flex', alignItems: 'center' }}>
+                                      <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
                       {logos.filter(l => l.row_index === 2).map((l, i) => (
                         <div key={`${l.id}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
                           {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} width="56" height="56" style={{ display: 'block' }} /> : <div style={{ width: 56, height: 56, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)', borderRadius: '50%' }} />}
