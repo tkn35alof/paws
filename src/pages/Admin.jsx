@@ -904,44 +904,74 @@ function LogosTab({ logos, loadLogos, canEdit }) {
         <tbody>
           {logos.length === 0 ? (
             <tr><td style={td} colSpan={6}><em style={{ color: 'var(--paws-muted)' }}>No logos yet.</em></td></tr>
-          ) : logos.map((l, i) => (
-            <tr key={l.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
-              <td style={td}>
-                {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} style={{ width: 40, height: 40, objectFit: 'contain', border: '1px solid var(--paws-line)', borderRadius: 4 }} /> : <div style={{ width: 40, height: 40, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)' }} />}
-              </td>
-              <td style={td}>{l.name}</td>
-              <td style={td}>{l.row_index === 1 ? 'Top' : 'Bottom'}</td>
-              <td style={td}>{l.display_order}</td>
-              <td style={td}>{l.published ? 'Yes' : 'No'}</td>
-              <td style={td}>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {editing === l.id ? (
-                    <>
-                      <input style={{ ...inputStyle, maxWidth: 180 }} value={editData.name} onChange={e => setEditData({ ...editData, name: e.target.value })} placeholder="Name" />
-                      <input style={{ ...inputStyle, maxWidth: 300 }} value={editData.logo_url} onChange={e => setEditData({ ...editData, logo_url: e.target.value })} placeholder="Logo URL (or upload)" />
-                      <input style={{ ...inputStyle, maxWidth: 160 }} value={editData.alt_text} onChange={e => setEditData({ ...editData, alt_text: e.target.value })} placeholder="Alt text" />
-                      <select style={{ ...inputStyle, maxWidth: 100 }} value={editData.row_index} onChange={e => setEditData({ ...editData, row_index: parseInt(e.target.value) })}>
-                        <option value={1}>Top</option>
-                        <option value={2}>Bottom</option>
-                      </select>
-                      <input type="file" accept="image/svg+xml,image/*" onChange={onFileUpload} style={{ display: 'none' }} id={`logo-upload-${l.id}`} />
-                      <label htmlFor={`logo-upload-${l.id}`} className="btn btn-ghost" style={{ ...smallBtn, cursor: 'pointer' }} disabled={uploading}>{uploading ? 'Uploading…' : 'Upload SVG'}</label>
-                      <button className="btn btn-pink" style={smallBtn} onClick={() => saveEdit(l.id)}>Save</button>
+          ) : (
+            <>
+              {editing === 'new' && (
+                <tr style={{ borderBottom: '1px solid var(--paws-line)' }}>
+                  <td style={td}>
+                    {editData.logo_url ? <img src={editData.logo_url} alt={editData.alt_text || editData.name} style={{ width: 40, height: 40, objectFit: 'contain', border: '1px solid var(--paws-line)', borderRadius: 4 }} /> : <div style={{ width: 40, height: 40, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)' }} />}
+                  </td>
+                  <td style={td}>
+                    <input style={{ ...inputStyle, maxWidth: 180 }} value={editData.name} onChange={e => setEditData({ ...editData, name: e.target.value })} placeholder="Name" />
+                  </td>
+                  <td style={td}>
+                    <select style={{ ...inputStyle, maxWidth: 100 }} value={editData.row_index} onChange={e => setEditData({ ...editData, row_index: parseInt(e.target.value) })}>
+                      <option value={1}>Top</option>
+                      <option value={2}>Bottom</option>
+                    </select>
+                  </td>
+                  <td style={td}>{editData.display_order}</td>
+                  <td style={td}>No</td>
+                  <td style={td}>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      <input type="file" accept="image/svg+xml,image/*" onChange={onFileUpload} style={{ display: 'none' }} id="logo-upload-new" />
+                      <label htmlFor="logo-upload-new" className="btn btn-ghost" style={{ ...smallBtn, cursor: 'pointer' }} disabled={uploading}>{uploading ? 'Uploading…' : 'Upload SVG'}</label>
+                      <button className="btn btn-pink" style={smallBtn} onClick={() => saveEdit('new')}>Save</button>
                       <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditing(null)}>Cancel</button>
-                    </>
-                  ) : (
-                    <>
-                      {l.published
-                        ? <button className="btn btn-ghost" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('integration_logos').update({ published: false }).eq('id', l.id); await loadLogos(db); }}>Unpublish</button>
-                        : <button className="btn btn-pink" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('integration_logos').update({ published: true }).eq('id', l.id); await loadLogos(db); }}>Publish</button>}
-                      {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => handleEdit(l)}>Edit</button>}
-                      {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteLogo(l.id)}>Delete</button>}
-                    </>
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))}
+                    </div>
+                  </td>
+                </tr>
+              )}
+              {logos.map((l, i) => (
+                <tr key={l.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
+                  <td style={td}>
+                    {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} style={{ width: 40, height: 40, objectFit: 'contain', border: '1px solid var(--paws-line)', borderRadius: 4 }} /> : <div style={{ width: 40, height: 40, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)' }} />}
+                  </td>
+                  <td style={td}>{l.name}</td>
+                  <td style={td}>{l.row_index === 1 ? 'Top' : 'Bottom'}</td>
+                  <td style={td}>{l.display_order}</td>
+                  <td style={td}>{l.published ? 'Yes' : 'No'}</td>
+                  <td style={td}>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      {editing === l.id ? (
+                        <>
+                          <input style={{ ...inputStyle, maxWidth: 180 }} value={editData.name} onChange={e => setEditData({ ...editData, name: e.target.value })} placeholder="Name" />
+                          <input style={{ ...inputStyle, maxWidth: 300 }} value={editData.logo_url} onChange={e => setEditData({ ...editData, logo_url: e.target.value })} placeholder="Logo URL (or upload)" />
+                          <input style={{ ...inputStyle, maxWidth: 160 }} value={editData.alt_text} onChange={e => setEditData({ ...editData, alt_text: e.target.value })} placeholder="Alt text" />
+                          <select style={{ ...inputStyle, maxWidth: 100 }} value={editData.row_index} onChange={e => setEditData({ ...editData, row_index: parseInt(e.target.value) })}>
+                            <option value={1}>Top</option>
+                            <option value={2}>Bottom</option>
+                          </select>
+                          <input type="file" accept="image/svg+xml,image/*" onChange={onFileUpload} style={{ display: 'none' }} id={`logo-upload-${l.id}`} />
+                          <label htmlFor={`logo-upload-${l.id}`} className="btn btn-ghost" style={{ ...smallBtn, cursor: 'pointer' }} disabled={uploading}>{uploading ? 'Uploading…' : 'Upload SVG'}</label>
+                          <button className="btn btn-pink" style={smallBtn} onClick={() => saveEdit(l.id)}>Save</button>
+                          <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditing(null)}>Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          {l.published
+                            ? <button className="btn btn-ghost" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('integration_logos').update({ published: false }).eq('id', l.id); await loadLogos(db); }}>Unpublish</button>
+                            : <button className="btn btn-pink" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('integration_logos').update({ published: true }).eq('id', l.id); await loadLogos(db); }}>Publish</button>}
+                          {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => handleEdit(l)}>Edit</button>}
+                          {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteLogo(l.id)}>Delete</button>}
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </>
+          )}
         </tbody>
       </table>
     </>
@@ -1009,38 +1039,64 @@ function FeaturesTab({ features, loadFeatures, canEdit }) {
         <tbody>
           {features.length === 0 ? (
             <tr><td style={td} colSpan={6}><em style={{ color: 'var(--paws-muted)' }}>No features yet.</em></td></tr>
-          ) : features.map((f, i) => (
-            <tr key={f.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
-              <td style={td}>
-                {f.icon_svg ? <div dangerouslySetInnerHTML={{ __html: f.icon_svg }} style={{ width: 32, height: 32 }} /> : <div style={{ width: 32, height: 32, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)' }} />}
-              </td>
-              <td style={td}>{f.title}</td>
-              <td style={{ ...td, maxWidth: 300 }}>{f.description?.slice(0, 80)}{f.description?.length > 80 ? '…' : ''}</td>
-              <td style={td}>{f.display_order}</td>
-              <td style={td}>{f.published ? 'Yes' : 'No'}</td>
-              <td style={td}>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {editing === f.id ? (
-                    <>
-                      <input style={{ ...inputStyle, maxWidth: 200 }} value={editData.title} onChange={e => setEditData({ ...editData, title: e.target.value })} placeholder="Title" />
-                      <textarea style={{ ...inputStyle, maxWidth: 300, minHeight: 60 }} value={editData.description} onChange={e => setEditData({ ...editData, description: e.target.value })} placeholder="Description" />
+          ) : (
+            <>
+              {editing === 'new' && (
+                <tr style={{ borderBottom: '1px solid var(--paws-line)' }}>
+                  <td style={td}>
+                    {editData.icon_svg ? <div dangerouslySetInnerHTML={{ __html: editData.icon_svg }} style={{ width: 32, height: 32 }} /> : <div style={{ width: 32, height: 32, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)' }} />}
+                  </td>
+                  <td style={td}>
+                    <input style={{ ...inputStyle, maxWidth: 200 }} value={editData.title} onChange={e => setEditData({ ...editData, title: e.target.value })} placeholder="Title" />
+                  </td>
+                  <td style={{ ...td, maxWidth: 300 }}>
+                    <textarea style={{ ...inputStyle, maxWidth: 300, minHeight: 60 }} value={editData.description} onChange={e => setEditData({ ...editData, description: e.target.value })} placeholder="Description" />
+                  </td>
+                  <td style={td}>{editData.display_order}</td>
+                  <td style={td}>No</td>
+                  <td style={td}>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                       <textarea style={{ ...inputStyle, maxWidth: 400, minHeight: 80, fontFamily: 'monospace', fontSize: 12 }} value={editData.icon_svg} onChange={e => setEditData({ ...editData, icon_svg: e.target.value })} placeholder="Inline SVG (26x26 viewBox)" />
-                      <button className="btn btn-pink" style={smallBtn} onClick={() => saveEdit(f.id)}>Save</button>
+                      <button className="btn btn-pink" style={smallBtn} onClick={() => saveEdit('new')}>Save</button>
                       <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditing(null)}>Cancel</button>
-                    </>
-                  ) : (
-                    <>
-                      {f.published
-                        ? <button className="btn btn-ghost" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('features').update({ published: false }).eq('id', f.id); await loadFeatures(db); }}>Unpublish</button>
-                        : <button className="btn btn-pink" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('features').update({ published: true }).eq('id', f.id); await loadFeatures(db); }}>Publish</button>}
-                      {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => handleEdit(f)}>Edit</button>}
-                      {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteFeature(f.id)}>Delete</button>}
-                    </>
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))}
+                    </div>
+                  </td>
+                </tr>
+              )}
+              {features.map((f, i) => (
+                <tr key={f.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
+                  <td style={td}>
+                    {f.icon_svg ? <div dangerouslySetInnerHTML={{ __html: f.icon_svg }} style={{ width: 32, height: 32 }} /> : <div style={{ width: 32, height: 32, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)' }} />}
+                  </td>
+                  <td style={td}>{f.title}</td>
+                  <td style={{ ...td, maxWidth: 300 }}>{f.description?.slice(0, 80)}{f.description?.length > 80 ? '…' : ''}</td>
+                  <td style={td}>{f.display_order}</td>
+                  <td style={td}>{f.published ? 'Yes' : 'No'}</td>
+                  <td style={td}>
+                    <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      {editing === f.id ? (
+                        <>
+                          <input style={{ ...inputStyle, maxWidth: 200 }} value={editData.title} onChange={e => setEditData({ ...editData, title: e.target.value })} placeholder="Title" />
+                          <textarea style={{ ...inputStyle, maxWidth: 300, minHeight: 60 }} value={editData.description} onChange={e => setEditData({ ...editData, description: e.target.value })} placeholder="Description" />
+                          <textarea style={{ ...inputStyle, maxWidth: 400, minHeight: 80, fontFamily: 'monospace', fontSize: 12 }} value={editData.icon_svg} onChange={e => setEditData({ ...editData, icon_svg: e.target.value })} placeholder="Inline SVG (26x26 viewBox)" />
+                          <button className="btn btn-pink" style={smallBtn} onClick={() => saveEdit(f.id)}>Save</button>
+                          <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditing(null)}>Cancel</button>
+                        </>
+                      ) : (
+                        <>
+                          {f.published
+                            ? <button className="btn btn-ghost" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('features').update({ published: false }).eq('id', f.id); await loadFeatures(db); }}>Unpublish</button>
+                            : <button className="btn btn-pink" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('features').update({ published: true }).eq('id', f.id); await loadFeatures(db); }}>Publish</button>}
+                          {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => handleEdit(f)}>Edit</button>}
+                          {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteFeature(f.id)}>Delete</button>}
+                        </>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </>
+          )}
         </tbody>
       </table>
     </>
