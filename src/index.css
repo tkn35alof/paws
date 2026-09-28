@@ -550,6 +550,17 @@ footer .foot-bottom {
   gap: 8px;
   flex-shrink: 0;
   width: 120px;
+  padding: 16px 12px;
+  background: rgba(14, 14, 24, 0.6);
+  border: 1px solid var(--paws-line-2);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: border-color .3s ease, transform .3s ease;
+}
+.logo-box:hover {
+  border-color: var(--paws-pink);
+  transform: translateY(-4px);
 }
 .logo-img {
   width: 56px;
