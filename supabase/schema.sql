@@ -68,6 +68,29 @@ create table if not exists public.projects (
   created_at    timestamptz default now()
 );
 
+-- Integration logos (marquee).
+create table if not exists public.integration_logos (
+  id            uuid primary key default gen_random_uuid(),
+  name          text not null,
+  logo_url      text not null,         -- Supabase storage path or external URL
+  alt_text      text,
+  row_index     integer default 1,     -- 1 = top row, 2 = bottom row
+  display_order integer default 0,
+  published     boolean default false,
+  created_at    timestamptz default now()
+);
+
+-- Features (feature cards grid).
+create table if not exists public.features (
+  id            uuid primary key default gen_random_uuid(),
+  title         text not null,
+  description   text,
+  icon_svg      text,                  -- inline SVG string
+  display_order integer default 0,
+  published     boolean default false,
+  created_at    timestamptz default now()
+);
+
 -- Mission / Vision / About (single-row content table, owner-edited).
 create table if not exists public.site_content (
   key           text primary key,       -- 'mission' | 'vision' | 'about' | 'contact'
@@ -169,6 +192,28 @@ create policy "public_read_published_projects"
 
 create policy "owner_all_projects"
   on public.projects for all
+  to authenticated
+  using ( public.is_owner() )
+  with check ( public.is_owner() );
+
+-- ---- INTEGRATION_LOGOS ----
+create policy "public_read_published_logos"
+  on public.integration_logos for select
+  using ( published = true );
+
+create policy "owner_all_integration_logos"
+  on public.integration_logos for all
+  to authenticated
+  using ( public.is_owner() )
+  with check ( public.is_owner() );
+
+-- ---- FEATURES ----
+create policy "public_read_published_features"
+  on public.features for select
+  using ( published = true );
+
+create policy "owner_all_features"
+  on public.features for all
   to authenticated
   using ( public.is_owner() )
   with check ( public.is_owner() );

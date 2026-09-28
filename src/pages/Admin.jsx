@@ -8,6 +8,8 @@ const TAB_META = [
   { key: 'invites',     label: 'Invites',     perms: ['can_invite'] },
   { key: 'testimonials',label: 'Testimonials',perms: ['can_edit_testimonials'] },
   { key: 'projects',    label: 'Projects',    perms: ['can_edit_projects'] },
+  { key: 'logos',       label: 'Logos',       perms: ['can_edit_logos'] },
+  { key: 'features',    label: 'Features',    perms: ['can_edit_features'] },
   { key: 'content',     label: 'Content',     perms: ['can_edit_site_content'] },
 ]
 
@@ -27,6 +29,8 @@ export default function Admin() {
   const [invites, setInvites] = useState([])
   const [testimonials, setTestimonials] = useState([])
   const [projects, setProjects] = useState([])
+  const [logos, setLogos] = useState([])
+  const [features, setFeatures] = useState([])
   const [siteContent, setSiteContent] = useState({ about: '', mission: '', vision: '', contact: '' })
   const [editingProject, setEditingProject] = useState(null)
   const [editingMemberPerms, setEditingMemberPerms] = useState(null)
@@ -53,10 +57,12 @@ export default function Admin() {
       // For member picker in projects, we need member list (always safe to load)
       tasks.push(loadMembers(db))
       if (owner) {
-        tasks.push(loadInvites(db), loadTestimonials(db), loadProjects(db), loadSiteContent(db))
+        tasks.push(loadInvites(db), loadTestimonials(db), loadProjects(db), loadLogos(db), loadFeatures(db), loadSiteContent(db))
       } else {
         if (allowed.find((m) => m.key === 'testimonials')) tasks.push(loadTestimonials(db))
         if (allowed.find((m) => m.key === 'projects'))    tasks.push(loadProjects(db))
+        if (allowed.find((m) => m.key === 'logos'))       tasks.push(loadLogos(db))
+        if (allowed.find((m) => m.key === 'features'))    tasks.push(loadFeatures(db))
         if (allowed.find((m) => m.key === 'content'))     tasks.push(loadSiteContent(db))
         if (allowed.find((m) => m.key === 'invites'))     tasks.push(loadInvites(db))
       }
@@ -96,6 +102,16 @@ export default function Admin() {
       if (row.key in map) map[row.key] = row.body || ''
     }
     setSiteContent(map)
+  }
+
+  async function loadLogos(db) {
+    const { data } = await db.from('integration_logos').select('*').order('row_index').order('display_order')
+    setLogos(data || [])
+  }
+
+  async function loadFeatures(db) {
+    const { data } = await db.from('features').select('*').order('display_order')
+    setFeatures(data || [])
   }
 
   async function togglePublish(id, val) {
@@ -272,6 +288,8 @@ export default function Admin() {
     invites:      isOwner || !!memberPerms.can_invite,
     testimonials: isOwner || !!memberPerms.can_edit_testimonials,
     projects:     isOwner || !!memberPerms.can_edit_projects,
+    logos:        isOwner || !!memberPerms.can_edit_logos,
+    features:     isOwner || !!memberPerms.can_edit_features,
     content:      isOwner || !!memberPerms.can_edit_site_content,
   }
 
@@ -351,6 +369,20 @@ export default function Admin() {
             deleteProject={deleteProject}
             uploadProjectCover={uploadProjectCover}
             canEdit={canEdit.projects}
+          />
+        )}
+
+        {tab === 'logos' && (
+          <LogosTab
+            logos={logos}
+            canEdit={canEdit.logos}
+          />
+        )}
+
+        {tab === 'features' && (
+          <FeaturesTab
+            features={features}
+            canEdit={canEdit.features}
           />
         )}
 
@@ -692,6 +724,8 @@ function PermissionsEditor({ member, onSave, onCancel }) {
     { key: 'can_edit_testimonials', label: 'Edit testimonials', hint: 'Create / publish client testimonials' },
     { key: 'can_invite',            label: 'Send invites',      hint: 'Create invite codes for new team members' },
     { key: 'can_edit_site_content', label: 'Edit site content', hint: 'Edit About / Mission / Vision / Contact copy' },
+    { key: 'can_edit_logos',        label: 'Edit logos',        hint: 'Manage integration logos in marquee' },
+    { key: 'can_edit_features',     label: 'Edit features',     hint: 'Manage feature cards on homepage' },
     { key: 'can_publish',           label: 'Self-publish',      hint: 'Toggle their own profile published/hidden' },
     { key: 'can_manage_members',    label: 'Manage members',    hint: 'Edit / delete other members and their permissions' },
   ]
@@ -776,6 +810,214 @@ function ContentEditor({ siteContent, onSave }) {
         </div>
       ))}
     </div>
+  )
+}
+
+function LogosTab({ logos, canEdit }) {
+  const [editing, setEditing] = useState(null)
+  const [editData, setEditData] = useState({ name: '', logo_url: '', alt_text: '', row_index: 1, display_order: 0, published: false })
+  const [uploading, setUploading] = useState(false)
+
+  async function handleEdit(l) {
+    setEditData({ name: l.name, logo_url: l.logo_url, alt_text: l.alt_text || '', row_index: l.row_index || 1, display_order: l.display_order || 0, published: l.published })
+    setEditing(l.id)
+  }
+
+  async function saveEdit(id) {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    await db.from('integration_logos').update(editData).eq('id', id)
+    setLogos(ts => ts.map(t => t.id === id ? { ...t, ...editData } : t))
+    setEditing(null)
+  }
+
+  async function addLogo() {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    const order = logos.length
+    const { error } = await db.from('integration_logos').insert({ name: 'New logo', logo_url: '/logos/placeholder.svg', row_index: 1, display_order: order, published: false })
+    if (error) { alert(error.message); return }
+    await loadLogos(db)
+  }
+
+  async function deleteLogo(id) {
+    if (!supabaseReady) return
+    if (!confirm('Delete this logo?')) return
+    const db = requireSupabase()
+    await db.from('integration_logos').delete().eq('id', id)
+    await loadLogos(db)
+  }
+
+  async function onFileUpload(e) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    const db = requireSupabase()
+    const path = `logos/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`
+    const { error: upErr } = await db.storage.from('member-photos-public').upload(path, file, { cacheControl: '3600', upsert: true, contentType: file.type })
+    if (upErr) { alert(`Upload failed: ${upErr.message}`); setUploading(false); return }
+    const { data: pub } = db.storage.from('member-photos-public').getPublicUrl(path)
+    setEditData({ ...editData, logo_url: pub.publicUrl })
+    setUploading(false)
+  }
+
+  return (
+    <>
+      {canEdit && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
+          <button className="btn btn-pink" style={smallBtn} onClick={() => { setEditData({ name: '', logo_url: '', alt_text: '', row_index: 1, display_order: logos.length, published: false }); setEditing('new') }}>+ Add logo</button>
+        </div>
+      )}
+      {!canEdit && <ReadOnlyNotice />}
+      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <thead>
+          <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--paws-line)' }}>
+            <th style={{ ...th, width: 80 }}>Preview</th>
+            <th style={th}>Name</th>
+            <th style={th}>Row</th>
+            <th style={th}>Order</th>
+            <th style={th}>Published</th>
+            <th style={{ ...th, width: 240 }}>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {logos.length === 0 ? (
+            <tr><td style={td} colSpan={6}><em style={{ color: 'var(--paws-muted)' }}>No logos yet.</em></td></tr>
+          ) : logos.map((l, i) => (
+            <tr key={l.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
+              <td style={td}>
+                {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} style={{ width: 40, height: 40, objectFit: 'contain', border: '1px solid var(--paws-line)', borderRadius: 4 }} /> : <div style={{ width: 40, height: 40, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)' }} />}
+              </td>
+              <td style={td}>{l.name}</td>
+              <td style={td}>{l.row_index === 1 ? 'Top' : 'Bottom'}</td>
+              <td style={td}>{l.display_order}</td>
+              <td style={td}>{l.published ? 'Yes' : 'No'}</td>
+              <td style={td}>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {editing === l.id ? (
+                    <>
+                      <input style={{ ...inputStyle, maxWidth: 180 }} value={editData.name} onChange={e => setEditData({ ...editData, name: e.target.value })} placeholder="Name" />
+                      <input style={{ ...inputStyle, maxWidth: 300 }} value={editData.logo_url} onChange={e => setEditData({ ...editData, logo_url: e.target.value })} placeholder="Logo URL (or upload)" />
+                      <input style={{ ...inputStyle, maxWidth: 160 }} value={editData.alt_text} onChange={e => setEditData({ ...editData, alt_text: e.target.value })} placeholder="Alt text" />
+                      <select style={{ ...inputStyle, maxWidth: 100 }} value={editData.row_index} onChange={e => setEditData({ ...editData, row_index: parseInt(e.target.value) })}>
+                        <option value={1}>Top</option>
+                        <option value={2}>Bottom</option>
+                      </select>
+                      <input type="file" accept="image/svg+xml,image/*" onChange={onFileUpload} style={{ display: 'none' }} id={`logo-upload-${l.id}`} />
+                      <label htmlFor={`logo-upload-${l.id}`} className="btn btn-ghost" style={{ ...smallBtn, cursor: 'pointer' }} disabled={uploading}>{uploading ? 'Uploading…' : 'Upload SVG'}</label>
+                      <button className="btn btn-pink" style={smallBtn} onClick={() => saveEdit(l.id)}>Save</button>
+                      <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditing(null)}>Cancel</button>
+                    </>
+                  ) : (
+                    <>
+                      {l.published
+                        ? <button className="btn btn-ghost" style={smallBtn} onClick={() => { const db = requireSupabase(); db.from('integration_logos').update({ published: false }).eq('id', l.id); setLogos(ts => ts.map(t => t.id === l.id ? { ...t, published: false } : t)) }}>Unpublish</button>
+                        : <button className="btn btn-pink" style={smallBtn} onClick={() => { const db = requireSupabase(); db.from('integration_logos').update({ published: true }).eq('id', l.id); setLogos(ts => ts.map(t => t.id === l.id ? { ...t, published: true } : t)) }}>Publish</button>}
+                      {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => handleEdit(l)}>Edit</button>}
+                      {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteLogo(l.id)}>Delete</button>}
+                    </>
+                  )}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
+  )
+}
+
+function FeaturesTab({ features, canEdit }) {
+  const [editing, setEditing] = useState(null)
+  const [editData, setEditData] = useState({ title: '', description: '', icon_svg: '', display_order: 0, published: false })
+
+  async function handleEdit(f) {
+    setEditData({ title: f.title, description: f.description || '', icon_svg: f.icon_svg || '', display_order: f.display_order || 0, published: f.published })
+    setEditing(f.id)
+  }
+
+  async function saveEdit(id) {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    await db.from('features').update(editData).eq('id', id)
+    setFeatures(fs => fs.map(f => f.id === id ? { ...f, ...editData } : f))
+    setEditing(null)
+  }
+
+  async function addFeature() {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    const order = features.length
+    const { error } = await db.from('features').insert({ title: 'New feature', description: '', icon_svg: '', display_order: order, published: false })
+    if (error) { alert(error.message); return }
+    await loadFeatures(db)
+  }
+
+  async function deleteFeature(id) {
+    if (!supabaseReady) return
+    if (!confirm('Delete this feature?')) return
+    const db = requireSupabase()
+    await db.from('features').delete().eq('id', id)
+    await loadFeatures(db)
+  }
+
+  return (
+    <>
+      {canEdit && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
+          <button className="btn btn-pink" style={smallBtn} onClick={() => { setEditData({ title: '', description: '', icon_svg: '', display_order: features.length, published: false }); setEditing('new') }}>+ Add feature</button>
+        </div>
+      )}
+      {!canEdit && <ReadOnlyNotice />}
+      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        <thead>
+          <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--paws-line)' }}>
+            <th style={{ ...th, width: 80 }}>Icon</th>
+            <th style={th}>Title</th>
+            <th style={th}>Description</th>
+            <th style={th}>Order</th>
+            <th style={th}>Published</th>
+            <th style={{ ...th, width: 200 }}>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {features.length === 0 ? (
+            <tr><td style={td} colSpan={6}><em style={{ color: 'var(--paws-muted)' }}>No features yet.</em></td></tr>
+          ) : features.map((f, i) => (
+            <tr key={f.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
+              <td style={td}>
+                {f.icon_svg ? <div dangerouslySetInnerHTML={{ __html: f.icon_svg }} style={{ width: 32, height: 32 }} /> : <div style={{ width: 32, height: 32, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)' }} />}
+              </td>
+              <td style={td}>{f.title}</td>
+              <td style={{ ...td, maxWidth: 300 }}>{f.description?.slice(0, 80)}{f.description?.length > 80 ? '…' : ''}</td>
+              <td style={td}>{f.display_order}</td>
+              <td style={td}>{f.published ? 'Yes' : 'No'}</td>
+              <td style={td}>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {editing === f.id ? (
+                    <>
+                      <input style={{ ...inputStyle, maxWidth: 200 }} value={editData.title} onChange={e => setEditData({ ...editData, title: e.target.value })} placeholder="Title" />
+                      <textarea style={{ ...inputStyle, maxWidth: 300, minHeight: 60 }} value={editData.description} onChange={e => setEditData({ ...editData, description: e.target.value })} placeholder="Description" />
+                      <textarea style={{ ...inputStyle, maxWidth: 400, minHeight: 80, fontFamily: 'monospace', fontSize: 12 }} value={editData.icon_svg} onChange={e => setEditData({ ...editData, icon_svg: e.target.value })} placeholder="Inline SVG (26x26 viewBox)" />
+                      <button className="btn btn-pink" style={smallBtn} onClick={() => saveEdit(f.id)}>Save</button>
+                      <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditing(null)}>Cancel</button>
+                    </>
+                  ) : (
+                    <>
+                      {f.published
+                        ? <button className="btn btn-ghost" style={smallBtn} onClick={() => { const db = requireSupabase(); db.from('features').update({ published: false }).eq('id', f.id); setFeatures(fs => fs.map(t => t.id === f.id ? { ...t, published: false } : t)) }}>Unpublish</button>
+                        : <button className="btn btn-pink" style={smallBtn} onClick={() => { const db = requireSupabase(); db.from('features').update({ published: true }).eq('id', f.id); setFeatures(fs => fs.map(t => t.id === f.id ? { ...t, published: true } : t)) }}>Publish</button>}
+                      {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => handleEdit(f)}>Edit</button>}
+                      {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteFeature(f.id)}>Delete</button>}
+                    </>
+                  )}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </>
   )
 }
 

@@ -6,6 +6,8 @@ import { Footer } from '../components/Footer.jsx'
 export default function Home() {
   const [members, setMembers] = useState([])
   const [testimonials, setTestimonials] = useState([])
+  const [logos, setLogos] = useState([])
+  const [features, setFeatures] = useState([])
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState(null)
 
@@ -14,12 +16,16 @@ export default function Home() {
     const db = requireSupabase()
     ;(async () => {
       try {
-        const [{ data: m }, { data: t }] = await Promise.all([
+        const [{ data: m }, { data: t }, { data: l }, { data: f }] = await Promise.all([
           db.from('members').select('*').eq('published', true).order('display_order'),
           db.from('testimonials').select('*').eq('published', true).order('display_order'),
+          db.from('integration_logos').select('*').eq('published', true).order('row_index').order('display_order'),
+          db.from('features').select('*').eq('published', true).order('display_order'),
         ])
         setMembers(m || [])
         setTestimonials(t || [])
+        setLogos(l || [])
+        setFeatures(f || [])
       } catch (e) { setErr(e.message) }
       setLoading(false)
     })()
@@ -71,20 +77,20 @@ export default function Home() {
                 <div style={{ overflow: 'hidden', position: 'relative' }}>
                   <div className="marquee-fade" style={{ marginBottom: 24 }}>
                     <div className="marquee">
-                      {['hubspot','intercom','kickstarter','hubspot','intercom','kickstarter','hubspot','intercom','kickstarter','hubspot','intercom','kickstarter'].map((name, i) => (
-                        <div key={`${name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
-                          <img src={`/logos/${name}.svg`} alt={name} width="56" height="56" style={{ display: 'block' }} />
-                          <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{name.charAt(0).toUpperCase() + name.slice(1)}</span>
+                      {logos.filter(l => l.row_index === 1).map((l, i) => (
+                        <div key={`${l.id}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
+                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} width="56" height="56" style={{ display: 'block' }} /> : <div style={{ width: 56, height: 56, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)', borderRadius: '50%' }} />}
+                          <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{l.name}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                   <div className="marquee-fade">
                     <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
-                      {['zapier','mailchimp','shopify','slack','zapier','mailchimp','shopify','slack','zapier','mailchimp','shopify','slack'].map((name, i) => (
-                        <div key={`${name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
-                          <img src={`/logos/${name}.svg`} alt={name} width="56" height="56" style={{ display: 'block' }} />
-                          <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{name.charAt(0).toUpperCase() + name.slice(1)}</span>
+                      {logos.filter(l => l.row_index === 2).map((l, i) => (
+                        <div key={`${l.id}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
+                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} width="56" height="56" style={{ display: 'block' }} /> : <div style={{ width: 56, height: 56, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)', borderRadius: '50%' }} />}
+                          <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{l.name}</span>
                         </div>
                       ))}
                     </div>
@@ -94,30 +100,23 @@ export default function Home() {
             </section>
 
       {/* Feature cards grid — Darkrise 2x3 style */}
-      <section className="section" style={{ padding: '80px 0' }}>
-        <div className="wrap">
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h2 style={{ fontSize: 32, marginBottom: 12, textTransform: 'lowercase' }}>and, more features</h2>
-            <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Gain invaluable predictive analytics and actionable insights, empowering your team to make data-driven decisions and close.</p>
-          </div>
-          <div className="feature-grid">
-            {[
-              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>', title: 'Setup Everything Fast', desc: 'Get your workspace configured and ready in minutes, not days.' },
-              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="2"/><rect x="3" y="8" width="18" height="2"/><rect x="3" y="12" width="18" height="2"/><rect x="3" y="16" width="18" height="2"/><circle cx="8" cy="19" r="1" fill="currentColor"/></svg>', title: 'Schedule Campaign', desc: 'Automated campaigns that reach the right people at the right time.' },
-              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 4-6"/></svg>', title: 'Live Reports', desc: 'Real-time dashboards showing exactly what is working and what needs attention.' },
-              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8z"/></svg>', title: 'Chat Module in Website', desc: 'Embedded chat so clients reach you instantly without leaving the page.' },
-              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2h12v20H6z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>', title: 'Unlimited Products', desc: 'No caps on what you can list, sell, or manage through our platform.' },
-              { svg: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><circle cx="17" cy="7" r="3"/><path d="M21 21v-2a4 4 0 00-4-4h-1"/></svg>', title: 'Collect Information', desc: 'Smart forms that capture leads and route them to the right team member.' },
-            ].map((f) => (
-              <div key={f.title} className="feature-card">
-                <div className="feature-icon" dangerouslySetInnerHTML={{ __html: f.svg }}></div>
-                <h3 style={{ fontSize: 20, marginBottom: 8 }}>{f.title}</h3>
-                <p style={{ color: 'var(--paws-ink-2)', fontSize: 15, lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
+            <section className="section" style={{ padding: '80px 0' }}>
+              <div className="wrap">
+                <div style={{ textAlign: 'center', marginBottom: 48 }}>
+                  <h2 style={{ fontSize: 32, marginBottom: 12, textTransform: 'lowercase' }}>and, more features</h2>
+                  <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Gain invaluable predictive analytics and actionable insights, empowering your team to make data-driven decisions and close.</p>
+                </div>
+                <div className="feature-grid">
+                  {features.map((f) => (
+                    <div key={f.id} className="feature-card">
+                      <div className="feature-icon" dangerouslySetInnerHTML={{ __html: f.icon_svg || '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>' }}></div>
+                      <h3 style={{ fontSize: 20, marginBottom: 8 }}>{f.title}</h3>
+                      <p style={{ color: 'var(--paws-ink-2)', fontSize: 15, lineHeight: 1.6, margin: 0 }}>{f.description}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </section>
 
       <section className="section">
         <div className="wrap">
