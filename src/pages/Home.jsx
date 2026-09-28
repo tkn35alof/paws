@@ -62,40 +62,36 @@ export default function Home() {
       </div>
 
       {/* Integration logos marquee — Darkrise two-row staggered style */}
-      <section className="section" style={{ padding: '80px 0' }}>
-        <div className="wrap">
-          <div style={{ textAlign: 'center', marginBottom: 48 }}>
-            <h2 style={{ fontSize: 32, marginBottom: 12 }}>Connect with 100+ tools</h2>
-            <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Gain invaluable predictive analytics and actionable insights, empowering your team to make data-driven decisions.</p>
-          </div>
-          <div style={{ overflow: 'hidden', position: 'relative' }}>
-            <div className="marquee-fade" style={{ marginBottom: 24 }}>
-              <div className="marquee">
-                {['Hubspot','Intercom','Kickstarter','Hubspot','Intercom','Kickstarter','Hubspot','Intercom','Kickstarter','Hubspot','Intercom','Kickstarter'].map((name, i) => (
-                  <div key={`${name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
-                    <div style={{ width: 56, height: 56, borderRadius: '50%', background: name==='Hubspot'?'#ff7a18':name==='Intercom'?'#1e88e5':'#7ed6df', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm1.5 7.5h-3v3h-1.5v-3H6v-1.5h3V6h1.5v3h3v1.5z"/></svg>
+            <section className="section" style={{ padding: '80px 0' }}>
+              <div className="wrap">
+                <div style={{ textAlign: 'center', marginBottom: 48 }}>
+                  <h2 style={{ fontSize: 32, marginBottom: 12 }}>Connect with 100+ tools</h2>
+                  <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Gain invaluable predictive analytics and actionable insights, empowering your team to make data-driven decisions.</p>
+                </div>
+                <div style={{ overflow: 'hidden', position: 'relative' }}>
+                  <div className="marquee-fade" style={{ marginBottom: 24 }}>
+                    <div className="marquee">
+                      {['hubspot','intercom','kickstarter','hubspot','intercom','kickstarter','hubspot','intercom','kickstarter','hubspot','intercom','kickstarter'].map((name, i) => (
+                        <div key={`${name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
+                          <img src={`/logos/${name}.svg`} alt={name} width="56" height="56" style={{ display: 'block' }} />
+                          <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{name.charAt(0).toUpperCase() + name.slice(1)}</span>
+                        </div>
+                      ))}
                     </div>
-                    <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{name}</span>
                   </div>
-                ))}
-              </div>
-            </div>
-            <div className="marquee-fade">
-              <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
-                {['Zapier','Mailchimp','Shopify','Slack','Zapier','Mailchimp','Shopify','Slack','Zapier','Mailchimp','Shopify','Slack'].map((name, i) => (
-                  <div key={`${name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
-                    <div style={{ width: 56, height: 56, borderRadius: '50%', background: name==='Zapier'||name==='Mailchimp'?'#f45134':name==='Shopify'?'#7ea45a':'#4a1e4e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>
+                  <div className="marquee-fade">
+                    <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
+                      {['zapier','mailchimp','shopify','slack','zapier','mailchimp','shopify','slack','zapier','mailchimp','shopify','slack'].map((name, i) => (
+                        <div key={`${name}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
+                          <img src={`/logos/${name}.svg`} alt={name} width="56" height="56" style={{ display: 'block' }} />
+                          <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{name.charAt(0).toUpperCase() + name.slice(1)}</span>
+                        </div>
+                      ))}
                     </div>
-                    <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{name}</span>
                   </div>
-                ))}
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            </section>
 
       {/* Feature cards grid — Darkrise 2x3 style */}
       <section className="section" style={{ padding: '80px 0' }}>
