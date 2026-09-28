@@ -508,6 +508,40 @@ function InvitesTab({ newInvite, setNewInvite, busy, invites, generateInvite, re
 }
 
 function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonial, deleteTestimonial, canEdit }) {
+  const [editing, setEditing] = useState(null)
+  const [editData, setEditData] = useState({ author_name: '', author_title: '', body: '' })
+
+  async function handleEdit(t) {
+    setEditData({ author_name: t.author_name, author_title: t.author_title || '', body: t.body })
+    setEditing(t.id)
+  }
+
+  async function saveEdit(id) {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    await db.from('testimonials').update(editData).eq('id', id)
+    setTestimonials(ts => ts.map(t => t.id === id ? { ...t, ...editData } : t))
+    setEditing(null)
+  }
+
+  async function moveTestimonial(id, direction) {
+    if (!supabaseReady) return
+    const db = requireSupabase()
+    const idx = testimonials.findIndex(t => t.id === id)
+    const newIdx = idx + direction
+    if (newIdx < 0 || newIdx >= testimonials.length) return
+    const [a, b] = [testimonials[idx], testimonials[newIdx]]
+    await Promise.all([
+      db.from('testimonials').update({ display_order: b.display_order }).eq('id', a.id),
+      db.from('testimonials').update({ display_order: a.display_order }).eq('id', b.id)
+    ])
+    setTestimonials(ts => {
+      const copy = [...ts]
+      ;[copy[idx], copy[newIdx]] = [copy[newIdx], copy[idx]]
+      return copy
+    })
+  }
+
   return (
     <>
       {canEdit && (
@@ -519,26 +553,49 @@ function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonia
       <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
           <tr style={{ textAlign: 'left', borderBottom: '1px solid var(--paws-line)' }}>
+            <th style={{ ...th, width: 60 }}>Order</th>
             <th style={th}>Author</th>
             <th style={th}>Body</th>
             <th style={th}>Published</th>
-            <th style={th}>Actions</th>
+            <th style={{ ...th, width: 200 }}>Actions</th>
           </tr>
         </thead>
         <tbody>
           {testimonials.length === 0 ? (
-            <tr><td style={td} colSpan={4}><em style={{ color: 'var(--paws-muted)' }}>No testimonials yet.</em></td></tr>
-          ) : testimonials.map((t) => (
+            <tr><td style={td} colSpan={5}><em style={{ color: 'var(--paws-muted)' }}>No testimonials yet.</em></td></tr>
+          ) : testimonials.map((t, i) => (
             <tr key={t.id} style={{ borderBottom: '1px solid var(--paws-line)' }}>
+              <td style={td}>
+                {canEdit && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    <button className="btn btn-ghost" style={{ ...smallBtn, padding: '4px 8px', fontSize: 10 }} onClick={() => moveTestimonial(t.id, -1)} disabled={i === 0}>↑</button>
+                    <button className="btn btn-ghost" style={{ ...smallBtn, padding: '4px 8px', fontSize: 10 }} onClick={() => moveTestimonial(t.id, 1)} disabled={i === testimonials.length - 1}>↓</button>
+                  </div>
+                )}
+                {i + 1}
+              </td>
               <td style={td}>{t.author_name}{t.author_title ? `, ${t.author_title}` : ''}</td>
               <td style={{ ...td, maxWidth: 400 }}>{t.body.slice(0, 120)}{t.body.length > 120 ? '…' : ''}</td>
               <td style={td}>{t.published ? 'Yes' : 'No'}</td>
               <td style={td}>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {t.published
-                    ? <button className="btn btn-ghost" style={smallBtn} onClick={() => toggleTestimonialPublish(t.id, false)}>Unpublish</button>
-                    : <button className="btn btn-pink" style={smallBtn} onClick={() => toggleTestimonialPublish(t.id, true)}>Publish</button>}
-                  {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteTestimonial(t.id)}>Delete</button>}
+                  {editing === t.id ? (
+                    <>
+                      <input style={{ ...inputStyle, maxWidth: 200 }} value={editData.author_name} onChange={e => setEditData({ ...editData, author_name: e.target.value })} placeholder="Author" />
+                      <input style={{ ...inputStyle, maxWidth: 160 }} value={editData.author_title} onChange={e => setEditData({ ...editData, author_title: e.target.value })} placeholder="Title" />
+                      <textarea style={{ ...inputStyle, maxWidth: 300, minHeight: 60 }} value={editData.body} onChange={e => setEditData({ ...editData, body: e.target.value })} placeholder="Body" />
+                      <button className="btn btn-pink" style={smallBtn} onClick={() => saveEdit(t.id)}>Save</button>
+                      <button className="btn btn-ghost" style={smallBtn} onClick={() => setEditing(null)}>Cancel</button>
+                    </>
+                  ) : (
+                    <>
+                      {t.published
+                        ? <button className="btn btn-ghost" style={smallBtn} onClick={() => toggleTestimonialPublish(t.id, false)}>Unpublish</button>
+                        : <button className="btn btn-pink" style={smallBtn} onClick={() => toggleTestimonialPublish(t.id, true)}>Publish</button>}
+                      {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => handleEdit(t)}>Edit</button>}
+                      {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteTestimonial(t.id)}>Delete</button>}
+                    </>
+                  )}
                 </div>
               </td>
             </tr>
