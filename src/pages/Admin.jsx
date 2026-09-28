@@ -543,10 +543,10 @@ function InvitesTab({ newInvite, setNewInvite, busy, invites, generateInvite, re
 
 function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonial, deleteTestimonial, canEdit }) {
   const [editing, setEditing] = useState(null)
-  const [editData, setEditData] = useState({ author_name: '', author_title: '', body: '' })
+  const [editData, setEditData] = useState({ author_name: '', author_title: '', body: '', display_order: 0 })
 
   async function handleEdit(t) {
-    setEditData({ author_name: t.author_name, author_title: t.author_title || '', body: t.body })
+    setEditData({ author_name: t.author_name, author_title: t.author_title || '', body: t.body, display_order: t.display_order || 0 })
     setEditing(t.id)
   }
 
@@ -842,7 +842,7 @@ function LogosTab({ logos, loadLogos, canEdit }) {
     if (!supabaseReady) return
     const db = requireSupabase()
     const order = logos.length
-    const { error } = await db.from('integration_logos').insert({ name: 'New logo', logo_url: '', alt_text: '', row_index: 1, display_order: order, published: false })
+    const { error } = await db.from('integration_logos').insert({ name: 'New logo', logo_url: '/logos/placeholder.svg', row_index: 1, display_order: order, published: false })
     if (error) { alert(error.message); return }
     await loadLogos(db)
   }
@@ -977,7 +977,7 @@ function FeaturesTab({ features, loadFeatures, canEdit }) {
     <>
       {canEdit && (
         <div style={{ display: 'flex', justifyContent: 'flex-end', margin: '0 0 16px' }}>
-          <button className="btn btn-pink" style={smallBtn} onClick={() => { setEditData({ title: '', description: '', icon_svg: '', display_order: features.length, published: false }); setEditing('new') }}>+ Add feature</button>
+          <button className="btn btn-pink" style={smallBtn} onClick={() => { setEditData({ title: 'New feature', description: '', icon_svg: '', display_order: features.length, published: false }); setEditing('new') }}>+ Add feature</button>
         </div>
       )}
       {!canEdit && <ReadOnlyNotice />}
