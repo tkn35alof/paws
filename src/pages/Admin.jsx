@@ -97,7 +97,7 @@ export default function Admin() {
   }
   async function loadSiteContent(db) {
     const { data } = await db.from('site_content').select('*')
-    const map = { about: '', mission: '', vision: '', contact: '' }
+    const map = { about: '', mission: '', vision: '', contact: '', testimonial_marquee_delays: '' }
     for (const row of (data || [])) {
       if (row.key in map) map[row.key] = row.body || ''
     }
@@ -769,6 +769,7 @@ function ContentEditor({ siteContent, onSave }) {
     { key: 'mission', title: 'Mission', page: '/mission', hint: 'Why PAWS exists; the problem you solve.' },
     { key: 'vision',  title: 'Vision',  page: '/vision',  hint: 'Where PAWS is going in 1-3 years.' },
     { key: 'contact', title: 'Contact', page: '/contact', hint: 'How clients reach you (shown on the Contact page).' },
+    { key: 'testimonial_marquee_delays', title: 'Testimonial Marquee Delays', page: '/', hint: 'Comma-separated animation delays (seconds) for each column, e.g. "0, -20, -40". Use negative values to stagger.' },
   ]
   return (
     <div style={{ display: 'grid', gap: 24 }}>

@@ -8,6 +8,7 @@ export default function Home() {
   const [testimonials, setTestimonials] = useState([])
   const [logos, setLogos] = useState([])
   const [features, setFeatures] = useState([])
+  const [testimonialDelays, setTestimonialDelays] = useState('0, -20, -40')
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState(null)
 
@@ -16,16 +17,18 @@ export default function Home() {
     const db = requireSupabase()
     ;(async () => {
       try {
-        const [{ data: m }, { data: t }, { data: l }, { data: f }] = await Promise.all([
+        const [{ data: m }, { data: t }, { data: l }, { data: f }, { data: delays }] = await Promise.all([
           db.from('members').select('*').eq('published', true).order('display_order'),
           db.from('testimonials').select('*').eq('published', true).order('display_order'),
           db.from('integration_logos').select('*').eq('published', true).order('row_index').order('display_order'),
           db.from('features').select('*').eq('published', true).order('display_order'),
+          db.from('site_content').select('body').eq('key', 'testimonial_marquee_delays').single(),
         ])
         setMembers(m || [])
         setTestimonials(t || [])
         setLogos(l || [])
         setFeatures(f || [])
+        if (delays?.body) setTestimonialDelays(delays.body)
       } catch (e) { setErr(e.message) }
       setLoading(false)
     })()
@@ -164,37 +167,19 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="testimonial-marquee-grid">
-                    <div className="marquee-v-fade">
-                      <div className="marquee-vertical" style={{ animationDelay: '0s' }}>
-                        {testimonials.map((t) => (
-                          <div key={t.id} className="testimonial-card">
-                            <p>"{t.body}"</p>
-                            <cite>- {t.author_name}{t.author_title ? `, ${t.author_title}` : ''}</cite>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="marquee-v-fade">
-                      <div className="marquee-vertical" style={{ animationDelay: '-20s' }}>
-                        {testimonials.map((t) => (
-                          <div key={`${t.id}-b`} className="testimonial-card">
-                            <p>"{t.body}"</p>
-                            <cite>- {t.author_name}{t.author_title ? `, ${t.author_title}` : ''}</cite>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="marquee-v-fade">
-                      <div className="marquee-vertical" style={{ animationDelay: '-40s' }}>
-                        {testimonials.map((t) => (
-                          <div key={`${t.id}-c`} className="testimonial-card">
-                            <p>"{t.body}"</p>
-                            <cite>- {t.author_name}{t.author_title ? `, ${t.author_title}` : ''}</cite>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                                      {testimonialDelays.split(',').map((delay, i) => (
+                                        <div key={i} className="marquee-v-fade">
+                                          <div className="marquee-vertical" style={{ animationDelay: delay.trim() }}>
+                                            {testimonials.map((t) => (
+                                              <div key={`${t.id}-${i}`} className="testimonial-card">
+                                                <p>"{t.body}"</p>
+                                                <cite>- {t.author_name}{t.author_title ? `, ${t.author_title}` : ''}</cite>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
                 </div>
               </section>
             )}
