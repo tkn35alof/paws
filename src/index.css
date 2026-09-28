@@ -671,6 +671,44 @@ footer .foot-bottom {
 .marquee-v-fade::before { top: 0; background: linear-gradient(180deg, var(--paws-void), transparent); }
 .marquee-v-fade::after { bottom: 0; background: linear-gradient(180deg, transparent, var(--paws-void)); }
 
+/* === Testimonial marquee grid — responsive columns === */
+.testimonial-marquee-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  height: 480px;
+}
+@media (max-width: 1024px) {
+  .testimonial-marquee-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .testimonial-marquee-grid { grid-template-columns: 1fr; }
+}
+.testimonial-card {
+  border: 1px solid var(--paws-line);
+  border-radius: var(--radius-lg);
+  background: rgba(14, 14, 24, 0.6);
+  padding: 24px;
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.testimonial-card p {
+  margin: 0 0 12px;
+  color: var(--paws-ink);
+  font-size: 16px;
+  line-height: 1.6;
+  font-style: italic;
+}
+.testimonial-card cite {
+  color: var(--paws-pink);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  font-style: normal;
+}
+
 /* === Sticky split section === */
 .split-sticky {
   display: grid;

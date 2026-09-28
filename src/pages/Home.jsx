@@ -168,22 +168,36 @@ export default function Home() {
                       <h2>What clients say</h2>
                     </div>
                   </div>
-                  <div className="marquee-v-fade" style={{ height: 400, overflow: 'hidden' }}>
-                    <div className="marquee-vertical">
-                      {testimonials.map((t, i) => (
-                        <div key={t.id} style={{ border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-lg)', background: 'rgba(14, 14, 24, 0.6)', padding: 24, backdropFilter: 'blur(8px)' }}>
-                          <p style={{ margin: 0, color: 'var(--paws-ink)', fontSize: 16, lineHeight: 1.6, fontStyle: 'italic' }}>"{t.body}"</p>
-                          <p style={{ margin: '12px 0 0', color: 'var(--paws-pink)', fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 500 }}>- {t.author_name}</p>
-                          {t.author_title && <p style={{ margin: 0, color: 'var(--paws-ink-3)', fontSize: 12, fontFamily: 'var(--font-mono)' }}>{t.author_title}</p>}
-                        </div>
-                      ))}
-                      {testimonials.map((t, i) => (
-                        <div key={`${t.id}-dup`} style={{ border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-lg)', background: 'rgba(14, 14, 24, 0.6)', padding: 24, backdropFilter: 'blur(8px)' }}>
-                          <p style={{ margin: 0, color: 'var(--paws-ink)', fontSize: 16, lineHeight: 1.6, fontStyle: 'italic' }}>"{t.body}"</p>
-                          <p style={{ margin: '12px 0 0', color: 'var(--paws-pink)', fontFamily: 'var(--font-display)', fontSize: 14, fontWeight: 500 }}>- {t.author_name}</p>
-                          {t.author_title && <p style={{ margin: 0, color: 'var(--paws-ink-3)', fontSize: 12, fontFamily: 'var(--font-mono)' }}>{t.author_title}</p>}
-                        </div>
-                      ))}
+                  <div className="testimonial-marquee-grid">
+                    <div className="marquee-v-fade">
+                      <div className="marquee-vertical" style={{ animationDelay: '0s' }}>
+                        {testimonials.map((t) => (
+                          <div key={t.id} className="testimonial-card">
+                            <p>"{t.body}"</p>
+                            <cite>- {t.author_name}{t.author_title ? `, ${t.author_title}` : ''}</cite>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="marquee-v-fade">
+                      <div className="marquee-vertical" style={{ animationDelay: '-20s' }}>
+                        {testimonials.map((t) => (
+                          <div key={`${t.id}-b`} className="testimonial-card">
+                            <p>"{t.body}"</p>
+                            <cite>- {t.author_name}{t.author_title ? `, ${t.author_title}` : ''}</cite>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="marquee-v-fade">
+                      <div className="marquee-vertical" style={{ animationDelay: '-40s' }}>
+                        {testimonials.map((t) => (
+                          <div key={`${t.id}-c`} className="testimonial-card">
+                            <p>"{t.body}"</p>
+                            <cite>- {t.author_name}{t.author_title ? `, ${t.author_title}` : ''}</cite>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
