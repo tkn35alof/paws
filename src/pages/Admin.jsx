@@ -828,8 +828,12 @@ function LogosTab({ logos, loadLogos, canEdit }) {
   async function saveEdit(id) {
     if (!supabaseReady) return
     const db = requireSupabase()
-    await db.from('integration_logos').update(editData).eq('id', id)
-    setLogos(ts => ts.map(t => t.id === id ? { ...t, ...editData } : t))
+    if (id === 'new') {
+      const { error } = await db.from('integration_logos').insert(editData)
+      if (error) { alert(error.message); return }
+    } else {
+      await db.from('integration_logos').update(editData).eq('id', id)
+    }
     await loadLogos(db)
     setEditing(null)
   }
@@ -838,7 +842,7 @@ function LogosTab({ logos, loadLogos, canEdit }) {
     if (!supabaseReady) return
     const db = requireSupabase()
     const order = logos.length
-    const { error } = await db.from('integration_logos').insert({ name: 'New logo', logo_url: '/logos/placeholder.svg', row_index: 1, display_order: order, published: false })
+    const { error } = await db.from('integration_logos').insert({ name: 'New logo', logo_url: '', alt_text: '', row_index: 1, display_order: order, published: false })
     if (error) { alert(error.message); return }
     await loadLogos(db)
   }
@@ -914,8 +918,8 @@ function LogosTab({ logos, loadLogos, canEdit }) {
                   ) : (
                     <>
                       {l.published
-                        ? <button className="btn btn-ghost" style={smallBtn} onClick={() => { const db = requireSupabase(); db.from('integration_logos').update({ published: false }).eq('id', l.id); loadLogos(db); setLogos(ts => ts.map(t => t.id === l.id ? { ...t, published: false } : t)) }}>Unpublish</button>
-                        : <button className="btn btn-pink" style={smallBtn} onClick={() => { const db = requireSupabase(); db.from('integration_logos').update({ published: true }).eq('id', l.id); loadLogos(db); setLogos(ts => ts.map(t => t.id === l.id ? { ...t, published: true } : t)) }}>Publish</button>}
+                        ? <button className="btn btn-ghost" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('integration_logos').update({ published: false }).eq('id', l.id); await loadLogos(db); }}>Unpublish</button>
+                        : <button className="btn btn-pink" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('integration_logos').update({ published: true }).eq('id', l.id); await loadLogos(db); }}>Publish</button>}
                       {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => handleEdit(l)}>Edit</button>}
                       {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteLogo(l.id)}>Delete</button>}
                     </>
@@ -942,8 +946,12 @@ function FeaturesTab({ features, loadFeatures, canEdit }) {
   async function saveEdit(id) {
     if (!supabaseReady) return
     const db = requireSupabase()
-    await db.from('features').update(editData).eq('id', id)
-    setFeatures(fs => fs.map(f => f.id === id ? { ...f, ...editData } : f))
+    if (id === 'new') {
+      const { error } = await db.from('features').insert(editData)
+      if (error) { alert(error.message); return }
+    } else {
+      await db.from('features').update(editData).eq('id', id)
+    }
     await loadFeatures(db)
     setEditing(null)
   }
@@ -1009,8 +1017,8 @@ function FeaturesTab({ features, loadFeatures, canEdit }) {
                   ) : (
                     <>
                       {f.published
-                        ? <button className="btn btn-ghost" style={smallBtn} onClick={() => { const db = requireSupabase(); db.from('features').update({ published: false }).eq('id', f.id); loadFeatures(db); setFeatures(fs => fs.map(t => t.id === f.id ? { ...t, published: false } : t)) }}>Unpublish</button>
-                        : <button className="btn btn-pink" style={smallBtn} onClick={() => { const db = requireSupabase(); db.from('features').update({ published: true }).eq('id', f.id); loadFeatures(db); setFeatures(fs => fs.map(t => t.id === f.id ? { ...t, published: true } : t)) }}>Publish</button>}
+                        ? <button className="btn btn-ghost" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('features').update({ published: false }).eq('id', f.id); await loadFeatures(db); }}>Unpublish</button>
+                        : <button className="btn btn-pink" style={smallBtn} onClick={async () => { const db = requireSupabase(); await db.from('features').update({ published: true }).eq('id', f.id); await loadFeatures(db); }}>Publish</button>}
                       {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => handleEdit(f)}>Edit</button>}
                       {canEdit && <button className="btn btn-ghost" style={smallBtn} onClick={() => deleteFeature(f.id)}>Delete</button>}
                     </>
