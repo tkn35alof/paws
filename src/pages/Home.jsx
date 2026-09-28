@@ -74,23 +74,23 @@ export default function Home() {
                   <h2 style={{ fontSize: 32, marginBottom: 12 }}>Connect with 100+ tools</h2>
                   <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Gain invaluable predictive analytics and actionable insights, empowering your team to make data-driven decisions.</p>
                 </div>
-                <div style={{ overflow: 'hidden', position: 'relative', height: 264 }}>
-                                  <div className="marquee-fade" style={{ marginBottom: 24, height: 120 }}>
-                                                      <div className="marquee" style={{ height: '100%' }}>
+                <div className="logos-marquee-container">
+                  <div className="marquee-fade">
+                    <div className="marquee">
                       {logos.filter(l => l.row_index === 1).map((l, i) => (
-                        <div key={`${l.id}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
-                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} width="56" height="56" style={{ display: 'block' }} /> : <div style={{ width: 56, height: 56, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)', borderRadius: '50%' }} />}
-                          <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{l.name}</span>
+                        <div key={`${l.id}-${i}`} className="logo-box">
+                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                          <span className="logo-name">{l.name}</span>
                         </div>
                       ))}
                     </div>
                   </div>
-                  <div className="marquee-fade" style={{ height: 120 }}>
-                                      <div className="marquee" style={{ height: '100%', animationDirection: 'reverse', animationDuration: '35s' }}>
+                  <div className="marquee-fade">
+                    <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
                       {logos.filter(l => l.row_index === 2).map((l, i) => (
-                        <div key={`${l.id}-${i}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, flexShrink: 0, width: 120 }}>
-                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} width="56" height="56" style={{ display: 'block' }} /> : <div style={{ width: 56, height: 56, background: 'var(--paws-paper-2)', border: '1px dashed var(--paws-line)', borderRadius: '50%' }} />}
-                          <span style={{ fontSize: 12, color: 'var(--paws-ink-3)', fontFamily: 'var(--font-mono)', whiteSpace: 'nowrap' }}>{l.name}</span>
+                        <div key={`${l.id}-${i}`} className="logo-box">
+                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                          <span className="logo-name">{l.name}</span>
                         </div>
                       ))}
                     </div>

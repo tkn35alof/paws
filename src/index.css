@@ -534,6 +534,43 @@ footer .foot-bottom {
 .marquee-fade::before { left: 0; background: linear-gradient(90deg, var(--paws-void), transparent); }
 .marquee-fade::after { right: 0; background: linear-gradient(90deg, transparent, var(--paws-void)); }
 
+/* === Logos marquee container === */
+.logos-marquee-container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 264px;
+}
+
+/* === Logo box === */
+.logo-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 120px;
+}
+.logo-img {
+  width: 56px;
+  height: 56px;
+  display: block;
+  object-fit: contain;
+}
+.logo-placeholder {
+  width: 56px;
+  height: 56px;
+  background: var(--paws-paper-2);
+  border: 1px dashed var(--paws-line);
+  border-radius: 50%;
+}
+.logo-name {
+  font-size: 12px;
+  color: var(--paws-ink-3);
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
 /* === Feature card — icon slide-up on hover === */
 .feature-grid {
   display: grid;
