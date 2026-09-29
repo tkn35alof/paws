@@ -550,6 +550,7 @@ function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonia
     if (!supabaseReady) return
     const db = requireSupabase()
     await db.from('site_content').upsert({ key: 'testimonial_marquee_delays', body: marqueeDelays, updated_at: new Date().toISOString() }, { onConflict: 'key' })
+    await loadSiteContent(db)
   }
 
   async function handleEdit(t) {
