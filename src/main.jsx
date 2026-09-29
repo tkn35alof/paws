@@ -31,3 +31,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
 )
 // Cache bust Tue, Sep 29, 2026  3:57:48 PM
 // Trigger deploy Wed, Sep 30, 2026  5:57:20 AM
+// Force rebuild with env vars Wed, Sep 30, 2026  6:26:44 AM
