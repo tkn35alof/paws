@@ -591,9 +591,9 @@ function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonia
           <button className="btn btn-pink" style={smallBtn} onClick={addTestimonial}>+ Add testimonial</button>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: 'var(--paws-paper-2)', padding: '8px 12px', border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-md)' }}>
             <span style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--paws-ink-3)' }}>Marquee delays (s):</span>
-            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[0]?.trim() || '0'} onChange={e => { const arr = marqueeDelays.split(','); arr[0] = e.target.value; setMarqueeDelays(arr.join(',')); }} placeholder="Col 1" />
-            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[1]?.trim() || '-20'} onChange={e => { const arr = marqueeDelays.split(','); arr[1] = e.target.value; setMarqueeDelays(arr.join(',')); }} placeholder="Col 2" />
-            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[2]?.trim() || '-40'} onChange={e => { const arr = marqueeDelays.split(','); arr[2] = e.target.value; setMarqueeDelays(arr.join(',')); }} placeholder="Col 3" />
+            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[0]?.trim() || '0'} onChange={e => setMarqueeDelays(d => { const arr = d.split(','); arr[0] = e.target.value; return arr.join(','); })} placeholder="Col 1" />
+            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[1]?.trim() || '-20'} onChange={e => setMarqueeDelays(d => { const arr = d.split(','); arr[1] = e.target.value; return arr.join(','); })} placeholder="Col 2" />
+            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[2]?.trim() || '-40'} onChange={e => setMarqueeDelays(d => { const arr = d.split(','); arr[2] = e.target.value; return arr.join(','); })} placeholder="Col 3" />
             <button className="btn btn-ghost" style={{ ...smallBtn, padding: '4px 10px', fontSize: 12 }} onClick={saveMarqueeDelays}>Save</button>
           </div>
         </div>
