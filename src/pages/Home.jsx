@@ -9,8 +9,13 @@ export default function Home() {
   const [logos, setLogos] = useState([])
   const [features, setFeatures] = useState([])
   const [testimonialDelays, setTestimonialDelays] = useState('0, -20, -40')
-  const [loading, setLoading] = useState(true)
-  const [err, setErr] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [err, setErr] = useState(null)
+
+    // Force Vite to keep testimonialDelays - use in a side effect
+    useEffect(() => {
+      console.log('testimonialDelays:', testimonialDelays)
+    }, [testimonialDelays])
 
   useEffect(() => {
     if (!supabaseReady) { setLoading(false); setErr('Supabase not configured.'); return }
