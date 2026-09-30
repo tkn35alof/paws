@@ -5,17 +5,20 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
+export const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+}
+
 const TRIPO_BASE = 'https://api.tripo3d.ai'
 const POLL_INTERVAL_MS = 4000
-const MAX_POLL_ATTEMPTS = 45  // ~3 minutes
+const MAX_POLL_ATTEMPTS = 45
 
 function json(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
     status,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*',
-    },
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   })
 }
 
@@ -41,14 +44,9 @@ async function pollTask(taskId, apiKey) {
 }
 
 Deno.serve(async (req) => {
+  // Preflight OPTIONS must be handled before anything else
   if (req.method === 'OPTIONS') {
-    return new Response('ok', {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'authorization, content-type',
-      },
-    })
+    return new Response('ok', { headers: corsHeaders })
   }
 
   try {
@@ -64,6 +62,8 @@ Deno.serve(async (req) => {
     if (!user) return json({ error: 'Unauthorized' }, 401)
 
     const { memberId, photoRaw, syncAvatarOnUpdate } = await req.json()
+    console.log(`Processing avatar for member: ${memberId}, sync flag: ${syncAvatarOnUpdate}`)
+
     if (!memberId || !photoRaw) {
       return json({ error: 'Missing memberId or photoRaw' }, 400)
     }
@@ -79,7 +79,6 @@ Deno.serve(async (req) => {
       return json({ ok: true, skipped: true, reason: 'TRIPO_API_KEY not configured' })
     }
 
-    // Admin client for storage ops
     const adminClient = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SERVICE_ROLE_KEY')!,
@@ -168,7 +167,6 @@ Deno.serve(async (req) => {
 
   } catch (e) {
     console.error('Avatar generation error:', e.message)
-    // Exit gracefully — don't block the profile save
     return json({ ok: false, error: e.message, generated_avatar_url: '' }, 200)
   }
 })
