@@ -591,9 +591,26 @@ function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonia
           <button className="btn btn-pink" style={smallBtn} onClick={addTestimonial}>+ Add testimonial</button>
           <div style={{ display: 'flex', gap: 8, alignItems: 'center', background: 'var(--paws-paper-2)', padding: '8px 12px', border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-md)' }}>
             <span style={{ fontSize: 12, fontFamily: 'var(--font-mono)', color: 'var(--paws-ink-3)' }}>Marquee delays (s):</span>
-            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[0]?.trim() || '0'} onChange={e => setMarqueeDelays(d => { const arr = d.split(','); arr[0] = e.target.value; return arr.join(','); })} placeholder="Col 1" />
-            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[1]?.trim() || '-20'} onChange={e => setMarqueeDelays(d => { const arr = d.split(','); arr[1] = e.target.value; return arr.join(','); })} placeholder="Col 2" />
-            <input style={{ ...inputStyle, width: 70, padding: '4px 8px', fontSize: 12 }} value={marqueeDelays.split(',')[2]?.trim() || '-40'} onChange={e => setMarqueeDelays(d => { const arr = d.split(','); arr[2] = e.target.value; return arr.join(','); })} placeholder="Col 3" />
+            {['Col 1', 'Col 2', 'Col 3'].map((label, idx) => (
+              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--paws-ink-3)', minWidth: 45 }}>{label}</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="99"
+                  value={parseInt(marqueeDelays.split(',')[idx]?.replace('s', '') || (idx === 0 ? '0' : idx === 1 ? '13' : '26'), 10)}
+                  onChange={e => setMarqueeDelays(d => {
+                    const arr = d.split(',');
+                    arr[idx] = `${e.target.value}s`;
+                    return arr.join(',');
+                  })}
+                  style={{ flex: 1, minWidth: 120, accentColor: 'var(--paws-pink)' }}
+                />
+                <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--paws-pink)', minWidth: 35 }}>
+                  {marqueeDelays.split(',')[idx]?.trim() || (idx === 0 ? '0s' : idx === 1 ? '13s' : '26s')}
+                </span>
+              </div>
+            ))}
             <button className="btn btn-ghost" style={{ ...smallBtn, padding: '4px 10px', fontSize: 12 }} onClick={saveMarqueeDelays}>Save</button>
           </div>
         </div>
