@@ -596,9 +596,9 @@ function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonia
                 <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--paws-ink-3)', minWidth: 45 }}>{label}</span>
                 <input
                   type="range"
-                  min="0"
-                  max="99"
-                  value={parseInt(marqueeDelays.split(',')[idx]?.replace('s', '') || (idx === 0 ? '0' : idx === 1 ? '13' : '26'), 10)}
+                  min="-99"
+                  max="0"
+                  value={parseInt(marqueeDelays.split(',')[idx]?.replace('s', '') || (idx === 0 ? '0' : idx === 1 ? '-13' : '-26'), 10)}
                   onChange={e => setMarqueeDelays(d => {
                     const arr = d.split(',');
                     arr[idx] = `${e.target.value}s`;
@@ -607,7 +607,7 @@ function TestimonialsTab({ testimonials, toggleTestimonialPublish, addTestimonia
                   style={{ flex: 1, minWidth: 120, accentColor: 'var(--paws-pink)' }}
                 />
                 <span style={{ fontSize: 11, fontFamily: 'var(--font-mono)', color: 'var(--paws-pink)', minWidth: 35 }}>
-                  {marqueeDelays.split(',')[idx]?.trim() || (idx === 0 ? '0s' : idx === 1 ? '13s' : '26s')}
+                  {marqueeDelays.split(',')[idx]?.trim() || (idx === 0 ? '0s' : idx === 1 ? '-13s' : '-26s')}
                 </span>
               </div>
             ))}
