@@ -509,6 +509,7 @@ footer .foot-bottom {
 .marquee {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 24px;
   width: max-content;
   animation: marquee-scroll 30s linear infinite;
@@ -538,6 +539,7 @@ footer .foot-bottom {
 .logos-marquee-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 24px;
   height: 264px;
 }
