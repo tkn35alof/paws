@@ -510,9 +510,9 @@ footer .foot-bottom {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 32px;
   width: max-content;
-  animation: marquee-scroll 30s linear infinite;
+  animation: marquee-scroll 40s linear infinite;
 }
 .marquee:hover { animation-play-state: paused; }
 @media (max-width: 600px) {

@@ -86,7 +86,13 @@ export default function Home() {
                   <div className="marquee-fade">
                     <div className="marquee">
                       {logos.filter(l => l.row_index === 1).map((l, i) => (
-                        <div key={`${l.id}-${i}`} className="logo-box">
+                        <div key={`${l.id}-${i}-a`} className="logo-box">
+                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                          <span className="logo-name">{l.name}</span>
+                        </div>
+                      ))}
+                      {logos.filter(l => l.row_index === 1).map((l, i) => (
+                        <div key={`${l.id}-${i}-b`} className="logo-box">
                           {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
                           <span className="logo-name">{l.name}</span>
                         </div>
@@ -96,7 +102,13 @@ export default function Home() {
                   <div className="marquee-fade">
                     <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
                       {logos.filter(l => l.row_index === 2).map((l, i) => (
-                        <div key={`${l.id}-${i}`} className="logo-box">
+                        <div key={`${l.id}-${i}-a`} className="logo-box">
+                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                          <span className="logo-name">{l.name}</span>
+                        </div>
+                      ))}
+                      {logos.filter(l => l.row_index === 2).map((l, i) => (
+                        <div key={`${l.id}-${i}-b`} className="logo-box">
                           {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
                           <span className="logo-name">{l.name}</span>
                         </div>
