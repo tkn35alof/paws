@@ -523,6 +523,15 @@ footer .foot-bottom {
   to { transform: translateX(-50%); }
 }
 
+/* === Logos marquee — 4 copies, 25% shift for seamless infinite loop === */
+.marquee-logos {
+  animation: marquee-scroll-logos 40s linear infinite;
+}
+@keyframes marquee-scroll-logos {
+  from { transform: translateX(0); }
+  to { transform: translateX(-25%); }
+}
+
 /* === Logos marquee container === */
 .logos-marquee-container {
   display: flex;
@@ -530,6 +539,7 @@ footer .foot-bottom {
   align-items: flex-start;
   gap: 24px;
   height: 264px;
+  overflow: hidden;
 }
 
 /* === Logo box === */

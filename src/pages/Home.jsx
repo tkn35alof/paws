@@ -83,7 +83,7 @@ export default function Home() {
             <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Gain invaluable predictive analytics and actionable insights, empowering your team to make data-driven decisions.</p>
           </div>
           <div className="logos-marquee-container">
-            <div className="marquee">
+            <div className="marquee marquee-logos">
               {logos.filter(l => l.row_index === 1).map((l, i) => (
                 <div key={`${l.id}-${i}-a`} className="logo-box">
                   {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
@@ -92,12 +92,24 @@ export default function Home() {
               ))}
               {logos.filter(l => l.row_index === 1).map((l, i) => (
                 <div key={`${l.id}-${i}-b`} className="logo-box">
+                  {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                  <span className="logo-name">{l.name}</span>
+                </div>
+              ))}
+              {logos.filter(l => l.row_index === 1).map((l, i) => (
+                <div key={`${l.id}-${i}-c`} className="logo-box">
+                  {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                  <span className="logo-name">{l.name}</span>
+                </div>
+              ))}
+              {logos.filter(l => l.row_index === 1).map((l, i) => (
+                <div key={`${l.id}-${i}-d`} className="logo-box">
                   {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
                   <span className="logo-name">{l.name}</span>
                 </div>
               ))}
             </div>
-            <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
+            <div className="marquee marquee-logos" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
               {logos.filter(l => l.row_index === 2).map((l, i) => (
                 <div key={`${l.id}-${i}-a`} className="logo-box">
                   {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
@@ -106,6 +118,18 @@ export default function Home() {
               ))}
               {logos.filter(l => l.row_index === 2).map((l, i) => (
                 <div key={`${l.id}-${i}-b`} className="logo-box">
+                  {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                  <span className="logo-name">{l.name}</span>
+                </div>
+              ))}
+              {logos.filter(l => l.row_index === 2).map((l, i) => (
+                <div key={`${l.id}-${i}-c`} className="logo-box">
+                  {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                  <span className="logo-name">{l.name}</span>
+                </div>
+              ))}
+              {logos.filter(l => l.row_index === 2).map((l, i) => (
+                <div key={`${l.id}-${i}-d`} className="logo-box">
                   {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
                   <span className="logo-name">{l.name}</span>
                 </div>
