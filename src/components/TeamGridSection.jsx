@@ -1,25 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { gsap } from 'gsap'
 
-export default function TeamGridSection() {
-  const [members, setMembers] = useState([])
-  const [activeId, setActiveId] = useState(null)
+export default function TeamGridSection({ members }) {
+  const [selectedId, setSelectedId] = useState(null)
+  const [hoveredId, setHoveredId] = useState(null)
   const gridRef = useRef(null)
   const overlayRef = useRef(null)
-
-  useEffect(() => {
-    if (!supabaseReady) return
-    const db = requireSupabase()
-    ;(async () => {
-      const { data } = await db.from('members')
-        .select('*')
-        .eq('published', true)
-        .not('generated_avatar_url', 'is', null)
-        .order('superiority_rank', { ascending: true })
-      setMembers(data || [])
-    })()
-  }, [])
+  const isMobile = typeof window !== 'undefined' && 'ontouchstart' in window
 
   useEffect(() => {
     if (members.length === 0) return
@@ -28,82 +15,88 @@ export default function TeamGridSection() {
       if (!cards) return
 
       cards.forEach((card) => {
-        card.addEventListener('mouseenter', () => {
-          const id = card.dataset.id
-          setActiveId(id)
+        const id = card.dataset.id
+
+        const onEnter = () => {
+          if (selectedId) return
+          setHoveredId(id)
           gsap.to(card, { scale: 1.05, brightness: 1.2, duration: 0.3, ease: 'power2.out' })
           cards.forEach((c) => {
             if (c.dataset.id !== id) {
               gsap.to(c, { scale: 0.92, brightness: 0.5, opacity: 0.6, duration: 0.3, ease: 'power2.out' })
             }
           })
-        })
-        card.addEventListener('mouseleave', () => {
-          setActiveId(null)
+        }
+
+        const onLeave = () => {
+          if (selectedId) return
+          setHoveredId(null)
           cards.forEach((c) => {
             gsap.to(c, { scale: 1, brightness: 1, opacity: 1, duration: 0.3, ease: 'power2.out' })
           })
-        })
-        card.addEventListener('click', () => {
-          const id = card.dataset.id
+        }
+
+        const onClick = () => {
           const member = members.find(m => m.id === id)
           if (!member) return
 
-          gsap.to(card, {
-            scale: 1.4,
-            x: 80,
-            y: -40,
-            duration: 0.5,
-            ease: 'power3.out',
-          })
+          setSelectedId(id)
+          gsap.to(card, { scale: 1.4, x: 80, y: -40, duration: 0.5, ease: 'power3.out' })
           cards.forEach((c) => {
             if (c.dataset.id !== id) {
-              gsap.to(c, {
-                scale: 0.7,
-                x: -120,
-                y: 60,
-                opacity: 0,
-                duration: 0.5,
-                ease: 'power3.out',
-              })
+              gsap.to(c, { scale: 0.7, x: -120, y: 60, opacity: 0, duration: 0.5, ease: 'power3.out' })
             }
           })
-          gsap.fromTo(overlayRef.current,
-            { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 0.5, delay: 0.2, ease: 'power2.out' }
-          )
-        })
+          gsap.fromTo(overlayRef.current, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, delay: 0.2, ease: 'power2.out' })
+        }
+
+        const onReset = () => {
+          setSelectedId(null)
+          setHoveredId(null)
+          cards.forEach((c) => {
+            gsap.to(c, { scale: 1, x: 0, y: 0, brightness: 1, opacity: 1, duration: 0.5, ease: 'power3.out' })
+          })
+          gsap.to(overlayRef.current, { opacity: 0, duration: 0.4 })
+        }
+
+        if (isMobile) {
+          card.addEventListener('touchstart', (e) => {
+            e.preventDefault()
+            if (selectedId !== id) {
+              onClick()
+            } else {
+              onReset()
+            }
+          }, { passive: false })
+        } else {
+          card.addEventListener('mouseenter', onEnter)
+          card.addEventListener('mouseleave', onLeave)
+          card.addEventListener('click', onClick)
+        }
       })
+
+      if (isMobile) {
+        document.addEventListener('touchstart', (e) => {
+          if (!e.target.closest('.team-card')) onReset()
+        }, { passive: true })
+      }
     }, gridRef)
     return () => ctx.revert()
-  }, [members])
-
-  useEffect(() => {
-    return () => {
-      if (gridRef.current) {
-        const cards = gridRef.current.querySelectorAll('.team-card')
-        cards.forEach(c => {
-          c.replaceWith(c.cloneNode(true))
-        })
-      }
-    }
-  }, [])
+  }, [members, selectedId, isMobile])
 
   if (members.length === 0) return null
 
   return (
     <section ref={gridRef} style={{ position: 'relative', padding: '80px 0' }}>
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-          gap: 24,
-          maxWidth: 1200,
-          margin: '0 auto',
-          padding: '0 32px',
-        }}
-      >
-        {members.map((m, i) => (
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+        gap: 24,
+        maxWidth: 1200,
+        margin: '0 auto',
+        padding: '0 32px',
+      }}>
+        {members.map((m) => (
           <div
             key={m.id}
             data-id={m.id}
@@ -124,14 +117,9 @@ export default function TeamGridSection() {
               justifyContent: 'center',
               gap: 12,
               padding: 16,
-            }}
-          >
+            }}>
             {m.generated_avatar_url ? (
-              <img
-                src={m.generated_avatar_url}
-                alt={m.display_name}
-                style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: '50%' }}
-              />
+              <img src={m.generated_avatar_url} alt={m.display_name} style={{ width: 80, height: 80, objectFit: 'cover', borderRadius: '50%' }} />
             ) : (
               <div style={{ width: 80, height: 80, borderRadius: '50%', background: 'var(--paws-paper-2)' }} />
             )}
@@ -152,18 +140,11 @@ export default function TeamGridSection() {
           opacity: 0,
           pointerEvents: 'none',
           zIndex: 50,
-        }}
-      >
+        }}>
         <div style={{ pointerEvents: 'auto', maxWidth: 400, width: '90%', padding: '32px', background: 'rgba(14, 14, 24, 0.8)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: 20, color: '#fff' }}>
-          <h3 style={{ margin: '0 0 8px', fontSize: 28, fontWeight: 700 }}>
-            {members.find(m => m.id === activeId)?.display_name}
-          </h3>
-          <p style={{ margin: '0 0 12px', color: 'var(--paws-pink)', fontSize: 14, fontFamily: 'var(--font-mono)' }}>
-            {members.find(m => m.id === activeId)?.tagline}
-          </p>
-          <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.6, pointerEvents: 'auto' }}>
-            {members.find(m => m.id === activeId)?.bio}
-          </p>
+          <h3 style={{ margin: '0 0 8px', fontSize: 28, fontWeight: 700 }}>{members.find(m => m.id === selectedId)?.display_name}</h3>
+          <p style={{ margin: '0 0 12px', color: 'var(--paws-pink)', fontSize: 14, fontFamily: 'var(--font-mono)' }}>{members.find(m => m.id === selectedId)?.tagline}</p>
+          <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.6, pointerEvents: 'auto' }}>{members.find(m => m.id === selectedId)?.bio}</p>
         </div>
       </div>
     </section>
