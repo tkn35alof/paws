@@ -87,6 +87,8 @@ export default function Portal() {
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState(null)
   const [photoAnalysis, setPhotoAnalysis] = useState(null)
   const [photoError, setPhotoError] = useState('')
+  const [syncAvatar, setSyncAvatar] = useState(true)  // toggle: fire avatar generation on photo save
+  const [avatarGenerating, setAvatarGenerating] = useState(false)
   const fileRef = useRef(null)
   const previewUrlRef = useRef(null)
 
@@ -108,6 +110,8 @@ export default function Portal() {
           .createSignedUrl(data.photo_raw, 600)
         setPhotoUrl(signed?.signedUrl || null)
       }
+      setSyncAvatar(data?.sync_avatar_on_update ?? true)
+      setAvatarGenerating(false)
     })()
   }, [])
 
@@ -211,8 +215,34 @@ export default function Portal() {
           return
         }
         setPhotoUrl(signed?.signedUrl || null)
-        setMember({ ...member, photo_raw: path })
-        setStatus('Photo saved. The owner can standardize it for the public team grid.')
+        setMember({ ...member, photo_raw: path, sync_avatar_on_update: syncAvatar })
+        // Fire avatar generation if the toggle is ON
+        if (syncAvatar && supabaseReady) {
+          setAvatarGenerating(true)
+          setStatus('Photo saved. Generating your homepage avatar…')
+          try {
+            const { data: avData, error: avErr } = await db.functions.invoke('generate-avatar', {
+              body: JSON.stringify({ memberId: member.id, photoRaw: path, syncAvatarOnUpdate: true }),
+            })
+            if (avErr) {
+              console.warn('Avatar generation failed:', avErr.message)
+              setStatus('Photo saved. Avatar generation failed — you can retry from the owner admin.')
+            } else if (avData?.generated_avatar_url) {
+              setMember({ ...member, photo_raw: path, sync_avatar_on_update: syncAvatar, generated_avatar_url: avData.generated_avatar_url })
+              setStatus('Photo saved. Avatar generated.')
+            } else if (avData?.skipped) {
+              setStatus('Photo saved. Avatar generation skipped.')
+            } else {
+              setStatus('Photo saved. Avatar generation in progress.')
+            }
+          } catch (avErr) {
+            console.warn('Avatar generation error:', avErr)
+            setStatus('Photo saved. Avatar generation failed.')
+          }
+          setAvatarGenerating(false)
+        } else {
+          setStatus('Photo saved.')
+        }
         setUploading(false)
         e.target.value = ''
   }
@@ -249,10 +279,28 @@ export default function Portal() {
               {uploading ? 'Checking face…' : (photoPreviewUrl ? 'Choose another photo' : 'Choose photo')}
             </button>
             {photoPreviewUrl && (
-                          <p style={{ color: 'var(--paws-muted)', fontSize: 13, maxWidth: 320 }}>
-                            Crop preview — saving uploads this automatically.
-                          </p>
-                        )}
+              <p style={{ color: 'var(--paws-muted)', fontSize: 13, maxWidth: 320 }}>
+                Crop preview — saving uploads this automatically.
+              </p>
+            )}
+            {/* Avatar generation toggle */}
+            <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', marginTop: 4 }}>
+              <input
+                type="checkbox"
+                checked={syncAvatar}
+                onChange={(e) => setSyncAvatar(e.target.checked)}
+                style={{ width: 18, height: 18, cursor: 'pointer', accentColor: 'var(--paws-pink)' }}
+              />
+              <span style={{ fontSize: 13, color: 'var(--paws-ink-2)' }}>
+                Update Homepage Avatar Head
+              </span>
+            </label>
+            {avatarGenerating && (
+              <span style={{ fontSize: 12, color: 'var(--paws-pink)' }}>Generating avatar…</span>
+            )}
+            {member?.generated_avatar_url && (
+              <span style={{ fontSize: 12, color: 'var(--paws-success)' }}>✓ Avatar active</span>
+            )}
             {photoAnalysis && (
               <span style={{ color: 'var(--paws-muted)', fontSize: 13, maxWidth: 320 }}>
                 {photoAnalysis.faceCount} face{photoAnalysis.faceCount === 1 ? '' : 's'} detected · confidence {(photoAnalysis.score * 100).toFixed(0)}% · output 800 × 1000
@@ -273,6 +321,22 @@ export default function Portal() {
                 Upload a professional portrait. We detect the face, crop it, and save the standardized crop to your profile.
               </p>
             )}
+            {/* Avatar generation toggle */}
+            <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, cursor: 'pointer', fontSize: 14, color: 'var(--paws-ink)' }}>
+              <input
+                type="checkbox"
+                checked={syncAvatar}
+                onChange={(e) => setSyncAvatar(e.target.checked)}
+                style={{ width: 18, height: 18, cursor: 'pointer', accentColor: 'var(--paws-pink)' }}
+              />
+              Update Homepage Avatar Head
+              {avatarGenerating && (
+                <span style={{ color: 'var(--paws-pink)', fontSize: 12, marginLeft: 'auto' }}>generating…</span>
+              )}
+            </label>
+            <p style={{ color: 'var(--paws-muted)', fontSize: 12, marginTop: 4, maxWidth: 320, marginBottom: 0 }}>
+              When ON, saving a new photo also generates a photorealistic 3D avatar for the homepage team experience. Turn OFF to update photos without regenerating.
+            </p>
           </div>
         </div>
 
