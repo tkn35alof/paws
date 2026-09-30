@@ -64,60 +64,56 @@ export default function Home() {
       </div>
 
       {/* Marquee — skill badges scrolling */}
-      <div className="marquee-fade" style={{ marginTop: 40 }}>
-        <div className="marquee">
-          {['GHL', 'React', 'TypeScript', 'Supabase', 'Node.js', 'Vercel', 'Web Design', 'Automation', 'Inbox Triage', 'Data Sync', 'API Integration', 'Client Success'].map((skill) => (
-            <span key={skill} style={{ whiteSpace: 'nowrap', padding: '8px 18px', border: '1px solid var(--paws-line-2)', borderRadius: 'var(--radius-pill)', color: 'var(--paws-ink-2)', fontFamily: 'var(--font-mono)', fontSize: 13, opacity: 0.7 }}>{skill}</span>
-          ))}
-          {['GHL', 'React', 'TypeScript', 'Supabase', 'Node.js', 'Vercel', 'Web Design', 'Automation', 'Inbox Triage', 'Data Sync', 'API Integration', 'Client Success'].map((skill) => (
-            <span key={skill} style={{ whiteSpace: 'nowrap', padding: '8px 18px', border: '1px solid var(--paws-line-2)', borderRadius: 'var(--radius-pill)', color: 'var(--paws-ink-2)', fontFamily: 'var(--font-mono)', fontSize: 13, opacity: 0.7 }}>{skill}</span>
-          ))}
-        </div>
-      </div>
+            <div style={{ marginTop: 40 }}>
+              <div className="marquee">
+                {['GHL', 'React', 'TypeScript', 'Supabase', 'Node.js', 'Vercel', 'Web Design', 'Automation', 'Inbox Triage', 'Data Sync', 'API Integration', 'Client Success'].map((skill) => (
+                  <span key={skill} style={{ whiteSpace: 'nowrap', padding: '8px 18px', border: '1px solid var(--paws-line-2)', borderRadius: 'var(--radius-pill)', color: 'var(--paws-ink-2)', fontFamily: 'var(--font-mono)', fontSize: 13, opacity: 0.7 }}>{skill}</span>
+                ))}
+                {['GHL', 'React', 'TypeScript', 'Supabase', 'Node.js', 'Vercel', 'Web Design', 'Automation', 'Inbox Triage', 'Data Sync', 'API Integration', 'Client Success'].map((skill) => (
+                  <span key={skill} style={{ whiteSpace: 'nowrap', padding: '8px 18px', border: '1px solid var(--paws-line-2)', borderRadius: 'var(--radius-pill)', color: 'var(--paws-ink-2)', fontFamily: 'var(--font-mono)', fontSize: 13, opacity: 0.7 }}>{skill}</span>
+                ))}
+              </div>
+            </div>
 
       {/* Integration logos marquee — Darkrise two-row staggered style */}
-            <section className="section" style={{ padding: '80px 0' }}>
-              <div className="wrap">
-                <div style={{ textAlign: 'center', marginBottom: 48 }}>
-                  <h2 style={{ fontSize: 32, marginBottom: 12 }}>Connect with 100+ tools</h2>
-                  <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Gain invaluable predictive analytics and actionable insights, empowering your team to make data-driven decisions.</p>
+      <section className="section" style={{ padding: '80px 0' }}>
+        <div className="wrap">
+          <div style={{ textAlign: 'center', marginBottom: 48 }}>
+            <h2 style={{ fontSize: 32, marginBottom: 12 }}>Connect with 100+ tools</h2>
+            <p style={{ color: 'var(--paws-ink-2)', maxWidth: 560, margin: '0 auto' }}>Gain invaluable predictive analytics and actionable insights, empowering your team to make data-driven decisions.</p>
+          </div>
+          <div className="logos-marquee-container">
+            <div className="marquee">
+              {logos.filter(l => l.row_index === 1).map((l, i) => (
+                <div key={`${l.id}-${i}-a`} className="logo-box">
+                  {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                  <span className="logo-name">{l.name}</span>
                 </div>
-                <div className="logos-marquee-container">
-                  <div className="marquee-fade">
-                    <div className="marquee">
-                      {logos.filter(l => l.row_index === 1).map((l, i) => (
-                        <div key={`${l.id}-${i}-a`} className="logo-box">
-                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
-                          <span className="logo-name">{l.name}</span>
-                        </div>
-                      ))}
-                      {logos.filter(l => l.row_index === 1).map((l, i) => (
-                        <div key={`${l.id}-${i}-b`} className="logo-box">
-                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
-                          <span className="logo-name">{l.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="marquee-fade">
-                    <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
-                      {logos.filter(l => l.row_index === 2).map((l, i) => (
-                        <div key={`${l.id}-${i}-a`} className="logo-box">
-                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
-                          <span className="logo-name">{l.name}</span>
-                        </div>
-                      ))}
-                      {logos.filter(l => l.row_index === 2).map((l, i) => (
-                        <div key={`${l.id}-${i}-b`} className="logo-box">
-                          {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
-                          <span className="logo-name">{l.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+              ))}
+              {logos.filter(l => l.row_index === 1).map((l, i) => (
+                <div key={`${l.id}-${i}-b`} className="logo-box">
+                  {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                  <span className="logo-name">{l.name}</span>
                 </div>
-              </div>
-            </section>
+              ))}
+            </div>
+            <div className="marquee" style={{ animationDirection: 'reverse', animationDuration: '35s' }}>
+              {logos.filter(l => l.row_index === 2).map((l, i) => (
+                <div key={`${l.id}-${i}-a`} className="logo-box">
+                  {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                  <span className="logo-name">{l.name}</span>
+                </div>
+              ))}
+              {logos.filter(l => l.row_index === 2).map((l, i) => (
+                <div key={`${l.id}-${i}-b`} className="logo-box">
+                  {l.logo_url ? <img src={l.logo_url} alt={l.alt_text || l.name} className="logo-img" /> : <div className="logo-placeholder" />}
+                  <span className="logo-name">{l.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Feature cards grid — Darkrise 2x3 style */}
             <section className="section" style={{ padding: '80px 0' }}>
