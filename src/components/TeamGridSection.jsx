@@ -8,8 +8,13 @@ export default function TeamGridSection({ members }) {
   const overlayRef = useRef(null)
   const isMobile = typeof window !== 'undefined' && 'ontouchstart' in window
 
+  // Filter: only members with a valid string URL for the 3D pipeline
+  const activeAvatars = members.filter(
+    (m) => m.generated_avatar_url && typeof m.generated_avatar_url === 'string'
+  )
+
   useEffect(() => {
-    if (members.length === 0) return
+    if (activeAvatars.length === 0) return
     const ctx = gsap.context(() => {
       const cards = gridRef.current?.querySelectorAll('.team-card')
       if (!cards) return
@@ -37,7 +42,7 @@ export default function TeamGridSection({ members }) {
         }
 
         const onClick = () => {
-          const member = members.find(m => m.id === id)
+          const member = activeAvatars.find(m => m.id === id)
           if (!member) return
 
           setSelectedId(id)
@@ -82,9 +87,9 @@ export default function TeamGridSection({ members }) {
       }
     }, gridRef)
     return () => ctx.revert()
-  }, [members, selectedId, isMobile])
+  }, [activeAvatars, selectedId, isMobile])
 
-  if (members.length === 0) return null
+  if (activeAvatars.length === 0) return null
 
   return (
     <section ref={gridRef} style={{ position: 'relative', padding: '80px 0' }}>
@@ -96,7 +101,7 @@ export default function TeamGridSection({ members }) {
         margin: '0 auto',
         padding: '0 32px',
       }}>
-        {members.map((m) => (
+        {activeAvatars.map((m) => (
           <div
             key={m.id}
             data-id={m.id}
@@ -142,9 +147,9 @@ export default function TeamGridSection({ members }) {
           zIndex: 50,
         }}>
         <div style={{ pointerEvents: 'auto', maxWidth: 400, width: '90%', padding: '32px', background: 'rgba(14, 14, 24, 0.8)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: 20, color: '#fff' }}>
-          <h3 style={{ margin: '0 0 8px', fontSize: 28, fontWeight: 700 }}>{members.find(m => m.id === selectedId)?.display_name}</h3>
-          <p style={{ margin: '0 0 12px', color: 'var(--paws-pink)', fontSize: 14, fontFamily: 'var(--font-mono)' }}>{members.find(m => m.id === selectedId)?.tagline}</p>
-          <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.6, pointerEvents: 'auto' }}>{members.find(m => m.id === selectedId)?.bio}</p>
+          <h3 style={{ margin: '0 0 8px', fontSize: 28, fontWeight: 700 }}>{activeAvatars.find(m => m.id === selectedId)?.display_name}</h3>
+          <p style={{ margin: '0 0 12px', color: 'var(--paws-pink)', fontSize: 14, fontFamily: 'var(--font-mono)' }}>{activeAvatars.find(m => m.id === selectedId)?.tagline}</p>
+          <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: 14, lineHeight: 1.6, pointerEvents: 'auto' }}>{activeAvatars.find(m => m.id === selectedId)?.bio}</p>
         </div>
       </div>
     </section>

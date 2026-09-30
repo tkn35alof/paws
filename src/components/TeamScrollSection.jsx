@@ -8,6 +8,9 @@ import * as THREE from 'three'
 gsap.registerPlugin(ScrollTrigger)
 
 function AvatarModel({ url, active, idx }) {
+  // Guard: useGLTF is a hook — must not receive null. Return early before the hook.
+  if (!url || typeof url !== 'string') return null
+
   const gltf = useGLTF(url)
   const meshRef = useRef(null)
 
@@ -29,10 +32,15 @@ export default function TeamScrollSection({ members }) {
   const trackRef = useRef(null)
   const textRef = useRef(null)
 
+  // Filter: only members with a valid string URL for the 3D pipeline
+  const activeAvatars = members.filter(
+    (m) => m.generated_avatar_url && typeof m.generated_avatar_url === 'string'
+  )
+
   useEffect(() => {
-    if (members.length === 0) return
+    if (activeAvatars.length === 0) return
     const ctx = gsap.context(() => {
-      members.forEach((_, i) => {
+      activeAvatars.forEach((_, i) => {
         const el = document.querySelector(`[data-member="${i}"]`)
         if (!el) return
         ScrollTrigger.create({
@@ -55,13 +63,26 @@ export default function TeamScrollSection({ members }) {
       })
     }, trackRef)
     return () => ctx.revert()
-  }, [members])
+  }, [activeAvatars])
 
-  if (members.length === 0) return null
+  if (activeAvatars.length === 0) {
+    return (
+      <section style={{ padding: '120px 0', textAlign: 'center' }}>
+        <div className="wrap">
+          <div className="kicker">The team</div>
+          <h2 style={{ fontSize: 32, marginBottom: 12 }}>Specialists, not freelancers.</h2>
+          <p style={{ color: 'var(--paws-muted)', fontSize: 16, maxWidth: 480, margin: '0 auto', lineHeight: 1.6 }}>
+            Team avatars are being generated. Visit your profile page and toggle
+            &ldquo;Update Homepage Avatar Head&rdquo; on save to create yours.
+          </p>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section ref={trackRef} style={{ position: 'relative', width: '100%' }}>
-      {members.map((m, i) => (
+      {activeAvatars.map((m, i) => (
         <div key={m.id} data-member={i} style={{ position: 'relative', height: '100vh', width: '100%', overflow: 'hidden' }}>
           <div style={{ position: 'sticky', top: 0, height: '100vh', width: '100%' }}>
             <Canvas
