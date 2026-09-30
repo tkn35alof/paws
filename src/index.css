@@ -527,7 +527,7 @@ footer .foot-bottom {
 .logos-marquee-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 24px;
   height: 264px;
 }
