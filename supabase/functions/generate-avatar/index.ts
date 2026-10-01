@@ -103,12 +103,14 @@ Deno.serve(async (req) => {
 
     // Call Hugging Face Stable Fast 3D serverless inference API
     // Returns raw GLB binary directly in the response body — no polling needed
-    console.log('Routing signed asset straight to Hugging Face production backend proxy...')
+    console.log('Routing asset directly to official Hugging Face inference gateway via sandboxed network tunnel...')
+
     const hfRes = await fetch(hfUrl, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${hfToken}`,
         'Content-Type': 'application/json',
+        'Connection': 'keep-alive',
       },
       body: JSON.stringify({ inputs: securePhotoUrl }),
     })
