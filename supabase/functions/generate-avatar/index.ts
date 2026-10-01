@@ -87,7 +87,8 @@ Deno.serve(async (req) => {
 
     // Get the public URL of the photo from storage
     const { data: imgData, error: urlErr } = adminClient.storage
-      .from('member-photos').getPublicUrl(photoRaw)
+      .from('member-photos-public') // CHANGED FROM 'member-photos'
+      .getPublicUrl(photoRaw)
     if (urlErr || !imgData?.publicUrl) {
       return json({ error: `Failed to get public URL: ${urlErr?.message || 'no URL'}` }, 500)
     }
