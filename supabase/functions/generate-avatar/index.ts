@@ -125,7 +125,7 @@ Deno.serve(async (req) => {
     const result = await pollTask(taskId, apiKey)
 
     // Extract GLB URL from success payload (V3 response shape)
-    const modelUrl = result.data?.output?.model_url || result.data?.output?.model
+    const modelUrl = result.data?.output?.model_url
     if (!modelUrl) {
       throw new Error('No model URL in Tripo success response')
     }
