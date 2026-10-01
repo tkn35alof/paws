@@ -12,7 +12,7 @@ export const corsHeaders = {
 }
 
 const HF_MODEL = 'stabilityai/stable-fast-3d'
-const hfUrl = 'https://huggingface.co'
+const hfUrl = `https://api-inference.huggingface.co/models/${HF_MODEL}`
 
 function json(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
