@@ -105,15 +105,26 @@ Deno.serve(async (req) => {
     // Returns raw GLB binary directly in the response body — no polling needed
     console.log('Routing asset directly to official Hugging Face inference gateway via sandboxed network tunnel...')
 
-    const hfRes = await fetch(hfUrl, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${hfToken}`,
-        'Content-Type': 'application/json',
-        'Connection': 'keep-alive',
-      },
-      body: JSON.stringify({ inputs: securePhotoUrl }),
-    })
+    let hfRes
+    const MAX_RETRIES = 3
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+      try {
+        hfRes = await fetch(hfUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${hfToken}`,
+            'Content-Type': 'application/json',
+            'Connection': 'keep-alive',
+          },
+          body: JSON.stringify({ inputs: securePhotoUrl }),
+        })
+        break
+      } catch (retryErr) {
+        console.warn(`Hugging Face fetch attempt ${attempt} failed:`, retryErr.message)
+        if (attempt === MAX_RETRIES) throw retryErr
+        await new Promise(r => setTimeout(r, 2000 * attempt))
+      }
+    }
 
     console.log(`Hugging Face server responded with status code: ${hfRes.status}`)
     if (!hfRes.ok) {
