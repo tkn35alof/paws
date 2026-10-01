@@ -85,15 +85,13 @@ Deno.serve(async (req) => {
       { auth: { autoRefreshToken: false, persistSession: false } }
     )
 
-    // Download the photo from storage
-    const { data: blob, error: dlErr } = await adminClient.storage
-      .from('member-photos').download(photoRaw)
-    if (dlErr) return json({ error: `Download failed: ${dlErr.message}` }, 500)
-
-    // Convert to base64 data URL for Tripo
-    const buf = await blob.arrayBuffer()
-    const base64 = btoa(String.fromCharCode(...new Uint8Array(buf)))
-    const dataUrl = `data:${blob.type || 'image/jpeg'};base64,${base64}`
+    // Get the public URL of the photo from storage
+    const { data: imgData, error: urlErr } = adminClient.storage
+      .from('member-photos').getPublicUrl(photoRaw)
+    if (urlErr || !imgData?.publicUrl) {
+      return json({ error: `Failed to get public URL: ${urlErr?.message || 'no URL'}` }, 500)
+    }
+    const publicPhotoUrl = imgData.publicUrl
 
     // Initialize Tripo3D V3 task
     const initRes = await fetch(`${TRIPO_BASE}/generation/image-to-model`, {
@@ -105,8 +103,8 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         model: 'v3.1-20260211',
         file: {
-          type: 'png',
-          file_data: dataUrl,
+          type: 'url',
+          url: publicPhotoUrl,
         },
       }),
     })
