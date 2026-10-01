@@ -57,11 +57,21 @@ Deno.serve(async (req) => {
       return json({ ok: true, skipped: true, reason: 'HF_TOKEN not configured' })
     }
 
-    const adminClient = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SERVICE_ROLE_KEY')!,
-      { auth: { autoRefreshToken: false, persistSession: false } }
-    )
+    // Read the system's native environment variables automatically injected by Supabase
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
+
+    if (!supabaseUrl || !supabaseServiceKey) {
+      throw new Error('Missing internal system environment keys.')
+    }
+
+    // Rebuild the secure admin client configuration securely
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+      },
+    })
 
     // Normalize the file path string — strip any redundant full URL prefixes
     let cleanPath = photoRaw
