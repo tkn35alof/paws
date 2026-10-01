@@ -103,6 +103,7 @@ Deno.serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        model: 'v3.1-20260211',
         file_info: {
           type: 'png',
           file_data: dataUrl,
