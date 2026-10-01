@@ -12,7 +12,7 @@ export const corsHeaders = {
 }
 
 const HF_MODEL = 'stabilityai/stable-fast-3d'
-const HF_API_URL = `https://hf.space/models/${HF_MODEL}`
+const hfUrl = 'https://huggingface.co'
 
 function json(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
@@ -93,17 +93,17 @@ Deno.serve(async (req) => {
 
     // Call Hugging Face Stable Fast 3D serverless inference API
     // Returns raw GLB binary directly in the response body — no polling needed
-    const hfRes = await fetch(HF_API_URL, {
+    console.log('Routing signed asset straight to Hugging Face production backend proxy...')
+    const hfRes = await fetch(hfUrl, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${hfToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        inputs: securePhotoUrl,
-      }),
+      body: JSON.stringify({ inputs: securePhotoUrl }),
     })
 
+    console.log(`Hugging Face server responded with status code: ${hfRes.status}`)
     if (!hfRes.ok) {
       const errText = await hfRes.text()
       throw new Error(`Hugging Face inference failed: ${hfRes.status} - ${errText}`)
