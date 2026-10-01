@@ -85,14 +85,16 @@ Deno.serve(async (req) => {
       { auth: { autoRefreshToken: false, persistSession: false } }
     )
 
-    // Get the public URL of the photo from storage
-    const { data: imgData, error: urlErr } = adminClient.storage
-      .from('member-photos-public') // CHANGED FROM 'member-photos'
-      .getPublicUrl(photoRaw)
-    if (urlErr || !imgData?.publicUrl) {
-      return json({ error: `Failed to get public URL: ${urlErr?.message || 'no URL'}` }, 500)
+    // Generate a temporary 15-minute secure access link for Tripo3D
+    const { data: signedData, error: signedErr } = await adminClient.storage
+      .from('member-photos-public')
+      .createSignedUrl(photoRaw, 900)
+
+    if (signedErr || !signedData?.signedUrl) {
+      throw new Error(`Failed to create secure signed URL: ${signedErr?.message || 'Empty path payload'}`)
     }
-    const publicPhotoUrl = imgData.publicUrl
+    const securePhotoUrl = signedData.signedUrl
+    console.log('Successfully generated time-limited token URL for Tripo3D.')
 
     // Initialize Tripo3D V3 task
     const initRes = await fetch(`${TRIPO_BASE}/generation/image-to-model`, {
@@ -105,7 +107,7 @@ Deno.serve(async (req) => {
         model: 'v3.1-20260211',
         file: {
           type: 'url',
-          url: publicPhotoUrl,
+          url: securePhotoUrl,
         },
       }),
     })
