@@ -31,12 +31,12 @@ async function pollTask(taskId, apiKey) {
       throw new Error(`Tripo poll failed: ${res.status}`)
     }
     const data = await res.json()
-    const status = data.data?.status || ''
+    const status = data.data?.status
     if (status === 'success' || status === 'completed') {
       return data
     }
     if (status === 'failed' || status === 'error') {
-      throw new Error(`Tripo task failed: ${data.error || data.message || 'unknown'}`)
+      throw new Error('Tripo processing failed')
     }
     await new Promise(r => setTimeout(r, POLL_INTERVAL_MS))
   }
@@ -107,7 +107,6 @@ Deno.serve(async (req) => {
           type: 'png',
           file_data: dataUrl,
         },
-        model_version: 'default',
       }),
     })
 
@@ -116,10 +115,10 @@ Deno.serve(async (req) => {
       throw new Error(`Tripo init failed: ${initRes.status} - ${errText}`)
     }
 
-    const initData = await initRes.json()
-    const taskId = initData.task_id || initData.data?.task_id
+    const initJson = await initRes.json()
+    const taskId = initJson.data?.task_id
     if (!taskId) {
-      throw new Error('No task_id in Tripo response')
+      throw new Error(`Failed to get task ID: ${JSON.stringify(initJson)}`)
     }
 
     // Poll for completion
