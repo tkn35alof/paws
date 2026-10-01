@@ -11,7 +11,7 @@ export const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const TRIPO_BASE = 'https://api.tripo3d.ai'
+const TRIPO_BASE = 'https://openapi.tripo3d.ai/v3'
 const POLL_INTERVAL_MS = 4000
 const MAX_POLL_ATTEMPTS = 45
 
@@ -24,14 +24,14 @@ function json(payload, status = 200) {
 
 async function pollTask(taskId, apiKey) {
   for (let i = 0; i < MAX_POLL_ATTEMPTS; i++) {
-    const res = await fetch(`${TRIPO_BASE}/v1/task/${taskId}`, {
+    const res = await fetch(`${TRIPO_BASE}/tasks/${taskId}`, {
       headers: { 'Authorization': `Bearer ${apiKey}` },
     })
     if (!res.ok) {
       throw new Error(`Tripo poll failed: ${res.status}`)
     }
     const data = await res.json()
-    const status = data.status || data.data?.status || ''
+    const status = data.data?.status || ''
     if (status === 'success' || status === 'completed') {
       return data
     }
@@ -95,18 +95,19 @@ Deno.serve(async (req) => {
     const base64 = btoa(String.fromCharCode(...new Uint8Array(buf)))
     const dataUrl = `data:${blob.type || 'image/jpeg'};base64,${base64}`
 
-    // Initialize Tripo3D task
-    const initRes = await fetch(`${TRIPO_BASE}/v1/create_task`, {
+    // Initialize Tripo3D V3 task
+    const initRes = await fetch(`${TRIPO_BASE}/generation/image-to-model`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        type: 'image_to_3d',
-        image_url: dataUrl,
-        model_version: '2.0',
-        texture: '4K',
+        file_info: {
+          type: 'png',
+          file_data: dataUrl,
+        },
+        model_version: 'default',
       }),
     })
 
@@ -124,8 +125,8 @@ Deno.serve(async (req) => {
     // Poll for completion
     const result = await pollTask(taskId, apiKey)
 
-    // Extract GLB URL from success payload
-    const modelUrl = result.output?.model || result.model_url || result.data?.output?.model
+    // Extract GLB URL from success payload (V3 response shape)
+    const modelUrl = result.data?.output?.model_url || result.data?.output?.model
     if (!modelUrl) {
       throw new Error('No model URL in Tripo success response')
     }
