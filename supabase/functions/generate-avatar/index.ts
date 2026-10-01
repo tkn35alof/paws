@@ -85,15 +85,32 @@ Deno.serve(async (req) => {
       { auth: { autoRefreshToken: false, persistSession: false } }
     )
 
-    // Generate a temporary 15-minute secure access link for Tripo3D
+    // Normalize the file path string — strip any redundant full URL prefixes
+    let cleanPath = photoRaw
+    if (cleanPath.includes('member-photos-public/')) {
+      cleanPath = cleanPath.split('member-photos-public/')[1]
+    }
+    console.log(`Attempting to generate a secure signed URL for cleaned path: "${cleanPath}"`)
+
+    // Generate the temporary secure access link using the cleaned path string
+    let securePhotoUrl = ''
     const { data: signedData, error: signedErr } = await adminClient.storage
       .from('member-photos-public')
-      .createSignedUrl(photoRaw, 900)
+      .createSignedUrl(cleanPath, 900)
 
     if (signedErr || !signedData?.signedUrl) {
-      throw new Error(`Failed to create secure signed URL: ${signedErr?.message || 'Empty path payload'}`)
+      console.log('Path not found in public bucket. Falling back to verify private member-photos container...')
+      const { data: fallbackData, error: fallbackErr } = await adminClient.storage
+        .from('member-photos')
+        .createSignedUrl(cleanPath, 900)
+
+      if (fallbackErr || !fallbackData?.signedUrl) {
+        throw new Error(`Failed to create secure signed URL in both containers: ${signedErr?.message || fallbackErr?.message}`)
+      }
+      securePhotoUrl = fallbackData.signedUrl
+    } else {
+      securePhotoUrl = signedData.signedUrl
     }
-    const securePhotoUrl = signedData.signedUrl
     console.log('Successfully generated time-limited token URL for Tripo3D.')
 
     // Initialize Tripo3D V3 task
