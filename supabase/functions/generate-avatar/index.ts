@@ -1,6 +1,6 @@
-// PAWS — generate-avatar edge function (Tripo3D pipeline)
+// PAWS — generate-avatar edge function (Hugging Face Stable Fast 3D)
 // Deploy: supabase functions deploy generate-avatar
-// Set secret: supabase secrets set TRIPO_API_KEY=<your-tripo-key>
+// Set secret: supabase secrets set HF_TOKEN=<your-huggingface-token>
 // Set secret: supabase secrets set SERVICE_ROLE_KEY=<your-service-role-key>
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
@@ -11,36 +11,14 @@ export const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const TRIPO_BASE = 'https://openapi.tripo3d.ai/v3'
-const POLL_INTERVAL_MS = 4000
-const MAX_POLL_ATTEMPTS = 45
+const HF_MODEL = 'stabilityai/stable-fast-3d'
+const HF_API_URL = `https://api-inference.huggingface.co/models/${HF_MODEL}`
 
 function json(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
     status,
     headers: { ...corsHeaders, 'Content-Type': 'application/json' },
   })
-}
-
-async function pollTask(taskId, apiKey) {
-  for (let i = 0; i < MAX_POLL_ATTEMPTS; i++) {
-    const res = await fetch(`${TRIPO_BASE}/tasks/${taskId}`, {
-      headers: { 'Authorization': `Bearer ${apiKey}` },
-    })
-    if (!res.ok) {
-      throw new Error(`Tripo poll failed: ${res.status}`)
-    }
-    const data = await res.json()
-    const status = data.data?.status
-    if (status === 'success' || status === 'completed') {
-      return data
-    }
-    if (status === 'failed' || status === 'error') {
-      throw new Error('Tripo processing failed')
-    }
-    await new Promise(r => setTimeout(r, POLL_INTERVAL_MS))
-  }
-  throw new Error('Tripo poll timed out')
 }
 
 Deno.serve(async (req) => {
@@ -56,7 +34,7 @@ Deno.serve(async (req) => {
     const callerClient = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_ANON_KEY')!,
-      { global: { headers: { Authorization: authHeader } } }
+      { global: { headers: { Authorization: authHeader *** } }
     )
     const { data: { user } } = await callerClient.auth.getUser()
     if (!user) return json({ error: 'Unauthorized' }, 401)
@@ -74,9 +52,9 @@ Deno.serve(async (req) => {
       return json({ ok: true, skipped: true, reason: 'sync_avatar_on_update is false' })
     }
 
-    const apiKey = Deno.env.get('TRIPO_API_KEY') || ''
-    if (!apiKey) {
-      return json({ ok: true, skipped: true, reason: 'TRIPO_API_KEY not configured' })
+    const hfToken = Deno.env.get('HF_TOKEN') || ''
+    if (!hfToken) {
+      return json({ ok: true, skipped: true, reason: 'HF_TOKEN not configured' })
     }
 
     const adminClient = createClient(
@@ -111,50 +89,29 @@ Deno.serve(async (req) => {
     } else {
       securePhotoUrl = signedData.signedUrl
     }
-    console.log('Successfully generated time-limited token URL for Tripo3D.')
+    console.log('Successfully generated time-limited token URL for Hugging Face.')
 
-    // Initialize Tripo3D V3 task
-    const initRes = await fetch(`${TRIPO_BASE}/generation/image-to-model`, {
+    // Call Hugging Face Stable Fast 3D serverless inference API
+    // Returns raw GLB binary directly in the response body — no polling needed
+    const hfRes = await fetch(HF_API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${hfToken}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'v3.1-20260211',
-        file: {
-          type: 'url',
-          url: securePhotoUrl,
-        },
+        inputs: securePhotoUrl,
       }),
     })
 
-    if (!initRes.ok) {
-      const errText = await initRes.text()
-      throw new Error(`Tripo init failed: ${initRes.status} - ${errText}`)
+    if (!hfRes.ok) {
+      const errText = await hfRes.text()
+      throw new Error(`Hugging Face inference failed: ${hfRes.status} - ${errText}`)
     }
 
-    const initJson = await initRes.json()
-    const taskId = initJson.data?.task_id
-    if (!taskId) {
-      throw new Error(`Failed to get task ID: ${JSON.stringify(initJson)}`)
-    }
-
-    // Poll for completion
-    const result = await pollTask(taskId, apiKey)
-
-    // Extract GLB URL from success payload (V3 response shape)
-    const modelUrl = result.data?.output?.model_url
-    if (!modelUrl) {
-      throw new Error('No model URL in Tripo success response')
-    }
-
-    // Download the GLB file
-    const glbRes = await fetch(modelUrl)
-    if (!glbRes.ok) {
-      throw new Error(`GLB download failed: ${glbRes.status}`)
-    }
-    const glbBlob = await glbRes.blob()
+    // Capture the raw GLB binary blob directly from the response
+    const glbBlob = await hfRes.blob()
+    console.log(`Received GLB blob from Hugging Face: ${glbBlob.size} bytes, type=${glbBlob.type}`)
 
     // Upload to avatars bucket
     const modelPath = `${user.id}/avatar-${Date.now()}.glb`
