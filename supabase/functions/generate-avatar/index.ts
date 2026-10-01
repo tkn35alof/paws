@@ -110,14 +110,15 @@ Deno.serve(async (req) => {
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       try {
         hfRes = await fetch(hfUrl, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${hfToken}`,
-            'Content-Type': 'application/json',
-            'Connection': 'keep-alive',
-          },
-          body: JSON.stringify({ inputs: securePhotoUrl }),
-        })
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${hfToken}`,
+          'Content-Type': 'application/json',
+          'Connection': 'keep-alive',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ inputs: securePhotoUrl }),
+      })
         break
       } catch (retryErr) {
         console.warn(`Hugging Face fetch attempt ${attempt} failed:`, retryErr.message)
