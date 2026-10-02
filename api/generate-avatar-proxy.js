@@ -13,15 +13,19 @@ export default async function handler(req, res) {
 
     console.log("Vercel Proxy: Forwarding payload directly to Hugging Face production cluster...");
 
-    // 2. Fetch the raw .glb asset bytes from the stable inference gateway
-        const hfRes = await fetch('https://api-inference.huggingface.co/models/stabilityai/stable-fast-3d', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${hfToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ inputs: securePhotoUrl }),
-        })
+   // Before (Broken / Retired Domain):
+// 'https://huggingface.co'
+
+// After (Official Live Hugging Face Serverless Endpoint):
+const hfRes = await fetch('https://hf.space', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${hfToken}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ inputs: securePhotoUrl }),
+});
+
 
     if (!hfRes.ok) {
       const errText = await hfRes.text();
