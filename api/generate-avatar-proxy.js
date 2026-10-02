@@ -13,10 +13,10 @@ export default async function handler(req, res) {
 
     console.log("Vercel Proxy: Forwarding payload directly to Hugging Face production cluster...");
 
-   // Before (Broken / Retired Domain):
-// 'https://huggingface.co'
+// Before (404 / Missing Task Route Context):
+// 'https://hf.space'
 
-// After (Official Live Hugging Face Serverless Endpoint):
+// After (Absolute Production Serverless API Gateway Path):
 const hfRes = await fetch('https://hf.space', {
   method: 'POST',
   headers: {
@@ -25,6 +25,7 @@ const hfRes = await fetch('https://hf.space', {
   },
   body: JSON.stringify({ inputs: securePhotoUrl }),
 });
+
 
 
     if (!hfRes.ok) {
