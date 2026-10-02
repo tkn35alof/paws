@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/api/generate-avatar", "destination": "/api/generate-avatar-proxy.js" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "framework": "vite",

@@ -221,9 +221,14 @@ export default function Portal() {
           setAvatarGenerating(true)
           setStatus('Photo saved. Generating your homepage avatar…')
           try {
-            const { data: avData, error: avErr } = await db.functions.invoke('generate-avatar', {
-              body: JSON.stringify({ memberId: member.id, photoRaw: path, syncAvatarOnUpdate: true }),
+            const avRes = await fetch('/api/generate-avatar', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ securePhotoUrl: path }),
             })
+            const avData = await avRes.json()
+            const avErr = !avRes.ok ? new Error(avData.error || 'Proxy failed') : null
+
             if (avErr) {
               console.warn('Avatar generation failed:', avErr.message)
               setStatus('Photo saved. Avatar generation failed — you can retry from the owner admin.')
