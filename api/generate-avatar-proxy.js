@@ -17,10 +17,12 @@ export default async function handler(req, res) {
 
     let hfRes
     let success = false
-    const maxAttempts = 3
+    const maxAttempts = 4
 
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 120000)
         hfRes = await fetch(hfUrl, {
           method: 'POST',
           headers: {
@@ -29,7 +31,9 @@ export default async function handler(req, res) {
             'Connection': 'keep-alive',
           },
           body: JSON.stringify({ inputs: securePhotoUrl }),
+          signal: controller.signal,
         })
+        clearTimeout(timeoutId)
 
         if (hfRes.ok) {
           success = true
@@ -40,7 +44,10 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error(`DNS or Connection Attempt ${attempt} failed:`, err.message)
       }
-      if (attempt < maxAttempts) await new Promise(r => setTimeout(r, 2000))
+      if (attempt < maxAttempts) {
+        console.log(`Waiting 10 seconds for Hugging Face container to warm up (Attempt ${attempt})...`)
+        await new Promise(r => setTimeout(r, 10000))
+      }
     }
 
     if (!success || !hfRes) {
