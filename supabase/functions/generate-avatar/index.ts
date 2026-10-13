@@ -1,7 +1,6 @@
-// PAWS — generate-avatar edge function (Hugging Face Stable Fast 3D)
+// PAWS — generate-avatar edge function (Vercel proxy relay)
 // Deploy: supabase functions deploy generate-avatar
-// Set secret: supabase secrets set HF_TOKEN=<your-huggingface-token>
-// Set secret: supabase secrets set SERVICE_ROLE_KEY=<your-service-role-key>
+// Set secret: supabase secrets set HF_TOKEN=<your-token>
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
@@ -11,9 +10,6 @@ export const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-const HF_MODEL = 'stabilityai/stable-fast-3d'
-const hfUrl = `https://api-inference.huggingface.co/models/${HF_MODEL}`
-
 function json(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
     status,
@@ -22,7 +18,6 @@ function json(payload, status = 200) {
 }
 
 Deno.serve(async (req) => {
-  // Preflight OPTIONS must be handled before anything else
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -52,12 +47,6 @@ Deno.serve(async (req) => {
       return json({ ok: true, skipped: true, reason: 'sync_avatar_on_update is false' })
     }
 
-    const hfToken = Deno.env.get('HF_TOKEN') || ''
-    if (!hfToken) {
-      return json({ ok: true, skipped: true, reason: 'HF_TOKEN not configured' })
-    }
-
-    // Read the system's native environment variables automatically injected by Supabase
     const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? ''
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
 
@@ -65,22 +54,18 @@ Deno.serve(async (req) => {
       throw new Error('Missing internal system environment keys.')
     }
 
-    // Rebuild the secure admin client configuration securely
     const adminClient = createClient(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      },
+      auth: { persistSession: false, autoRefreshToken: false },
     })
 
-    // Normalize the file path string — strip any redundant full URL prefixes
+    // Normalize path
     let cleanPath = photoRaw
     if (cleanPath.includes('member-photos-public/')) {
       cleanPath = cleanPath.split('member-photos-public/')[1]
     }
     console.log(`Attempting to generate a secure signed URL for cleaned path: "${cleanPath}"`)
 
-    // Generate the temporary secure access link using the cleaned path string
+    // Generate signed URL with dual-bucket fallback
     let securePhotoUrl = ''
     const { data: signedData, error: signedErr } = await adminClient.storage
       .from('member-photos-public')
@@ -99,46 +84,44 @@ Deno.serve(async (req) => {
     } else {
       securePhotoUrl = signedData.signedUrl
     }
-    console.log('Successfully generated time-limited token URL for Hugging Face.')
+    console.log('Successfully generated time-limited token URL.')
 
-    // Call Hugging Face Stable Fast 3D serverless inference API
-    // Returns raw GLB binary directly in the response body — no polling needed
-    console.log('Routing asset directly to official Hugging Face inference gateway via sandboxed network tunnel...')
+    // Route through Vercel proxy to bypass Supabase Edge DNS sandbox
+    const proxyEndpoint = 'https://paws-temp.vercel.app/api/generate-avatar'
+    console.log(`Routing asset through Vercel proxy: ${proxyEndpoint}`)
 
-    let hfRes
+    let hfRes = null
     const MAX_RETRIES = 3
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       try {
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), 120000)
-        hfRes = await fetch(hfUrl, {
+        hfRes = await fetch(proxyEndpoint, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${hfToken}`,
             'Content-Type': 'application/json',
-            'Connection': 'keep-alive',
           },
-          body: JSON.stringify({ inputs: securePhotoUrl }),
+          body: JSON.stringify({ securePhotoUrl }),
           signal: controller.signal,
         })
         clearTimeout(timeoutId)
-        break
+        if (hfRes.ok) break
+        console.warn(`Proxy attempt ${attempt} returned status: ${hfRes.status}`)
       } catch (retryErr) {
-        console.warn(`Hugging Face fetch attempt ${attempt} failed:`, retryErr.message)
+        console.warn(`Proxy fetch attempt ${attempt} failed:`, retryErr.message)
         if (attempt === MAX_RETRIES) throw retryErr
         await new Promise(r => setTimeout(r, 2000 * attempt))
       }
     }
 
-    console.log(`Hugging Face server responded with status code: ${hfRes.status}`)
-    if (!hfRes.ok) {
-      const errText = await hfRes.text()
-      throw new Error(`Hugging Face inference failed: ${hfRes.status} - ${errText}`)
+    if (!hfRes || !hfRes.ok) {
+      const errText = hfRes ? await hfRes.text() : 'Network timeout'
+      throw new Error(`Proxy inference exhausted: ${errText}`)
     }
 
-    // Capture the raw GLB binary blob directly from the response
+    // Capture GLB binary
     const glbBlob = await hfRes.blob()
-    console.log(`Received GLB blob from Hugging Face: ${glbBlob.size} bytes, type=${glbBlob.type}`)
+    console.log(`Received GLB blob: ${glbBlob.size} bytes, type=${glbBlob.type}`)
 
     // Upload to avatars bucket
     const modelPath = `${user.id}/avatar-${Date.now()}.glb`
@@ -167,7 +150,6 @@ Deno.serve(async (req) => {
     }
 
     return json({ ok: true, generated_avatar_url: finalUrl }, 200)
-
   } catch (e) {
     console.error('Avatar generation error:', e.message)
     return json({ ok: false, error: e.message, generated_avatar_url: '' }, 200)
