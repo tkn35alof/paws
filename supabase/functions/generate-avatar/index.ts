@@ -109,16 +109,19 @@ Deno.serve(async (req) => {
     const MAX_RETRIES = 3
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
       try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 120000)
         hfRes = await fetch(hfUrl, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${hfToken}`,
-          'Content-Type': 'application/json',
-          'Connection': 'keep-alive',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({ inputs: securePhotoUrl }),
-      })
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${hfToken}`,
+            'Content-Type': 'application/json',
+            'Connection': 'keep-alive',
+          },
+          body: JSON.stringify({ inputs: securePhotoUrl }),
+          signal: controller.signal,
+        })
+        clearTimeout(timeoutId)
         break
       } catch (retryErr) {
         console.warn(`Hugging Face fetch attempt ${attempt} failed:`, retryErr.message)
