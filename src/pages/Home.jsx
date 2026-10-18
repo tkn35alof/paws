@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
-import TeamScrollSection from '../components/TeamScrollSection.jsx'
 
 export default function Home() {
   const [members, setMembers] = useState([])
@@ -173,7 +172,24 @@ export default function Home() {
                 ) : members.length === 0 ? (
                   <p>No published members yet.</p>
                 ) : (
-                  <TeamScrollSection members={members} />
+                <div className="team-row">
+                {members.map((m) => (
+                <a key={m.id} className="member-card" href={`/team/${m.slug}`}>
+                {m.photo_std ? (
+                <img className="member-photo" src={m.photo_std} alt={m.display_name} />
+                ) : (
+                <div className="member-photo" />
+                )}
+                <h3>{m.display_name}</h3>
+                <div className="role">{m.tagline || (m.role_tags || []).join(' · ')}</div>
+                {m.role_tags?.length > 0 && (
+                <div className="tags">
+                {m.role_tags.slice(0, 3).map((r) => <span key={r} className="tag">{r}</span>)}
+                </div>
+                )}
+                </a>
+                ))}
+                </div>
                 )}
               </div>
             </section>
