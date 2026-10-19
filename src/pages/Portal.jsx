@@ -128,6 +128,9 @@ export default function Portal() {
       skills: form.skills || [],
       links: form.links || {},
       availability: form.availability,
+      workflow_video_url: form.workflow_video_url,
+      featured_metric: form.featured_metric,
+      featured_project: form.featured_project
     }
     const { error } = await db.from('members').update(patch).eq('id', member.id)
     setStatus(error ? error.message : 'Saved.')
