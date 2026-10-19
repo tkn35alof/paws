@@ -363,6 +363,28 @@ export default function Portal() {
             onChange={(v) => setForm({ ...form, skills: v })}
             placeholder="e.g. React, Inbox triage, Wiring"
           />
+          {/* BrewedOps: Social & Project Links */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <Field label="GitHub">
+              <input style={inputStyle} value={form.links?.github || ''} onChange={(e) => setForm({ ...form, links: { ...form.links, github: e.target.value } })} placeholder="https://github.com/..." />
+            </Field>
+            <Field label="LinkedIn">
+              <input style={inputStyle} value={form.links?.linkedin || ''} onChange={(e) => setForm({ ...form, links: { ...form.links, linkedin: e.target.value } })} placeholder="https://linkedin.com/in/..." />
+            </Field>
+            <Field label="Portfolio URL">
+              <input style={inputStyle} value={form.links?.website || ''} onChange={(e) => setForm({ ...form, links: { ...form.links, website: e.target.value } })} placeholder="https://yourportfolio.com" />
+            </Field>
+            <Field label="Featured Project Link">
+              <input style={inputStyle} value={form.featured_project || ''} onChange={(e) => setForm({ ...form, featured_project: e.target.value })} placeholder="https://project-demo.com" />
+            </Field>
+          </div>
+          {/* BrewedOps: Workflow Video + Featured Metric */}
+          <Field label="Workflow Video URL">
+            <input style={inputStyle} value={form.workflow_video_url || ''} onChange={(e) => setForm({ ...form, workflow_video_url: e.target.value })} placeholder="https://loom.com/... or YouTube link" />
+          </Field>
+          <Field label="Featured Metric Badge">
+            <input style={inputStyle} value={form.featured_metric || ''} onChange={(e) => setForm({ ...form, featured_metric: e.target.value })} placeholder="e.g. 100+ Hours Automated" />
+          </Field>
           <Field label="Availability (owner only)">
             <select style={inputStyle} value={form.availability || 'available'} onChange={(e) => setForm({ ...form, availability: e.target.value })}>
               <option value="available">Available</option>
@@ -374,6 +396,29 @@ export default function Portal() {
             Publish state: <strong>{member.published ? 'Published' : 'Not published'}</strong> (owner-controlled)
           </p>
           <button className="btn btn-pink" type="submit" disabled={saving}><span className="btn-label">{saving ? 'Saving…' : 'Save'}</span></button>
+          {/* Retry Avatar Generation */}
+          {member?.generated_avatar_url === '' && (
+            <button type="button" className="btn btn-ghost" onClick={async () => {
+              if (!member?.photo_raw) { setStatus('Upload a photo first.'); return }
+              if (!supabaseReady) { setStatus('Supabase not configured.'); return }
+              const db = requireSupabase()
+              setAvatarGenerating(true)
+              setStatus('Retrying avatar generation…')
+              try {
+                const { data: avData, error: avErr } = await db.functions.invoke('generate-avatar', {
+                  body: JSON.stringify({ memberId: member.id, photoRaw: member.photo_raw, syncAvatarOnUpdate: true }),
+                })
+                if (avErr) { setStatus('Retry failed: ' + avErr.message) }
+                else if (avData?.generated_avatar_url) {
+                  setMember({ ...member, generated_avatar_url: avData.generated_avatar_url })
+                  setStatus('Avatar regenerated.')
+                } else { setStatus('Avatar generation in progress.') }
+              } catch (e) { setStatus('Retry error: ' + e.message) }
+              setAvatarGenerating(false)
+            }}>
+              <span className="btn-label">Retry Avatar Generation</span>
+            </button>
+          )}
           <span className="pink">{status}</span>
         </form>
       </section>

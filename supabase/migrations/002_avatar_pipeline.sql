@@ -3,11 +3,14 @@
 -- Run this in the Supabase SQL editor (or via supabase CLI).
 -- ============================================================================
 
--- 1. Extend members table with avatar pipeline columns
+-- 1. Extend members table with avatar pipeline + portfolio columns
 alter table public.members
   add column if not exists superiority_rank      integer default 99,   -- lower = higher role
   add column if not exists generated_avatar_url text,                    -- URL to generated 3D model / render
-  add column if not exists sync_avatar_on_update boolean default true;    -- toggle: fire generation on photo save?
+  add column if not exists sync_avatar_on_update boolean default true,    -- toggle: fire generation on photo save?
+  add column if not exists workflow_video_url   text,                    -- brewedops: profile workflow video
+  add column if not exists featured_metric      text,                    -- brewedops: KPI badge (e.g. "100+ Hours Automated")
+  add column if not exists featured_project     text;                    -- brewedops: featured project link
 
 -- Index for rank-ordered homepage queries
 create index if not exists members_rank_idx on public.members (superiority_rank);
