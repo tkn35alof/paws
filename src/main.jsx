@@ -7,6 +7,7 @@ import TeamMember from './pages/TeamMember.jsx'
 import { About, Mission, Vision } from './pages/About.jsx'
 import Projects from './pages/Projects.jsx'
 import Contact from './pages/Contact.jsx'
+import Discovery from './pages/Discovery.jsx'
 import Portal from './pages/Portal.jsx'
 import Admin from './pages/Admin.jsx'
 import Login from './pages/Login.jsx'
@@ -22,6 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/vision" element={<Vision />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/discovery" element={<Discovery />} />
         <Route path="/portal" element={<Portal />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<Admin />} />
