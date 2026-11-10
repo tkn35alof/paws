@@ -3,11 +3,14 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Professional Allied Workforce Services (PAWS) — team portfolio + member portal + owner admin",
+  "description": "Professional Allied Workforce Services (PAWS) \u2014 team portfolio + member portal + owner admin",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "brand:generate": "python brand/generate_brand_kit.py",
+    "brand:push": "supabase db push --remote=snqupfxdrbwwxmmytynb",
+    "brand:verify": "node brand/verify.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",

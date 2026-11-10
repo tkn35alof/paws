@@ -25,6 +25,7 @@
 
   --paws-blue: #2d57ee;
     --paws-blue-glow: rgba(45, 87, 238, 0.2);
+  --paws-cyan: #38e8d0;   /* kicker labels + section meta accent */
 
     /* Text */
     --paws-ink: #f5f5f8;

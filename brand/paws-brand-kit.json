@@ -1,0 +1,238 @@
+{
+  "$schema": "./brand-kit.schema.json",
+  "meta": {
+    "name": "PAWS",
+    "fullName": "Professional Allied Workforce Services",
+    "version": "1.0.0",
+    "updatedAt": "2026-11-11",
+    "source": "src/index.css",
+    "deployUrl": "https://paws-temp.vercel.app",
+    "description": "Astro-inspired dark glass design system. Layered surfaces, a single pink accent, mono micro-labels, no purple-blue gradients.",
+    "principles": [
+      "Dark void base with layered atmospheric surfaces",
+      "Glassmorphism — translucent surfaces over blurred backdrops",
+      "One accent color (pink) used sparingly for maximum impact",
+      "Mono type for labels, tags, and meta information",
+      "No AI slop: no purple-blue gradients, no generic sans, no bubble-wrap"
+    ]
+  },
+
+  "color": {
+    "surfaces": {
+      "void":        { "value": "#07070d", "usage": "Deepest page background", "contrastOn": null },
+      "surface":     { "value": "#0e0e18", "usage": "Primary surface / nav bar", "contrastOn": { "ink": 18.46 } },
+      "surface-2":   { "value": "#14141f", "usage": "Cards, containers, dropdowns" },
+      "surface-3":   { "value": "#1a1a28", "usage": "Subtle raised surface" },
+      "surface-4":   { "value": "#202030", "usage": "Deepest raised surface" }
+    },
+    "lines": {
+      "line":        { "value": "#25253a", "usage": "Primary borders, section dividers" },
+      "line-2":      { "value": "#2e2e44", "usage": "Secondary borders, input borders" },
+      "line-glow":   { "value": "rgba(255, 90, 138, 0.25)", "usage": "Border glow on accent elements" }
+    },
+    "accent": {
+      "pink":        { "value": "#ff5a8a", "usage": "PRIMARY ACCENT — buttons, highlights, links", "contrastOn": { "void": 6.77, "surface": 6.47 } },
+      "pink-deep":   { "value": "#e03d6a", "usage": "Pink hover / active state" },
+      "pink-glow":   { "value": "rgba(255, 90, 138, 0.35)", "usage": "Button glow, pulse shadow" },
+      "pink-wash":   { "value": "rgba(255, 90, 138, 0.08)", "usage": "Subtle tint, hover fill" },
+      "pink-rule":   { "value": "rgba(255, 90, 138, 0.15)", "usage": "Accent border rule" }
+    },
+    "secondary": {
+      "cyan":        { "value": "#38e8d0", "usage": "Kicker labels, section meta accents", "contrastOn": { "void": 13.03 } },
+      "blue":        { "value": "#2d57ee", "usage": "Secondary accent — rarely used", "contrastOn": { "void": 3.55 } },
+      "blue-glow":   { "value": "rgba(45, 87, 238, 0.2)", "usage": "Blue glow shadow" }
+    },
+    "text": {
+      "ink":         { "value": "#f5f5f8", "usage": "Primary text, headings", "contrastOn": { "void": 18.46 } },
+      "ink-2":       { "value": "#a0a0b8", "usage": "Secondary text, paragraphs", "contrastOn": { "surface": 7.5 } },
+      "ink-3":       { "value": "#6a6a82", "usage": "Muted tertiary text, roles", "contrastOn": { "surface": 3.65 } },
+      "muted":       { "value": "#4a4a60", "usage": "Placeholders, footer text" },
+      "muted-2":     { "value": "#303044", "usage": "Heavily muted, bottom bar" }
+    }
+  },
+
+  "typography": {
+    "families": {
+      "display": { "value": "'Space Grotesk', 'Segoe UI', system-ui, sans-serif", "usage": "Headings, nav brand, buttons, feature icons", "googleFont": "Space+Grotesk:wght@400;500;600;700" },
+      "body":    { "value": "'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif", "usage": "Body text, forms, paragraphs", "googleFont": "IBM+Plex+Sans:wght@300;400;500;600" },
+      "mono":    { "value": "'IBM Plex Mono', 'Consolas', monospace", "usage": "Tags, chips, meta labels, code", "googleFont": "IBM+Plex+Mono:wght@400;500" }
+    },
+    "scale": {
+      "micro":     { "value": "11px", "usage": "Tag chips" },
+      "xs":        { "value": "12px", "usage": "Logo names, footer headings, bottom bar" },
+      "sm":        { "value": "13px", "usage": "Small text, labels, kicker, meta items" },
+      "base":      { "value": "14px", "usage": "Role tags, inputs, nav sign-in" },
+      "md":        { "value": "15px", "usage": "Buttons, form inputs" },
+      "lg":        { "value": "17px", "usage": "Body default" },
+      "xl":        { "value": "20px", "usage": "Member card names, feature card titles" },
+      "2xl":       { "value": "21px", "usage": "Hero lead paragraph" },
+      "3xl":       { "value": "22px", "usage": "Testimonial quotes" },
+      "h3":        { "value": "clamp(22px, 2.8vw, 28px)", "usage": "Section h3" },
+      "h2":        { "value": "clamp(32px, 5vw, 56px)", "usage": "Section h2" },
+      "h1":        { "value": "clamp(48px, 10vw, 104px)", "usage": "Hero h1" }
+    },
+    "weights": {
+      "light":   { "value": 300 },
+      "regular": { "value": 400 },
+      "medium":  { "value": 500 },
+      "semibold":{ "value": 600 },
+      "bold":    { "value": 700 }
+    },
+    "letterSpacing": {
+      "h1":  { "value": "-0.05em" },
+      "h2":  { "value": "-0.03em" },
+      "h3":  { "value": "-0.03em" },
+      "h4":  { "value": "-0.01em" },
+      "label": { "value": "0.1em" },
+      "tag": { "value": "0.02em" }
+    }
+  },
+
+  "spacing": {
+    "1":  { "value": "4px",  "usage": "Micro spacing" },
+    "2":  { "value": "8px",  "usage": "Small gap, icon gap" },
+    "3":  { "value": "12px", "usage": "Medium gap" },
+    "4":  { "value": "16px", "usage": "Base spacing, paragraph margin" },
+    "5":  { "value": "24px", "usage": "Section spacing, block margin" },
+    "6":  { "value": "32px", "usage": "Large spacing, hero CTA gap" },
+    "7":  { "value": "48px", "usage": "Section divider" },
+    "8":  { "value": "64px", "usage": "Major section spacing" },
+    "9":  { "value": "96px", "usage": "Full-width spacing" },
+    "10": { "value": "128px","usage": "Hero vertical padding" }
+  },
+
+  "radius": {
+    "sm":    { "value": "6px",   "usage": "Small inputs, tag hover" },
+    "md":    { "value": "12px",  "usage": "Textareas, feature icon tiles" },
+    "lg":    { "value": "18px",  "usage": "Cards, modals, logo boxes" },
+    "card":  { "value": "16px",  "usage": "Standard card corners" },
+    "pill":  { "value": "999px", "usage": "Buttons, avatars, tags, nav" }
+  },
+
+  "shadow": {
+    "nav":          { "value": "0 2px 20px rgba(0,0,0,0.5)", "usage": "Sticky nav scrolled state" },
+    "card-hover":   { "value": "0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(255, 90, 138, 0.15)", "usage": "Member card hover" },
+    "btn":          { "value": "0 0 20px rgba(255, 90, 138, 0.35)", "usage": "Primary button glow" },
+    "btn-hover":    { "value": "0 0 30px rgba(255, 90, 138, 0.35)", "usage": "Primary button hover glow" },
+    "dropdown":     { "value": "0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(255, 90, 138, 0.08)", "usage": "Nav dropdown" },
+    "focus-ring":   { "value": "0 0 0 3px rgba(255, 90, 138, 0.15)", "usage": "Input focus state" },
+    "border-glow":  { "value": "0 0 0 1px rgba(255, 90, 138, 0.15), 0 8px 32px rgba(232, 82, 127, 0.15)", "usage": "Border-glow card hover" }
+  },
+
+  "motion": {
+    "duration": {
+      "fast":   { "value": "0.12s", "usage": "Button transform" },
+      "normal": { "value": "0.15s", "usage": "Color, border transitions" },
+      "medium": { "value": "0.25s", "usage": "Button background, dropdown" },
+      "slow":   { "value": "0.3s",  "usage": "Card hover, border glow" },
+      "reveal": { "value": "0.6s",  "usage": "Scroll reveal" }
+    },
+    "easing": {
+      "slide":   { "value": "cubic-bezier(0.65, 0, 0.35, 1)", "usage": "Button slide-up, accent underline" },
+      "reveal":  { "value": "cubic-bezier(0.2, 0, 0, 1)",    "usage": "Scroll reveal, card lift" },
+      "linear":  { "value": "linear",                        "usage": "Marquee loops" }
+    },
+    "keyframes": {
+      "pulse":        { "value": "pulse 2s ease-in-out infinite", "usage": "Hero meta dots" },
+      "marquee":      { "value": "marquee-scroll 40s linear infinite", "usage": "Logo marquee" },
+      "marquee-logos":{ "value": "marquee-scroll-logos 40s linear infinite", "usage": "Logos marquee" },
+      "marquee-v":    { "value": "marquee-v 40s linear infinite", "usage": "Vertical testimonial marquee" },
+      "blob-rotate":  { "value": "blob-rotate 30s ease-in-out infinite", "usage": "Background glow blobs" }
+    }
+  },
+
+  "layout": {
+    "maxWidth": { "value": "1180px", "usage": "Content wrap (.wrap)" },
+    "navHeight":{ "value": "68px",   "usage": "Sticky nav (18px pad + content)" },
+    "sectionPadding": { "value": "112px 0", "usage": "Default section vertical padding" },
+    "heroPadding":    { "value": "140px 0 100px", "usage": "Hero section padding" },
+    "memberCardWidth":{ "value": "300px", "usage": "Team grid card fixed width" },
+    "memberPhotoAspect": { "value": "4/5", "usage": "Member photo aspect ratio" },
+    "breakpoints": {
+      "mobile":  { "value": "600px" },
+      "tablet":  { "value": "768px" },
+      "desktop": { "value": "900px" },
+      "wide":    { "value": "1024px" }
+    }
+  },
+
+  "components": {
+    "button": {
+      "primary": {
+        "bg": "var(--paws-pink)",
+        "color": "#fff",
+        "padding": "14px 28px",
+        "radius": "var(--radius-pill)",
+        "font": "var(--font-display)",
+        "weight": 600,
+        "hoverBg": "var(--paws-pink-deep)",
+        "hoverTransform": "translateY(-1px)"
+      },
+      "ghost": {
+        "bg": "transparent",
+        "color": "var(--paws-ink)",
+        "border": "1px solid var(--paws-line-2)",
+        "radius": "var(--radius-pill)",
+        "hoverBg": "var(--paws-pink-wash)",
+        "hoverColor": "var(--paws-pink)"
+      }
+    },
+    "nav": {
+      "bg": "rgba(14, 14, 24, 0.85)",
+      "backdrop": "blur(16px) saturate(180%)",
+      "border": "1px solid var(--paws-line)",
+      "radius": "var(--radius-pill)",
+      "font": "var(--font-display)",
+      "fontSize": "15px"
+    },
+    "card": {
+      "bg": "rgba(20, 20, 31, 0.7)",
+      "backdrop": "blur(8px)",
+      "border": "1px solid var(--paws-line)",
+      "radius": "var(--radius-card)",
+      "hoverBorder": "var(--paws-pink-rule)",
+      "hoverTransform": "translateY(-6px)"
+    },
+    "input": {
+      "bg": "rgba(14, 14, 24, 0.6)",
+      "border": "1px solid var(--paws-line-2)",
+      "radius": "var(--radius-pill)",
+      "focusBorder": "var(--paws-pink)",
+      "focusRing": "0 0 0 3px var(--paws-pink-rule)"
+    },
+    "tag": {
+      "font": "var(--font-mono)",
+      "fontSize": "11px",
+      "padding": "3px 10px",
+      "border": "1px solid var(--paws-line-2)",
+      "radius": "var(--radius-pill)",
+      "color": "var(--paws-ink-3)",
+      "hoverBorder": "var(--paws-pink-rule)",
+      "hoverColor": "var(--paws-pink)"
+    },
+    "kicker": {
+      "font": "var(--font-display)",
+      "fontSize": "13px",
+      "weight": 600,
+      "color": "var(--paws-cyan)",
+      "letterSpacing": "0.12em",
+      "textTransform": "uppercase"
+    }
+  },
+
+  "voice": {
+    "tone": ["Direct", "Confident", "Technical", "Warm"],
+    "headlineStyle": "Short, punchy, benefit-led. Title case or sentence case with a pink accent word.",
+    "avoid": ["Purple-blue gradients", "Generic sans-serif", "Bubble-wrap cards", "AI slop phrasing", "Excessive emoji"],
+    "taglines": {
+      "home": "Specialists, not freelancers.",
+      "portal": "Your profile, your rules."
+    }
+  },
+
+  "assets": {
+    "fonts": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap",
+    "logoMark": "PAWS wordmark — bold Space Grotesk, pink dot on the brand mark",
+    "favicon": "Not yet defined — recommend a pink paw glyph on void background"
+  }
+}
