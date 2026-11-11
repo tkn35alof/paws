@@ -1,0 +1,362 @@
+{
+  "page": "testimonials",
+  "regions": [
+    {
+      "key": "img",
+      "selector": "[data-pf-key=\"img\"]",
+      "type": "image",
+      "label": "Rail · Img",
+      "section": "Rail"
+    },
+    {
+      "key": "tgrid__cover-img",
+      "selector": "[data-pf-key=\"tgrid__cover-img\"]",
+      "type": "image",
+      "label": "Testimonials · Cover-img",
+      "section": "Testimonials"
+    },
+    {
+      "key": "img__1",
+      "selector": "[data-pf-key=\"img__1\"]",
+      "type": "image",
+      "label": "Testimonials · Img 2",
+      "section": "Testimonials"
+    },
+    {
+      "key": "img__2",
+      "selector": "[data-pf-key=\"img__2\"]",
+      "type": "image",
+      "label": "Testimonials · Img 3",
+      "section": "Testimonials"
+    },
+    {
+      "key": "img__3",
+      "selector": "[data-pf-key=\"img__3\"]",
+      "type": "image",
+      "label": "Testimonials · Img 4",
+      "section": "Testimonials"
+    },
+    {
+      "key": "img__4",
+      "selector": "[data-pf-key=\"img__4\"]",
+      "type": "image",
+      "label": "Testimonials · Img 5",
+      "section": "Testimonials"
+    },
+    {
+      "key": "rail__social",
+      "selector": "[data-pf-key=\"rail__social\"]",
+      "type": "link",
+      "label": "Rail · Social",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__1",
+      "selector": "[data-pf-key=\"rail__social__1\"]",
+      "type": "link",
+      "label": "Rail · Social 2",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__2",
+      "selector": "[data-pf-key=\"rail__social__2\"]",
+      "type": "link",
+      "label": "Rail · Social 3",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__3",
+      "selector": "[data-pf-key=\"rail__social__3\"]",
+      "type": "link",
+      "label": "Rail · Social 4",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link",
+      "selector": "[data-pf-key=\"rail__link\"]",
+      "type": "link",
+      "label": "Rail · Link",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__1",
+      "selector": "[data-pf-key=\"rail__link__1\"]",
+      "type": "link",
+      "label": "Rail · Link 2",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__2",
+      "selector": "[data-pf-key=\"rail__link__2\"]",
+      "type": "link",
+      "label": "Rail · Link 3",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__3",
+      "selector": "[data-pf-key=\"rail__link__3\"]",
+      "type": "link",
+      "label": "Rail · Link 4",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__4",
+      "selector": "[data-pf-key=\"rail__link__4\"]",
+      "type": "link",
+      "label": "Rail · Link 5",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__5",
+      "selector": "[data-pf-key=\"rail__link__5\"]",
+      "type": "link",
+      "label": "Rail · Link 6",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__name",
+      "selector": "[data-pf-key=\"rail__name\"]",
+      "type": "text",
+      "label": "Rail · Name",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__visits",
+      "selector": "[data-pf-key=\"rail__visits\"]",
+      "type": "text",
+      "label": "Rail · Visits",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__copy",
+      "selector": "[data-pf-key=\"rail__copy\"]",
+      "type": "text",
+      "label": "Rail · Copy",
+      "section": "Rail"
+    },
+    {
+      "key": "pgrid__eyebrow",
+      "selector": "[data-pf-key=\"pgrid__eyebrow\"]",
+      "type": "text",
+      "label": "Header · Eyebrow",
+      "section": "Header"
+    },
+    {
+      "key": "pgrid__title",
+      "selector": "[data-pf-key=\"pgrid__title\"]",
+      "type": "text",
+      "label": "Header · Title",
+      "section": "Header"
+    },
+    {
+      "key": "pgrid__lede",
+      "selector": "[data-pf-key=\"pgrid__lede\"]",
+      "type": "text",
+      "label": "Header · Lede",
+      "section": "Header"
+    },
+    {
+      "key": "tgrid__cover-kicker",
+      "selector": "[data-pf-key=\"tgrid__cover-kicker\"]",
+      "type": "text",
+      "label": "Testimonials · Cover-kicker",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__cover-sub",
+      "selector": "[data-pf-key=\"tgrid__cover-sub\"]",
+      "type": "text",
+      "label": "Testimonials · Cover-sub",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__pick-kicker",
+      "selector": "[data-pf-key=\"tgrid__pick-kicker\"]",
+      "type": "text",
+      "label": "Testimonials · Pick-kicker",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__pick-meta",
+      "selector": "[data-pf-key=\"tgrid__pick-meta\"]",
+      "type": "text",
+      "label": "Testimonials · Pick-meta",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__pick-kicker__1",
+      "selector": "[data-pf-key=\"tgrid__pick-kicker__1\"]",
+      "type": "text",
+      "label": "Testimonials · Pick-kicker 2",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__pick-meta__1",
+      "selector": "[data-pf-key=\"tgrid__pick-meta__1\"]",
+      "type": "text",
+      "label": "Testimonials · Pick-meta 2",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__ledger-title",
+      "selector": "[data-pf-key=\"tgrid__ledger-title\"]",
+      "type": "text",
+      "label": "Testimonials · Ledger-title",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__ledger-sub",
+      "selector": "[data-pf-key=\"tgrid__ledger-sub\"]",
+      "type": "text",
+      "label": "Testimonials · Ledger-sub",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-ghost",
+      "selector": "[data-pf-key=\"tgrid__client-ghost\"]",
+      "type": "text",
+      "label": "Testimonials · Client-ghost",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-name",
+      "selector": "[data-pf-key=\"tgrid__client-name\"]",
+      "type": "text",
+      "label": "Testimonials · Client-name",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-role",
+      "selector": "[data-pf-key=\"tgrid__client-role\"]",
+      "type": "text",
+      "label": "Testimonials · Client-role",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-daily",
+      "selector": "[data-pf-key=\"tgrid__client-daily\"]",
+      "type": "text",
+      "label": "Testimonials · Client-daily",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-tag",
+      "selector": "[data-pf-key=\"tgrid__client-tag\"]",
+      "type": "text",
+      "label": "Testimonials · Client-tag",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-tag__1",
+      "selector": "[data-pf-key=\"tgrid__client-tag__1\"]",
+      "type": "text",
+      "label": "Testimonials · Client-tag 2",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-tag__2",
+      "selector": "[data-pf-key=\"tgrid__client-tag__2\"]",
+      "type": "text",
+      "label": "Testimonials · Client-tag 3",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-ghost__1",
+      "selector": "[data-pf-key=\"tgrid__client-ghost__1\"]",
+      "type": "text",
+      "label": "Testimonials · Client-ghost 2",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-name__1",
+      "selector": "[data-pf-key=\"tgrid__client-name__1\"]",
+      "type": "text",
+      "label": "Testimonials · Client-name 2",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-role__1",
+      "selector": "[data-pf-key=\"tgrid__client-role__1\"]",
+      "type": "text",
+      "label": "Testimonials · Client-role 2",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-daily__1",
+      "selector": "[data-pf-key=\"tgrid__client-daily__1\"]",
+      "type": "text",
+      "label": "Testimonials · Client-daily 2",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-tag__3",
+      "selector": "[data-pf-key=\"tgrid__client-tag__3\"]",
+      "type": "text",
+      "label": "Testimonials · Client-tag 4",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-tag__4",
+      "selector": "[data-pf-key=\"tgrid__client-tag__4\"]",
+      "type": "text",
+      "label": "Testimonials · Client-tag 5",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-tag__5",
+      "selector": "[data-pf-key=\"tgrid__client-tag__5\"]",
+      "type": "text",
+      "label": "Testimonials · Client-tag 6",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-ghost__2",
+      "selector": "[data-pf-key=\"tgrid__client-ghost__2\"]",
+      "type": "text",
+      "label": "Testimonials · Client-ghost 3",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-name__2",
+      "selector": "[data-pf-key=\"tgrid__client-name__2\"]",
+      "type": "text",
+      "label": "Testimonials · Client-name 3",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-role__2",
+      "selector": "[data-pf-key=\"tgrid__client-role__2\"]",
+      "type": "text",
+      "label": "Testimonials · Client-role 3",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-daily__2",
+      "selector": "[data-pf-key=\"tgrid__client-daily__2\"]",
+      "type": "text",
+      "label": "Testimonials · Client-daily 3",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-tag__6",
+      "selector": "[data-pf-key=\"tgrid__client-tag__6\"]",
+      "type": "text",
+      "label": "Testimonials · Client-tag 7",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-tag__7",
+      "selector": "[data-pf-key=\"tgrid__client-tag__7\"]",
+      "type": "text",
+      "label": "Testimonials · Client-tag 8",
+      "section": "Testimonials"
+    },
+    {
+      "key": "tgrid__client-tag__8",
+      "selector": "[data-pf-key=\"tgrid__client-tag__8\"]",
+      "type": "text",
+      "label": "Testimonials · Client-tag 9",
+      "section": "Testimonials"
+    }
+  ]
+}

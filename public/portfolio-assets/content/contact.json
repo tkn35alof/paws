@@ -1,0 +1,112 @@
+{
+  "img": {
+    "src": "/portfolio-assets/home/rail-avatar.webp",
+    "alt": "Jhuriel Guerra"
+  },
+  "img__1": {
+    "src": "/portfolio-assets/icons/facebook.svg",
+    "alt": ""
+  },
+  "img__2": {
+    "src": "/portfolio-assets/icons/linkedin.svg",
+    "alt": ""
+  },
+  "img__3": {
+    "src": "/portfolio-assets/icons/github.svg",
+    "alt": ""
+  },
+  "img__4": {
+    "src": "/portfolio-assets/icons/discord.svg",
+    "alt": ""
+  },
+  "rail__social": {
+    "label": "",
+    "href": "https://www.facebook.com/BrewedOpsHL"
+  },
+  "rail__social__1": {
+    "label": "",
+    "href": "https://www.linkedin.com/in/kenneth-villar-10a05734a/"
+  },
+  "rail__social__2": {
+    "label": "",
+    "href": "https://github.com/brewed-ops"
+  },
+  "rail__social__3": {
+    "label": "",
+    "href": "https://discord.com/users/kapedlvnglgnd"
+  },
+  "rail__link": {
+    "label": "Home",
+    "href": "paws-member-portfolio-home.html"
+  },
+  "rail__link__1": {
+    "label": "Projects",
+    "href": "paws-member-portfolio-projects.html"
+  },
+  "rail__link__2": {
+    "label": "Services",
+    "href": "paws-member-portfolio-services.html"
+  },
+  "rail__link__3": {
+    "label": "Testimonials",
+    "href": "paws-member-portfolio-testimonials.html"
+  },
+  "rail__link__4": {
+    "label": "About",
+    "href": "paws-member-portfolio-about.html"
+  },
+  "rail__link__5": {
+    "label": "FAQs / Contact",
+    "href": "paws-member-portfolio-contact.html"
+  },
+  "cgrid__mail": {
+    "label": "contact@pawsops.io",
+    "href": "mailto:contact@pawsops.io"
+  },
+  "cgrid__social": {
+    "label": "",
+    "href": "https://www.facebook.com/BrewedOpsHL"
+  },
+  "cgrid__social__1": {
+    "label": "",
+    "href": "https://www.linkedin.com/in/kenneth-villar-10a05734a/"
+  },
+  "cgrid__social__2": {
+    "label": "",
+    "href": "https://github.com/brewed-ops"
+  },
+  "cgrid__social__3": {
+    "label": "",
+    "href": "https://discord.com/users/kapedlvnglgnd"
+  },
+  "rail__name": "Jhuriel Guerra",
+  "rail__visits": "13,991 visits",
+  "rail__copy": "© 2026Jhuriel Guerra. All rights reserved.",
+  "pgrid__eyebrow": "FAQs / Contact",
+  "pgrid__title": "Work worth doing. Tools worth building.",
+  "pgrid__lede": "Tell me what is eating your week. If I can automate it you will get a plan back, and if I cannot I will say so.",
+  "cgrid__eyebrow": "FAQs",
+  "span": "Still have one? Write below.",
+  "cgrid__step-index": "01",
+  "cgrid__faq-text": "What do you actually build?",
+  "p": "GoHighLevel automation, AI automations on n8n, Zapier, and Make, CRM setup, funnels, custom websites, and small apps. Most of it for coaches and agencies who are losing leads to manual follow-up.",
+  "cgrid__step-index__1": "02",
+  "cgrid__faq-text__1": "How fast can you start?",
+  "p__1": "Same week for small fixes. Larger builds get a kickoff call within 48 hours. I work Manila time and overlap most US and EU schedules.",
+  "cgrid__step-index__2": "03",
+  "cgrid__faq-text__2": "Do I have to be on GoHighLevel?",
+  "p__2": "No. Most of my work is GHL, but I have also built on Zapier, n8n, and custom CRMs. If your stack is a bad fit I will say so upfront.",
+  "cgrid__step-index__3": "04",
+  "cgrid__faq-text__3": "How much do you charge?",
+  "p__3": "Depends on the build. We hop on a discovery call so I can see the actual problem, then I send a written proposal with scope and price. No padded estimates.",
+  "cgrid__step-index__4": "05",
+  "cgrid__faq-text__4": "What happens after I write?",
+  "p__4": "I read it the same day and reply within one business day. You get a plan if I can automate it, or a straight no if I cannot.",
+  "span__1": "contact@pawsops.io",
+  "cgrid__label": "First name",
+  "cgrid__label__1": "Last name",
+  "cgrid__label__2": "Email",
+  "cgrid__label__3": "Tell me more about your business",
+  "cgrid__submit-label": "Work in Progress",
+  "cgrid__hint": "One business day. No newsletter, no drip."
+}

@@ -1,0 +1,96 @@
+/* =====================================================================
+   PAWS brand layer — portfolio replica
+   Source of truth: C:/Users/ALOF/paws/brand/paws-brand-kit.json
+
+   The replica's ORIGINAL light + dark themes are preserved (fonts,
+   components, and the theme toggle button included). The PAWS pink
+   accent (#ff5a8a) replaces the replica's blue accent everywhere,
+   and every wide dark background gets a pink gradient touch.
+   ===================================================================== */
+
+/* ---------- PAWS pink accent (light theme) ---------- */
+:root{
+  --paws-pink:#ff5a8a;
+  --paws-pink-deep:#e03d6a;
+  --paws-pink-glow:rgba(255,90,138,.35);
+  --paws-pink-wash:rgba(255,90,138,.08);
+  --paws-pink-rule:rgba(255,90,138,.15);
+  --accent:#ff5a8a;
+  --accent-hover:#e03d6a;
+  --accent-ink:#ff5a8a;
+  --accent-rgb:255,90,138;
+  /* light mode: pink gradient background */
+  --sweep-1-rgb:255,183,206;
+  --sweep-2-rgb:255,90,138;
+}
+
+/* ---------- PAWS pink accent (dark theme) ---------- */
+:root[data-theme="dark"]{
+  --accent:#ff5a8a;
+  --accent-hover:#e03d6a;
+  --accent-ink:#ff5a8a;
+  --solar-secondary-color:#ff5a8a;
+  --accent-rgb:255,90,138;
+  /* wide dark backgrounds: dark -> pink gradient touch */
+  --sweep-d1-rgb:24,13,22;
+  --sweep-d2-rgb:52,18,36;
+  --sweep-d3-rgb:255,90,138;
+}
+
+/* ---------- Wide dark background: stronger pink gradient touch ---------- */
+[data-theme=dark] .home__glass{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.05),transparent 38%),
+    linear-gradient(100deg,#0d0d16 0%,rgba(var(--sweep-d1-rgb),.94) 40%,rgba(var(--sweep-d2-rgb),.94) 68%,rgba(var(--sweep-d3-rgb),.95) 100%);
+}
+
+/* ---------- Buttons: pink hovers (both themes) ---------- */
+.home__cta:hover,
+.funnels__cta:hover,
+.cgrid__submit:hover,
+.cgrid__mail:hover,
+.ktools .flagship__cta:hover,
+.ktools .flagship__tab:hover:not(.is-active),
+.social-icons__link:hover,
+.ghlwf__code-copy:hover,
+.wf-viewer__btn:hover,
+.rail__link:hover,
+.rail__social:hover,
+.cgrid__social:hover,
+.a11y__button:hover,
+.a11y__size:hover,
+.a11y__reset:hover,
+.a11y__close:hover,
+.theme-fab:hover{
+  background:var(--accent)!important;
+  color:var(--on-accent)!important;
+  border-color:var(--accent)!important;
+}
+
+/* ---------- Cards: pink glow on hover (both themes) ---------- */
+.bento__card:hover,
+.sgrid__service:hover,
+.tools-marquee__item:hover,
+.tools-marquee__tile:hover,
+.bento__fw-tile:hover,
+.bento__offer-tile:hover,
+.bento__chip:hover,
+.agrid__cell:hover,
+.agrid__cap:hover,
+.intro-tile:hover,
+.autopilot__node-card:hover,
+.autopilot__board:hover,
+.bento__build-plate:hover,
+.bento__shot:hover,
+.bento__photo:hover,
+.tgrid__client:hover,
+.tgrid__pick:hover,
+.tgrid__reel:hover,
+.cgrid__panel:hover,
+.shell__panel:hover,
+.a11y__panel:hover{
+  box-shadow:0 0 0 1px rgba(var(--accent-rgb),.55),0 0 40px -6px rgba(var(--accent-rgb),.6),0 20px 50px -20px rgba(var(--accent-rgb),.5)!important;
+  border-color:rgba(var(--accent-rgb),.55)!important;
+}
+
+/* ---------- Theme toggle button: restored (replica's own rules apply) ---------- */

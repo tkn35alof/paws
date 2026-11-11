@@ -1,0 +1,873 @@
+{
+  "page": "services",
+  "regions": [
+    {
+      "key": "img",
+      "selector": "[data-pf-key=\"img\"]",
+      "type": "image",
+      "label": "Rail · Img",
+      "section": "Rail"
+    },
+    {
+      "key": "img__1",
+      "selector": "[data-pf-key=\"img__1\"]",
+      "type": "image",
+      "label": "Bento · Img 2",
+      "section": "Bento"
+    },
+    {
+      "key": "img__2",
+      "selector": "[data-pf-key=\"img__2\"]",
+      "type": "image",
+      "label": "Bento · Img 3",
+      "section": "Bento"
+    },
+    {
+      "key": "img__3",
+      "selector": "[data-pf-key=\"img__3\"]",
+      "type": "image",
+      "label": "Bento · Img 4",
+      "section": "Bento"
+    },
+    {
+      "key": "img__4",
+      "selector": "[data-pf-key=\"img__4\"]",
+      "type": "image",
+      "label": "Bento · Img 5",
+      "section": "Bento"
+    },
+    {
+      "key": "img__5",
+      "selector": "[data-pf-key=\"img__5\"]",
+      "type": "image",
+      "label": "Bento · Img 6",
+      "section": "Bento"
+    },
+    {
+      "key": "img__6",
+      "selector": "[data-pf-key=\"img__6\"]",
+      "type": "image",
+      "label": "Bento · Img 7",
+      "section": "Bento"
+    },
+    {
+      "key": "img__7",
+      "selector": "[data-pf-key=\"img__7\"]",
+      "type": "image",
+      "label": "Bento · Img 8",
+      "section": "Bento"
+    },
+    {
+      "key": "img__8",
+      "selector": "[data-pf-key=\"img__8\"]",
+      "type": "image",
+      "label": "Bento · Img 9",
+      "section": "Bento"
+    },
+    {
+      "key": "img__9",
+      "selector": "[data-pf-key=\"img__9\"]",
+      "type": "image",
+      "label": "Bento · Img 10",
+      "section": "Bento"
+    },
+    {
+      "key": "img__10",
+      "selector": "[data-pf-key=\"img__10\"]",
+      "type": "image",
+      "label": "Bento · Img 11",
+      "section": "Bento"
+    },
+    {
+      "key": "img__11",
+      "selector": "[data-pf-key=\"img__11\"]",
+      "type": "image",
+      "label": "Bento · Img 12",
+      "section": "Bento"
+    },
+    {
+      "key": "img__12",
+      "selector": "[data-pf-key=\"img__12\"]",
+      "type": "image",
+      "label": "Bento · Img 13",
+      "section": "Bento"
+    },
+    {
+      "key": "img__13",
+      "selector": "[data-pf-key=\"img__13\"]",
+      "type": "image",
+      "label": "Bento · Img 14",
+      "section": "Bento"
+    },
+    {
+      "key": "img__14",
+      "selector": "[data-pf-key=\"img__14\"]",
+      "type": "image",
+      "label": "Bento · Img 15",
+      "section": "Bento"
+    },
+    {
+      "key": "img__15",
+      "selector": "[data-pf-key=\"img__15\"]",
+      "type": "image",
+      "label": "Bento · Img 16",
+      "section": "Bento"
+    },
+    {
+      "key": "rail__social",
+      "selector": "[data-pf-key=\"rail__social\"]",
+      "type": "link",
+      "label": "Rail · Social",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__1",
+      "selector": "[data-pf-key=\"rail__social__1\"]",
+      "type": "link",
+      "label": "Rail · Social 2",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__2",
+      "selector": "[data-pf-key=\"rail__social__2\"]",
+      "type": "link",
+      "label": "Rail · Social 3",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__3",
+      "selector": "[data-pf-key=\"rail__social__3\"]",
+      "type": "link",
+      "label": "Rail · Social 4",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link",
+      "selector": "[data-pf-key=\"rail__link\"]",
+      "type": "link",
+      "label": "Rail · Link",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__1",
+      "selector": "[data-pf-key=\"rail__link__1\"]",
+      "type": "link",
+      "label": "Rail · Link 2",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__2",
+      "selector": "[data-pf-key=\"rail__link__2\"]",
+      "type": "link",
+      "label": "Rail · Link 3",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__3",
+      "selector": "[data-pf-key=\"rail__link__3\"]",
+      "type": "link",
+      "label": "Rail · Link 4",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__4",
+      "selector": "[data-pf-key=\"rail__link__4\"]",
+      "type": "link",
+      "label": "Rail · Link 5",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__5",
+      "selector": "[data-pf-key=\"rail__link__5\"]",
+      "type": "link",
+      "label": "Rail · Link 6",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__name",
+      "selector": "[data-pf-key=\"rail__name\"]",
+      "type": "text",
+      "label": "Rail · Name",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__visits",
+      "selector": "[data-pf-key=\"rail__visits\"]",
+      "type": "text",
+      "label": "Rail · Visits",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__copy",
+      "selector": "[data-pf-key=\"rail__copy\"]",
+      "type": "text",
+      "label": "Rail · Copy",
+      "section": "Rail"
+    },
+    {
+      "key": "pgrid__eyebrow",
+      "selector": "[data-pf-key=\"pgrid__eyebrow\"]",
+      "type": "text",
+      "label": "Header · Eyebrow",
+      "section": "Header"
+    },
+    {
+      "key": "pgrid__title",
+      "selector": "[data-pf-key=\"pgrid__title\"]",
+      "type": "text",
+      "label": "Header · Title",
+      "section": "Header"
+    },
+    {
+      "key": "pgrid__lede",
+      "selector": "[data-pf-key=\"pgrid__lede\"]",
+      "type": "text",
+      "label": "Header · Lede",
+      "section": "Header"
+    },
+    {
+      "key": "sgrid__method-eyebrow",
+      "selector": "[data-pf-key=\"sgrid__method-eyebrow\"]",
+      "type": "text",
+      "label": "Services · Method-eyebrow",
+      "section": "Services"
+    },
+    {
+      "key": "span",
+      "selector": "[data-pf-key=\"span\"]",
+      "type": "text",
+      "label": "Services · Span",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__method-sub",
+      "selector": "[data-pf-key=\"sgrid__method-sub\"]",
+      "type": "text",
+      "label": "Services · Method-sub",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-ghost",
+      "selector": "[data-pf-key=\"sgrid__stage-ghost\"]",
+      "type": "text",
+      "label": "Services · Stage-ghost",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-label",
+      "selector": "[data-pf-key=\"sgrid__stage-label\"]",
+      "type": "text",
+      "label": "Services · Stage-label",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-body",
+      "selector": "[data-pf-key=\"sgrid__stage-body\"]",
+      "type": "text",
+      "label": "Services · Stage-body",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-chip",
+      "selector": "[data-pf-key=\"sgrid__stage-chip\"]",
+      "type": "text",
+      "label": "Services · Stage-chip",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-chip__1",
+      "selector": "[data-pf-key=\"sgrid__stage-chip__1\"]",
+      "type": "text",
+      "label": "Services · Stage-chip 2",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-chip__2",
+      "selector": "[data-pf-key=\"sgrid__stage-chip__2\"]",
+      "type": "text",
+      "label": "Services · Stage-chip 3",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-chip__3",
+      "selector": "[data-pf-key=\"sgrid__stage-chip__3\"]",
+      "type": "text",
+      "label": "Services · Stage-chip 4",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-ghost__1",
+      "selector": "[data-pf-key=\"sgrid__stage-ghost__1\"]",
+      "type": "text",
+      "label": "Services · Stage-ghost 2",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-label__1",
+      "selector": "[data-pf-key=\"sgrid__stage-label__1\"]",
+      "type": "text",
+      "label": "Services · Stage-label 2",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-body__1",
+      "selector": "[data-pf-key=\"sgrid__stage-body__1\"]",
+      "type": "text",
+      "label": "Services · Stage-body 2",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-chip__4",
+      "selector": "[data-pf-key=\"sgrid__stage-chip__4\"]",
+      "type": "text",
+      "label": "Services · Stage-chip 5",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-chip__5",
+      "selector": "[data-pf-key=\"sgrid__stage-chip__5\"]",
+      "type": "text",
+      "label": "Services · Stage-chip 6",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-chip__6",
+      "selector": "[data-pf-key=\"sgrid__stage-chip__6\"]",
+      "type": "text",
+      "label": "Services · Stage-chip 7",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-ghost__2",
+      "selector": "[data-pf-key=\"sgrid__stage-ghost__2\"]",
+      "type": "text",
+      "label": "Services · Stage-ghost 3",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-label__2",
+      "selector": "[data-pf-key=\"sgrid__stage-label__2\"]",
+      "type": "text",
+      "label": "Services · Stage-label 3",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-body__2",
+      "selector": "[data-pf-key=\"sgrid__stage-body__2\"]",
+      "type": "text",
+      "label": "Services · Stage-body 3",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-chip__7",
+      "selector": "[data-pf-key=\"sgrid__stage-chip__7\"]",
+      "type": "text",
+      "label": "Services · Stage-chip 8",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-chip__8",
+      "selector": "[data-pf-key=\"sgrid__stage-chip__8\"]",
+      "type": "text",
+      "label": "Services · Stage-chip 9",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__stage-chip__9",
+      "selector": "[data-pf-key=\"sgrid__stage-chip__9\"]",
+      "type": "text",
+      "label": "Services · Stage-chip 10",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__offers-title",
+      "selector": "[data-pf-key=\"sgrid__offers-title\"]",
+      "type": "text",
+      "label": "Services · Offers-title",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__offers-sub",
+      "selector": "[data-pf-key=\"sgrid__offers-sub\"]",
+      "type": "text",
+      "label": "Services · Offers-sub",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__service-index",
+      "selector": "[data-pf-key=\"sgrid__service-index\"]",
+      "type": "text",
+      "label": "Services · Service-index",
+      "section": "Services"
+    },
+    {
+      "key": "bento__title",
+      "selector": "[data-pf-key=\"bento__title\"]",
+      "type": "text",
+      "label": "Bento · Title",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc",
+      "selector": "[data-pf-key=\"bento__desc\"]",
+      "type": "text",
+      "label": "Bento · Desc",
+      "section": "Bento"
+    },
+    {
+      "key": "sgrid__chip",
+      "selector": "[data-pf-key=\"sgrid__chip\"]",
+      "type": "text",
+      "label": "Bento · Chip",
+      "section": "Bento"
+    },
+    {
+      "key": "span__1",
+      "selector": "[data-pf-key=\"span__1\"]",
+      "type": "text",
+      "label": "Services · Span 2",
+      "section": "Services"
+    },
+    {
+      "key": "span__2",
+      "selector": "[data-pf-key=\"span__2\"]",
+      "type": "text",
+      "label": "Services · Span 3",
+      "section": "Services"
+    },
+    {
+      "key": "span__3",
+      "selector": "[data-pf-key=\"span__3\"]",
+      "type": "text",
+      "label": "Services · Span 4",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__service-index__1",
+      "selector": "[data-pf-key=\"sgrid__service-index__1\"]",
+      "type": "text",
+      "label": "Services · Service-index 2",
+      "section": "Services"
+    },
+    {
+      "key": "bento__title__1",
+      "selector": "[data-pf-key=\"bento__title__1\"]",
+      "type": "text",
+      "label": "Bento · Title 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__1",
+      "selector": "[data-pf-key=\"bento__desc__1\"]",
+      "type": "text",
+      "label": "Bento · Desc 2",
+      "section": "Bento"
+    },
+    {
+      "key": "sgrid__chip__1",
+      "selector": "[data-pf-key=\"sgrid__chip__1\"]",
+      "type": "text",
+      "label": "Bento · Chip 2",
+      "section": "Bento"
+    },
+    {
+      "key": "span__4",
+      "selector": "[data-pf-key=\"span__4\"]",
+      "type": "text",
+      "label": "Services · Span 5",
+      "section": "Services"
+    },
+    {
+      "key": "span__5",
+      "selector": "[data-pf-key=\"span__5\"]",
+      "type": "text",
+      "label": "Services · Span 6",
+      "section": "Services"
+    },
+    {
+      "key": "span__6",
+      "selector": "[data-pf-key=\"span__6\"]",
+      "type": "text",
+      "label": "Services · Span 7",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__service-index__2",
+      "selector": "[data-pf-key=\"sgrid__service-index__2\"]",
+      "type": "text",
+      "label": "Services · Service-index 3",
+      "section": "Services"
+    },
+    {
+      "key": "bento__title__2",
+      "selector": "[data-pf-key=\"bento__title__2\"]",
+      "type": "text",
+      "label": "Bento · Title 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__2",
+      "selector": "[data-pf-key=\"bento__desc__2\"]",
+      "type": "text",
+      "label": "Bento · Desc 3",
+      "section": "Bento"
+    },
+    {
+      "key": "sgrid__chip__2",
+      "selector": "[data-pf-key=\"sgrid__chip__2\"]",
+      "type": "text",
+      "label": "Bento · Chip 3",
+      "section": "Bento"
+    },
+    {
+      "key": "span__7",
+      "selector": "[data-pf-key=\"span__7\"]",
+      "type": "text",
+      "label": "Services · Span 8",
+      "section": "Services"
+    },
+    {
+      "key": "span__8",
+      "selector": "[data-pf-key=\"span__8\"]",
+      "type": "text",
+      "label": "Services · Span 9",
+      "section": "Services"
+    },
+    {
+      "key": "span__9",
+      "selector": "[data-pf-key=\"span__9\"]",
+      "type": "text",
+      "label": "Services · Span 10",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__service-index__3",
+      "selector": "[data-pf-key=\"sgrid__service-index__3\"]",
+      "type": "text",
+      "label": "Services · Service-index 4",
+      "section": "Services"
+    },
+    {
+      "key": "bento__title__3",
+      "selector": "[data-pf-key=\"bento__title__3\"]",
+      "type": "text",
+      "label": "Bento · Title 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__3",
+      "selector": "[data-pf-key=\"bento__desc__3\"]",
+      "type": "text",
+      "label": "Bento · Desc 4",
+      "section": "Bento"
+    },
+    {
+      "key": "sgrid__chip__3",
+      "selector": "[data-pf-key=\"sgrid__chip__3\"]",
+      "type": "text",
+      "label": "Bento · Chip 4",
+      "section": "Bento"
+    },
+    {
+      "key": "span__10",
+      "selector": "[data-pf-key=\"span__10\"]",
+      "type": "text",
+      "label": "Services · Span 11",
+      "section": "Services"
+    },
+    {
+      "key": "span__11",
+      "selector": "[data-pf-key=\"span__11\"]",
+      "type": "text",
+      "label": "Services · Span 12",
+      "section": "Services"
+    },
+    {
+      "key": "span__12",
+      "selector": "[data-pf-key=\"span__12\"]",
+      "type": "text",
+      "label": "Services · Span 13",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__service-index__4",
+      "selector": "[data-pf-key=\"sgrid__service-index__4\"]",
+      "type": "text",
+      "label": "Services · Service-index 5",
+      "section": "Services"
+    },
+    {
+      "key": "bento__title__4",
+      "selector": "[data-pf-key=\"bento__title__4\"]",
+      "type": "text",
+      "label": "Bento · Title 5",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__4",
+      "selector": "[data-pf-key=\"bento__desc__4\"]",
+      "type": "text",
+      "label": "Bento · Desc 5",
+      "section": "Bento"
+    },
+    {
+      "key": "sgrid__chip__4",
+      "selector": "[data-pf-key=\"sgrid__chip__4\"]",
+      "type": "text",
+      "label": "Bento · Chip 5",
+      "section": "Bento"
+    },
+    {
+      "key": "span__13",
+      "selector": "[data-pf-key=\"span__13\"]",
+      "type": "text",
+      "label": "Services · Span 14",
+      "section": "Services"
+    },
+    {
+      "key": "span__14",
+      "selector": "[data-pf-key=\"span__14\"]",
+      "type": "text",
+      "label": "Services · Span 15",
+      "section": "Services"
+    },
+    {
+      "key": "span__15",
+      "selector": "[data-pf-key=\"span__15\"]",
+      "type": "text",
+      "label": "Services · Span 16",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__flow-eyebrow",
+      "selector": "[data-pf-key=\"sgrid__flow-eyebrow\"]",
+      "type": "text",
+      "label": "Services · Flow-eyebrow",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__flow-title",
+      "selector": "[data-pf-key=\"sgrid__flow-title\"]",
+      "type": "text",
+      "label": "Services · Flow-title",
+      "section": "Services"
+    },
+    {
+      "key": "sgrid__flow-sub",
+      "selector": "[data-pf-key=\"sgrid__flow-sub\"]",
+      "type": "text",
+      "label": "Services · Flow-sub",
+      "section": "Services"
+    },
+    {
+      "key": "span__16",
+      "selector": "[data-pf-key=\"span__16\"]",
+      "type": "text",
+      "label": "Services · Span 17",
+      "section": "Services"
+    },
+    {
+      "key": "span__17",
+      "selector": "[data-pf-key=\"span__17\"]",
+      "type": "text",
+      "label": "Services · Span 18",
+      "section": "Services"
+    },
+    {
+      "key": "span__18",
+      "selector": "[data-pf-key=\"span__18\"]",
+      "type": "text",
+      "label": "Services · Span 19",
+      "section": "Services"
+    },
+    {
+      "key": "autopilot__titlebar-label",
+      "selector": "[data-pf-key=\"autopilot__titlebar-label\"]",
+      "type": "text",
+      "label": "Services · Autopilot titlebar-label",
+      "section": "Services"
+    },
+    {
+      "key": "autopilot__caption",
+      "selector": "[data-pf-key=\"autopilot__caption\"]",
+      "type": "text",
+      "label": "Services · Autopilot caption",
+      "section": "Services"
+    },
+    {
+      "key": "strong",
+      "selector": "[data-pf-key=\"strong\"]",
+      "type": "text",
+      "label": "Services · Strong",
+      "section": "Services"
+    },
+    {
+      "key": "span__19",
+      "selector": "[data-pf-key=\"span__19\"]",
+      "type": "text",
+      "label": "Services · Span 20",
+      "section": "Services"
+    },
+    {
+      "key": "strong__1",
+      "selector": "[data-pf-key=\"strong__1\"]",
+      "type": "text",
+      "label": "Services · Strong 2",
+      "section": "Services"
+    },
+    {
+      "key": "span__20",
+      "selector": "[data-pf-key=\"span__20\"]",
+      "type": "text",
+      "label": "Services · Span 21",
+      "section": "Services"
+    },
+    {
+      "key": "strong__2",
+      "selector": "[data-pf-key=\"strong__2\"]",
+      "type": "text",
+      "label": "Services · Strong 3",
+      "section": "Services"
+    },
+    {
+      "key": "span__21",
+      "selector": "[data-pf-key=\"span__21\"]",
+      "type": "text",
+      "label": "Services · Span 22",
+      "section": "Services"
+    },
+    {
+      "key": "strong__3",
+      "selector": "[data-pf-key=\"strong__3\"]",
+      "type": "text",
+      "label": "Services · Strong 4",
+      "section": "Services"
+    },
+    {
+      "key": "span__22",
+      "selector": "[data-pf-key=\"span__22\"]",
+      "type": "text",
+      "label": "Services · Span 23",
+      "section": "Services"
+    },
+    {
+      "key": "strong__4",
+      "selector": "[data-pf-key=\"strong__4\"]",
+      "type": "text",
+      "label": "Services · Strong 5",
+      "section": "Services"
+    },
+    {
+      "key": "span__23",
+      "selector": "[data-pf-key=\"span__23\"]",
+      "type": "text",
+      "label": "Services · Span 24",
+      "section": "Services"
+    },
+    {
+      "key": "strong__5",
+      "selector": "[data-pf-key=\"strong__5\"]",
+      "type": "text",
+      "label": "Services · Strong 6",
+      "section": "Services"
+    },
+    {
+      "key": "span__24",
+      "selector": "[data-pf-key=\"span__24\"]",
+      "type": "text",
+      "label": "Services · Span 25",
+      "section": "Services"
+    },
+    {
+      "key": "strong__6",
+      "selector": "[data-pf-key=\"strong__6\"]",
+      "type": "text",
+      "label": "Services · Strong 7",
+      "section": "Services"
+    },
+    {
+      "key": "span__25",
+      "selector": "[data-pf-key=\"span__25\"]",
+      "type": "text",
+      "label": "Services · Span 26",
+      "section": "Services"
+    },
+    {
+      "key": "strong__7",
+      "selector": "[data-pf-key=\"strong__7\"]",
+      "type": "text",
+      "label": "Services · Strong 8",
+      "section": "Services"
+    },
+    {
+      "key": "span__26",
+      "selector": "[data-pf-key=\"span__26\"]",
+      "type": "text",
+      "label": "Services · Span 27",
+      "section": "Services"
+    },
+    {
+      "key": "strong__8",
+      "selector": "[data-pf-key=\"strong__8\"]",
+      "type": "text",
+      "label": "Services · Strong 9",
+      "section": "Services"
+    },
+    {
+      "key": "span__27",
+      "selector": "[data-pf-key=\"span__27\"]",
+      "type": "text",
+      "label": "Services · Span 28",
+      "section": "Services"
+    },
+    {
+      "key": "strong__9",
+      "selector": "[data-pf-key=\"strong__9\"]",
+      "type": "text",
+      "label": "Services · Strong 10",
+      "section": "Services"
+    },
+    {
+      "key": "span__28",
+      "selector": "[data-pf-key=\"span__28\"]",
+      "type": "text",
+      "label": "Services · Span 29",
+      "section": "Services"
+    },
+    {
+      "key": "strong__10",
+      "selector": "[data-pf-key=\"strong__10\"]",
+      "type": "text",
+      "label": "Services · Strong 11",
+      "section": "Services"
+    },
+    {
+      "key": "span__29",
+      "selector": "[data-pf-key=\"span__29\"]",
+      "type": "text",
+      "label": "Services · Span 30",
+      "section": "Services"
+    },
+    {
+      "key": "span__30",
+      "selector": "[data-pf-key=\"span__30\"]",
+      "type": "text",
+      "label": "Services · Span 31",
+      "section": "Services"
+    },
+    {
+      "key": "span__31",
+      "selector": "[data-pf-key=\"span__31\"]",
+      "type": "text",
+      "label": "Services · Span 32",
+      "section": "Services"
+    },
+    {
+      "key": "span__32",
+      "selector": "[data-pf-key=\"span__32\"]",
+      "type": "text",
+      "label": "Services · Span 33",
+      "section": "Services"
+    }
+  ]
+}
