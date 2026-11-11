@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
@@ -174,7 +175,7 @@ export default function Home() {
                 ) : (
                 <div className="team-row">
                 {members.map((m) => (
-                <a key={m.id} className="member-card" href={`/team/${m.slug}`}>
+                <Link key={m.id} className="member-card" to={`/portfolio/${m.slug}`}>
                 {m.photo_std ? (
                 <img className="member-photo" src={m.photo_std} alt={m.display_name} />
                 ) : (
@@ -187,7 +188,7 @@ export default function Home() {
                 {m.role_tags.slice(0, 3).map((r) => <span key={r} className="tag">{r}</span>)}
                 </div>
                 )}
-                </a>
+                </Link>
                 ))}
                 </div>
                 )}

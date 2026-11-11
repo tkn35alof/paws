@@ -1,0 +1,1076 @@
+{
+  "page": "home",
+  "regions": [
+    {
+      "key": "img",
+      "selector": "[data-pf-key=\"img\"]",
+      "type": "image",
+      "label": "Rail · Img",
+      "section": "Rail"
+    },
+    {
+      "key": "tools-marquee__img",
+      "selector": "[data-pf-key=\"tools-marquee__img\"]",
+      "type": "image",
+      "label": "Tools · Tools-marquee img",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__img__1",
+      "selector": "[data-pf-key=\"tools-marquee__img__1\"]",
+      "type": "image",
+      "label": "Tools · Tools-marquee img 2",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__img__2",
+      "selector": "[data-pf-key=\"tools-marquee__img__2\"]",
+      "type": "image",
+      "label": "Tools · Tools-marquee img 3",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__img__3",
+      "selector": "[data-pf-key=\"tools-marquee__img__3\"]",
+      "type": "image",
+      "label": "Tools · Tools-marquee img 4",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__img__4",
+      "selector": "[data-pf-key=\"tools-marquee__img__4\"]",
+      "type": "image",
+      "label": "Tools · Tools-marquee img 5",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__img__5",
+      "selector": "[data-pf-key=\"tools-marquee__img__5\"]",
+      "type": "image",
+      "label": "Tools · Tools-marquee img 6",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__img__6",
+      "selector": "[data-pf-key=\"tools-marquee__img__6\"]",
+      "type": "image",
+      "label": "Tools · Tools-marquee img 7",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__img__7",
+      "selector": "[data-pf-key=\"tools-marquee__img__7\"]",
+      "type": "image",
+      "label": "Tools · Tools-marquee img 8",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__img__8",
+      "selector": "[data-pf-key=\"tools-marquee__img__8\"]",
+      "type": "image",
+      "label": "Tools · Tools-marquee img 9",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__img__9",
+      "selector": "[data-pf-key=\"tools-marquee__img__9\"]",
+      "type": "image",
+      "label": "Tools · Tools-marquee img 10",
+      "section": "Tools"
+    },
+    {
+      "key": "intro-tile__poster",
+      "selector": "[data-pf-key=\"intro-tile__poster\"]",
+      "type": "image",
+      "label": "Bento · Intro-tile poster",
+      "section": "Bento"
+    },
+    {
+      "key": "img__1",
+      "selector": "[data-pf-key=\"img__1\"]",
+      "type": "image",
+      "label": "Bento · Img 2",
+      "section": "Bento"
+    },
+    {
+      "key": "img__2",
+      "selector": "[data-pf-key=\"img__2\"]",
+      "type": "image",
+      "label": "Bento · Img 3",
+      "section": "Bento"
+    },
+    {
+      "key": "img__3",
+      "selector": "[data-pf-key=\"img__3\"]",
+      "type": "image",
+      "label": "Bento · Img 4",
+      "section": "Bento"
+    },
+    {
+      "key": "img__4",
+      "selector": "[data-pf-key=\"img__4\"]",
+      "type": "image",
+      "label": "Bento · Img 5",
+      "section": "Bento"
+    },
+    {
+      "key": "img__5",
+      "selector": "[data-pf-key=\"img__5\"]",
+      "type": "image",
+      "label": "Bento · Img 6",
+      "section": "Bento"
+    },
+    {
+      "key": "img__6",
+      "selector": "[data-pf-key=\"img__6\"]",
+      "type": "image",
+      "label": "Bento · Img 7",
+      "section": "Bento"
+    },
+    {
+      "key": "img__7",
+      "selector": "[data-pf-key=\"img__7\"]",
+      "type": "image",
+      "label": "Bento · Img 8",
+      "section": "Bento"
+    },
+    {
+      "key": "img__8",
+      "selector": "[data-pf-key=\"img__8\"]",
+      "type": "image",
+      "label": "Bento · Img 9",
+      "section": "Bento"
+    },
+    {
+      "key": "img__9",
+      "selector": "[data-pf-key=\"img__9\"]",
+      "type": "image",
+      "label": "Bento · Img 10",
+      "section": "Bento"
+    },
+    {
+      "key": "img__10",
+      "selector": "[data-pf-key=\"img__10\"]",
+      "type": "image",
+      "label": "Bento · Img 11",
+      "section": "Bento"
+    },
+    {
+      "key": "img__11",
+      "selector": "[data-pf-key=\"img__11\"]",
+      "type": "image",
+      "label": "Bento · Img 12",
+      "section": "Bento"
+    },
+    {
+      "key": "img__12",
+      "selector": "[data-pf-key=\"img__12\"]",
+      "type": "image",
+      "label": "Bento · Img 13",
+      "section": "Bento"
+    },
+    {
+      "key": "img__13",
+      "selector": "[data-pf-key=\"img__13\"]",
+      "type": "image",
+      "label": "Bento · Img 14",
+      "section": "Bento"
+    },
+    {
+      "key": "img__14",
+      "selector": "[data-pf-key=\"img__14\"]",
+      "type": "image",
+      "label": "Bento · Img 15",
+      "section": "Bento"
+    },
+    {
+      "key": "img__15",
+      "selector": "[data-pf-key=\"img__15\"]",
+      "type": "image",
+      "label": "Bento · Img 16",
+      "section": "Bento"
+    },
+    {
+      "key": "img__16",
+      "selector": "[data-pf-key=\"img__16\"]",
+      "type": "image",
+      "label": "Bento · Img 17",
+      "section": "Bento"
+    },
+    {
+      "key": "img__17",
+      "selector": "[data-pf-key=\"img__17\"]",
+      "type": "image",
+      "label": "Bento · Img 18",
+      "section": "Bento"
+    },
+    {
+      "key": "img__18",
+      "selector": "[data-pf-key=\"img__18\"]",
+      "type": "image",
+      "label": "Bento · Img 19",
+      "section": "Bento"
+    },
+    {
+      "key": "img__19",
+      "selector": "[data-pf-key=\"img__19\"]",
+      "type": "image",
+      "label": "Bento · Img 20",
+      "section": "Bento"
+    },
+    {
+      "key": "img__20",
+      "selector": "[data-pf-key=\"img__20\"]",
+      "type": "image",
+      "label": "Bento · Img 21",
+      "section": "Bento"
+    },
+    {
+      "key": "rail__social",
+      "selector": "[data-pf-key=\"rail__social\"]",
+      "type": "link",
+      "label": "Rail · Social",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__1",
+      "selector": "[data-pf-key=\"rail__social__1\"]",
+      "type": "link",
+      "label": "Rail · Social 2",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__2",
+      "selector": "[data-pf-key=\"rail__social__2\"]",
+      "type": "link",
+      "label": "Rail · Social 3",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__3",
+      "selector": "[data-pf-key=\"rail__social__3\"]",
+      "type": "link",
+      "label": "Rail · Social 4",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link",
+      "selector": "[data-pf-key=\"rail__link\"]",
+      "type": "link",
+      "label": "Rail · Link",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__1",
+      "selector": "[data-pf-key=\"rail__link__1\"]",
+      "type": "link",
+      "label": "Rail · Link 2",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__2",
+      "selector": "[data-pf-key=\"rail__link__2\"]",
+      "type": "link",
+      "label": "Rail · Link 3",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__3",
+      "selector": "[data-pf-key=\"rail__link__3\"]",
+      "type": "link",
+      "label": "Rail · Link 4",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__4",
+      "selector": "[data-pf-key=\"rail__link__4\"]",
+      "type": "link",
+      "label": "Rail · Link 5",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__5",
+      "selector": "[data-pf-key=\"rail__link__5\"]",
+      "type": "link",
+      "label": "Rail · Link 6",
+      "section": "Rail"
+    },
+    {
+      "key": "bento__card",
+      "selector": "[data-pf-key=\"bento__card\"]",
+      "type": "link",
+      "label": "Bento · Card",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__card__1",
+      "selector": "[data-pf-key=\"bento__card__1\"]",
+      "type": "link",
+      "label": "Bento · Card 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__card__2",
+      "selector": "[data-pf-key=\"bento__card__2\"]",
+      "type": "link",
+      "label": "Bento · Card 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__card__3",
+      "selector": "[data-pf-key=\"bento__card__3\"]",
+      "type": "link",
+      "label": "Bento · Card 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__card__4",
+      "selector": "[data-pf-key=\"bento__card__4\"]",
+      "type": "link",
+      "label": "Bento · Card 5",
+      "section": "Bento"
+    },
+    {
+      "key": "rail__name",
+      "selector": "[data-pf-key=\"rail__name\"]",
+      "type": "text",
+      "label": "Rail · Name",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__visits",
+      "selector": "[data-pf-key=\"rail__visits\"]",
+      "type": "text",
+      "label": "Rail · Visits",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__copy",
+      "selector": "[data-pf-key=\"rail__copy\"]",
+      "type": "text",
+      "label": "Rail · Copy",
+      "section": "Rail"
+    },
+    {
+      "key": "home__line",
+      "selector": "[data-pf-key=\"home__line\"]",
+      "type": "text",
+      "label": "Hero · Line",
+      "section": "Hero"
+    },
+    {
+      "key": "home__cta",
+      "selector": "[data-pf-key=\"home__cta\"]",
+      "type": "text",
+      "label": "Hero · Cta",
+      "section": "Hero"
+    },
+    {
+      "key": "home__lede",
+      "selector": "[data-pf-key=\"home__lede\"]",
+      "type": "text",
+      "label": "Hero · Lede",
+      "section": "Hero"
+    },
+    {
+      "key": "home__tools-eyebrow",
+      "selector": "[data-pf-key=\"home__tools-eyebrow\"]",
+      "type": "text",
+      "label": "Tools · Tools-eyebrow",
+      "section": "Tools"
+    },
+    {
+      "key": "home__tools-label",
+      "selector": "[data-pf-key=\"home__tools-label\"]",
+      "type": "text",
+      "label": "Tools · Tools-label",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label",
+      "selector": "[data-pf-key=\"tools-marquee__label\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__1",
+      "selector": "[data-pf-key=\"tools-marquee__label__1\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 2",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__2",
+      "selector": "[data-pf-key=\"tools-marquee__label__2\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 3",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__3",
+      "selector": "[data-pf-key=\"tools-marquee__label__3\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 4",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__4",
+      "selector": "[data-pf-key=\"tools-marquee__label__4\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 5",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__5",
+      "selector": "[data-pf-key=\"tools-marquee__label__5\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 6",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__6",
+      "selector": "[data-pf-key=\"tools-marquee__label__6\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 7",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__7",
+      "selector": "[data-pf-key=\"tools-marquee__label__7\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 8",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__8",
+      "selector": "[data-pf-key=\"tools-marquee__label__8\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 9",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__9",
+      "selector": "[data-pf-key=\"tools-marquee__label__9\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 10",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__10",
+      "selector": "[data-pf-key=\"tools-marquee__label__10\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 11",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__11",
+      "selector": "[data-pf-key=\"tools-marquee__label__11\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 12",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__12",
+      "selector": "[data-pf-key=\"tools-marquee__label__12\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 13",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__13",
+      "selector": "[data-pf-key=\"tools-marquee__label__13\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 14",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__14",
+      "selector": "[data-pf-key=\"tools-marquee__label__14\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 15",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__15",
+      "selector": "[data-pf-key=\"tools-marquee__label__15\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 16",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__16",
+      "selector": "[data-pf-key=\"tools-marquee__label__16\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 17",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__17",
+      "selector": "[data-pf-key=\"tools-marquee__label__17\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 18",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__18",
+      "selector": "[data-pf-key=\"tools-marquee__label__18\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 19",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__19",
+      "selector": "[data-pf-key=\"tools-marquee__label__19\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 20",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__20",
+      "selector": "[data-pf-key=\"tools-marquee__label__20\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 21",
+      "section": "Tools"
+    },
+    {
+      "key": "tools-marquee__label__21",
+      "selector": "[data-pf-key=\"tools-marquee__label__21\"]",
+      "type": "text",
+      "label": "Tools · Tools-marquee label 22",
+      "section": "Tools"
+    },
+    {
+      "key": "li",
+      "selector": "[data-pf-key=\"li\"]",
+      "type": "text",
+      "label": "Tools · Li",
+      "section": "Tools"
+    },
+    {
+      "key": "li__1",
+      "selector": "[data-pf-key=\"li__1\"]",
+      "type": "text",
+      "label": "Tools · Li 2",
+      "section": "Tools"
+    },
+    {
+      "key": "li__2",
+      "selector": "[data-pf-key=\"li__2\"]",
+      "type": "text",
+      "label": "Tools · Li 3",
+      "section": "Tools"
+    },
+    {
+      "key": "li__3",
+      "selector": "[data-pf-key=\"li__3\"]",
+      "type": "text",
+      "label": "Tools · Li 4",
+      "section": "Tools"
+    },
+    {
+      "key": "li__4",
+      "selector": "[data-pf-key=\"li__4\"]",
+      "type": "text",
+      "label": "Tools · Li 5",
+      "section": "Tools"
+    },
+    {
+      "key": "li__5",
+      "selector": "[data-pf-key=\"li__5\"]",
+      "type": "text",
+      "label": "Tools · Li 6",
+      "section": "Tools"
+    },
+    {
+      "key": "li__6",
+      "selector": "[data-pf-key=\"li__6\"]",
+      "type": "text",
+      "label": "Tools · Li 7",
+      "section": "Tools"
+    },
+    {
+      "key": "li__7",
+      "selector": "[data-pf-key=\"li__7\"]",
+      "type": "text",
+      "label": "Tools · Li 8",
+      "section": "Tools"
+    },
+    {
+      "key": "li__8",
+      "selector": "[data-pf-key=\"li__8\"]",
+      "type": "text",
+      "label": "Tools · Li 9",
+      "section": "Tools"
+    },
+    {
+      "key": "li__9",
+      "selector": "[data-pf-key=\"li__9\"]",
+      "type": "text",
+      "label": "Tools · Li 10",
+      "section": "Tools"
+    },
+    {
+      "key": "li__10",
+      "selector": "[data-pf-key=\"li__10\"]",
+      "type": "text",
+      "label": "Tools · Li 11",
+      "section": "Tools"
+    },
+    {
+      "key": "intro-tile__pill",
+      "selector": "[data-pf-key=\"intro-tile__pill\"]",
+      "type": "text",
+      "label": "Bento · Intro-tile pill",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__title",
+      "selector": "[data-pf-key=\"bento__title\"]",
+      "type": "text",
+      "label": "Bento · Title",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc",
+      "selector": "[data-pf-key=\"bento__desc\"]",
+      "type": "text",
+      "label": "Bento · Desc",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__title__1",
+      "selector": "[data-pf-key=\"bento__title__1\"]",
+      "type": "text",
+      "label": "Bento · Title 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__1",
+      "selector": "[data-pf-key=\"bento__desc__1\"]",
+      "type": "text",
+      "label": "Bento · Desc 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip",
+      "selector": "[data-pf-key=\"bento__chip\"]",
+      "type": "text",
+      "label": "Bento · Chip",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__1",
+      "selector": "[data-pf-key=\"bento__chip__1\"]",
+      "type": "text",
+      "label": "Bento · Chip 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__2",
+      "selector": "[data-pf-key=\"bento__chip__2\"]",
+      "type": "text",
+      "label": "Bento · Chip 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__3",
+      "selector": "[data-pf-key=\"bento__chip__3\"]",
+      "type": "text",
+      "label": "Bento · Chip 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__4",
+      "selector": "[data-pf-key=\"bento__chip__4\"]",
+      "type": "text",
+      "label": "Bento · Chip 5",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__5",
+      "selector": "[data-pf-key=\"bento__chip__5\"]",
+      "type": "text",
+      "label": "Bento · Chip 6",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__6",
+      "selector": "[data-pf-key=\"bento__chip__6\"]",
+      "type": "text",
+      "label": "Bento · Chip 7",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__7",
+      "selector": "[data-pf-key=\"bento__chip__7\"]",
+      "type": "text",
+      "label": "Bento · Chip 8",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__8",
+      "selector": "[data-pf-key=\"bento__chip__8\"]",
+      "type": "text",
+      "label": "Bento · Chip 9",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__9",
+      "selector": "[data-pf-key=\"bento__chip__9\"]",
+      "type": "text",
+      "label": "Bento · Chip 10",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__10",
+      "selector": "[data-pf-key=\"bento__chip__10\"]",
+      "type": "text",
+      "label": "Bento · Chip 11",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__11",
+      "selector": "[data-pf-key=\"bento__chip__11\"]",
+      "type": "text",
+      "label": "Bento · Chip 12",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__12",
+      "selector": "[data-pf-key=\"bento__chip__12\"]",
+      "type": "text",
+      "label": "Bento · Chip 13",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__13",
+      "selector": "[data-pf-key=\"bento__chip__13\"]",
+      "type": "text",
+      "label": "Bento · Chip 14",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__14",
+      "selector": "[data-pf-key=\"bento__chip__14\"]",
+      "type": "text",
+      "label": "Bento · Chip 15",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__15",
+      "selector": "[data-pf-key=\"bento__chip__15\"]",
+      "type": "text",
+      "label": "Bento · Chip 16",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__16",
+      "selector": "[data-pf-key=\"bento__chip__16\"]",
+      "type": "text",
+      "label": "Bento · Chip 17",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__17",
+      "selector": "[data-pf-key=\"bento__chip__17\"]",
+      "type": "text",
+      "label": "Bento · Chip 18",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__18",
+      "selector": "[data-pf-key=\"bento__chip__18\"]",
+      "type": "text",
+      "label": "Bento · Chip 19",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__19",
+      "selector": "[data-pf-key=\"bento__chip__19\"]",
+      "type": "text",
+      "label": "Bento · Chip 20",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__title__2",
+      "selector": "[data-pf-key=\"bento__title__2\"]",
+      "type": "text",
+      "label": "Bento · Title 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__2",
+      "selector": "[data-pf-key=\"bento__desc__2\"]",
+      "type": "text",
+      "label": "Bento · Desc 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__badge-tag",
+      "selector": "[data-pf-key=\"bento__badge-tag\"]",
+      "type": "text",
+      "label": "Bento · Badge-tag",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__title__3",
+      "selector": "[data-pf-key=\"bento__title__3\"]",
+      "type": "text",
+      "label": "Bento · Title 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__3",
+      "selector": "[data-pf-key=\"bento__desc__3\"]",
+      "type": "text",
+      "label": "Bento · Desc 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-title",
+      "selector": "[data-pf-key=\"bento__offer-title\"]",
+      "type": "text",
+      "label": "Bento · Offer-title",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-note",
+      "selector": "[data-pf-key=\"bento__offer-note\"]",
+      "type": "text",
+      "label": "Bento · Offer-note",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-num",
+      "selector": "[data-pf-key=\"bento__offer-num\"]",
+      "type": "text",
+      "label": "Bento · Offer-num",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-title__1",
+      "selector": "[data-pf-key=\"bento__offer-title__1\"]",
+      "type": "text",
+      "label": "Bento · Offer-title 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-note__1",
+      "selector": "[data-pf-key=\"bento__offer-note__1\"]",
+      "type": "text",
+      "label": "Bento · Offer-note 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-num__1",
+      "selector": "[data-pf-key=\"bento__offer-num__1\"]",
+      "type": "text",
+      "label": "Bento · Offer-num 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-title__2",
+      "selector": "[data-pf-key=\"bento__offer-title__2\"]",
+      "type": "text",
+      "label": "Bento · Offer-title 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-note__2",
+      "selector": "[data-pf-key=\"bento__offer-note__2\"]",
+      "type": "text",
+      "label": "Bento · Offer-note 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-num__2",
+      "selector": "[data-pf-key=\"bento__offer-num__2\"]",
+      "type": "text",
+      "label": "Bento · Offer-num 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-title__3",
+      "selector": "[data-pf-key=\"bento__offer-title__3\"]",
+      "type": "text",
+      "label": "Bento · Offer-title 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-note__3",
+      "selector": "[data-pf-key=\"bento__offer-note__3\"]",
+      "type": "text",
+      "label": "Bento · Offer-note 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-num__3",
+      "selector": "[data-pf-key=\"bento__offer-num__3\"]",
+      "type": "text",
+      "label": "Bento · Offer-num 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-title__4",
+      "selector": "[data-pf-key=\"bento__offer-title__4\"]",
+      "type": "text",
+      "label": "Bento · Offer-title 5",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-note__4",
+      "selector": "[data-pf-key=\"bento__offer-note__4\"]",
+      "type": "text",
+      "label": "Bento · Offer-note 5",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__offer-num__4",
+      "selector": "[data-pf-key=\"bento__offer-num__4\"]",
+      "type": "text",
+      "label": "Bento · Offer-num 5",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__title__4",
+      "selector": "[data-pf-key=\"bento__title__4\"]",
+      "type": "text",
+      "label": "Bento · Title 5",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__4",
+      "selector": "[data-pf-key=\"bento__desc__4\"]",
+      "type": "text",
+      "label": "Bento · Desc 5",
+      "section": "Bento"
+    },
+    {
+      "key": "b",
+      "selector": "[data-pf-key=\"b\"]",
+      "type": "text",
+      "label": "Bento · B",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-role",
+      "selector": "[data-pf-key=\"bento__review-role\"]",
+      "type": "text",
+      "label": "Bento · Review-role",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-work",
+      "selector": "[data-pf-key=\"bento__review-work\"]",
+      "type": "text",
+      "label": "Bento · Review-work",
+      "section": "Bento"
+    },
+    {
+      "key": "b__1",
+      "selector": "[data-pf-key=\"b__1\"]",
+      "type": "text",
+      "label": "Bento · B 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-role__1",
+      "selector": "[data-pf-key=\"bento__review-role__1\"]",
+      "type": "text",
+      "label": "Bento · Review-role 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-work__1",
+      "selector": "[data-pf-key=\"bento__review-work__1\"]",
+      "type": "text",
+      "label": "Bento · Review-work 2",
+      "section": "Bento"
+    },
+    {
+      "key": "b__2",
+      "selector": "[data-pf-key=\"b__2\"]",
+      "type": "text",
+      "label": "Bento · B 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-role__2",
+      "selector": "[data-pf-key=\"bento__review-role__2\"]",
+      "type": "text",
+      "label": "Bento · Review-role 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-work__2",
+      "selector": "[data-pf-key=\"bento__review-work__2\"]",
+      "type": "text",
+      "label": "Bento · Review-work 3",
+      "section": "Bento"
+    },
+    {
+      "key": "b__3",
+      "selector": "[data-pf-key=\"b__3\"]",
+      "type": "text",
+      "label": "Bento · B 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-role__3",
+      "selector": "[data-pf-key=\"bento__review-role__3\"]",
+      "type": "text",
+      "label": "Bento · Review-role 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-work__3",
+      "selector": "[data-pf-key=\"bento__review-work__3\"]",
+      "type": "text",
+      "label": "Bento · Review-work 4",
+      "section": "Bento"
+    },
+    {
+      "key": "b__4",
+      "selector": "[data-pf-key=\"b__4\"]",
+      "type": "text",
+      "label": "Bento · B 5",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-role__4",
+      "selector": "[data-pf-key=\"bento__review-role__4\"]",
+      "type": "text",
+      "label": "Bento · Review-role 5",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-work__4",
+      "selector": "[data-pf-key=\"bento__review-work__4\"]",
+      "type": "text",
+      "label": "Bento · Review-work 5",
+      "section": "Bento"
+    },
+    {
+      "key": "b__5",
+      "selector": "[data-pf-key=\"b__5\"]",
+      "type": "text",
+      "label": "Bento · B 6",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-role__5",
+      "selector": "[data-pf-key=\"bento__review-role__5\"]",
+      "type": "text",
+      "label": "Bento · Review-role 6",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__review-work__5",
+      "selector": "[data-pf-key=\"bento__review-work__5\"]",
+      "type": "text",
+      "label": "Bento · Review-work 6",
+      "section": "Bento"
+    }
+  ]
+}

@@ -1,0 +1,355 @@
+{
+  "page": "contact",
+  "regions": [
+    {
+      "key": "img",
+      "selector": "[data-pf-key=\"img\"]",
+      "type": "image",
+      "label": "Rail · Img",
+      "section": "Rail"
+    },
+    {
+      "key": "img__1",
+      "selector": "[data-pf-key=\"img__1\"]",
+      "type": "image",
+      "label": "Contact · Img 2",
+      "section": "Contact"
+    },
+    {
+      "key": "img__2",
+      "selector": "[data-pf-key=\"img__2\"]",
+      "type": "image",
+      "label": "Contact · Img 3",
+      "section": "Contact"
+    },
+    {
+      "key": "img__3",
+      "selector": "[data-pf-key=\"img__3\"]",
+      "type": "image",
+      "label": "Contact · Img 4",
+      "section": "Contact"
+    },
+    {
+      "key": "img__4",
+      "selector": "[data-pf-key=\"img__4\"]",
+      "type": "image",
+      "label": "Contact · Img 5",
+      "section": "Contact"
+    },
+    {
+      "key": "rail__social",
+      "selector": "[data-pf-key=\"rail__social\"]",
+      "type": "link",
+      "label": "Rail · Social",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__1",
+      "selector": "[data-pf-key=\"rail__social__1\"]",
+      "type": "link",
+      "label": "Rail · Social 2",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__2",
+      "selector": "[data-pf-key=\"rail__social__2\"]",
+      "type": "link",
+      "label": "Rail · Social 3",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__3",
+      "selector": "[data-pf-key=\"rail__social__3\"]",
+      "type": "link",
+      "label": "Rail · Social 4",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link",
+      "selector": "[data-pf-key=\"rail__link\"]",
+      "type": "link",
+      "label": "Rail · Link",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__1",
+      "selector": "[data-pf-key=\"rail__link__1\"]",
+      "type": "link",
+      "label": "Rail · Link 2",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__2",
+      "selector": "[data-pf-key=\"rail__link__2\"]",
+      "type": "link",
+      "label": "Rail · Link 3",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__3",
+      "selector": "[data-pf-key=\"rail__link__3\"]",
+      "type": "link",
+      "label": "Rail · Link 4",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__4",
+      "selector": "[data-pf-key=\"rail__link__4\"]",
+      "type": "link",
+      "label": "Rail · Link 5",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__5",
+      "selector": "[data-pf-key=\"rail__link__5\"]",
+      "type": "link",
+      "label": "Rail · Link 6",
+      "section": "Rail"
+    },
+    {
+      "key": "cgrid__mail",
+      "selector": "[data-pf-key=\"cgrid__mail\"]",
+      "type": "link",
+      "label": "Contact · Mail",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__social",
+      "selector": "[data-pf-key=\"cgrid__social\"]",
+      "type": "link",
+      "label": "Contact · Social",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__social__1",
+      "selector": "[data-pf-key=\"cgrid__social__1\"]",
+      "type": "link",
+      "label": "Contact · Social 2",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__social__2",
+      "selector": "[data-pf-key=\"cgrid__social__2\"]",
+      "type": "link",
+      "label": "Contact · Social 3",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__social__3",
+      "selector": "[data-pf-key=\"cgrid__social__3\"]",
+      "type": "link",
+      "label": "Contact · Social 4",
+      "section": "Contact"
+    },
+    {
+      "key": "rail__name",
+      "selector": "[data-pf-key=\"rail__name\"]",
+      "type": "text",
+      "label": "Rail · Name",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__visits",
+      "selector": "[data-pf-key=\"rail__visits\"]",
+      "type": "text",
+      "label": "Rail · Visits",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__copy",
+      "selector": "[data-pf-key=\"rail__copy\"]",
+      "type": "text",
+      "label": "Rail · Copy",
+      "section": "Rail"
+    },
+    {
+      "key": "pgrid__eyebrow",
+      "selector": "[data-pf-key=\"pgrid__eyebrow\"]",
+      "type": "text",
+      "label": "Header · Eyebrow",
+      "section": "Header"
+    },
+    {
+      "key": "pgrid__title",
+      "selector": "[data-pf-key=\"pgrid__title\"]",
+      "type": "text",
+      "label": "Header · Title",
+      "section": "Header"
+    },
+    {
+      "key": "pgrid__lede",
+      "selector": "[data-pf-key=\"pgrid__lede\"]",
+      "type": "text",
+      "label": "Header · Lede",
+      "section": "Header"
+    },
+    {
+      "key": "cgrid__eyebrow",
+      "selector": "[data-pf-key=\"cgrid__eyebrow\"]",
+      "type": "text",
+      "label": "Contact · Eyebrow",
+      "section": "Contact"
+    },
+    {
+      "key": "span",
+      "selector": "[data-pf-key=\"span\"]",
+      "type": "text",
+      "label": "Contact · Span",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__step-index",
+      "selector": "[data-pf-key=\"cgrid__step-index\"]",
+      "type": "text",
+      "label": "Contact · Step-index",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__faq-text",
+      "selector": "[data-pf-key=\"cgrid__faq-text\"]",
+      "type": "text",
+      "label": "Contact · Faq-text",
+      "section": "Contact"
+    },
+    {
+      "key": "p",
+      "selector": "[data-pf-key=\"p\"]",
+      "type": "text",
+      "label": "Contact · P",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__step-index__1",
+      "selector": "[data-pf-key=\"cgrid__step-index__1\"]",
+      "type": "text",
+      "label": "Contact · Step-index 2",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__faq-text__1",
+      "selector": "[data-pf-key=\"cgrid__faq-text__1\"]",
+      "type": "text",
+      "label": "Contact · Faq-text 2",
+      "section": "Contact"
+    },
+    {
+      "key": "p__1",
+      "selector": "[data-pf-key=\"p__1\"]",
+      "type": "text",
+      "label": "Contact · P 2",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__step-index__2",
+      "selector": "[data-pf-key=\"cgrid__step-index__2\"]",
+      "type": "text",
+      "label": "Contact · Step-index 3",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__faq-text__2",
+      "selector": "[data-pf-key=\"cgrid__faq-text__2\"]",
+      "type": "text",
+      "label": "Contact · Faq-text 3",
+      "section": "Contact"
+    },
+    {
+      "key": "p__2",
+      "selector": "[data-pf-key=\"p__2\"]",
+      "type": "text",
+      "label": "Contact · P 3",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__step-index__3",
+      "selector": "[data-pf-key=\"cgrid__step-index__3\"]",
+      "type": "text",
+      "label": "Contact · Step-index 4",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__faq-text__3",
+      "selector": "[data-pf-key=\"cgrid__faq-text__3\"]",
+      "type": "text",
+      "label": "Contact · Faq-text 4",
+      "section": "Contact"
+    },
+    {
+      "key": "p__3",
+      "selector": "[data-pf-key=\"p__3\"]",
+      "type": "text",
+      "label": "Contact · P 4",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__step-index__4",
+      "selector": "[data-pf-key=\"cgrid__step-index__4\"]",
+      "type": "text",
+      "label": "Contact · Step-index 5",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__faq-text__4",
+      "selector": "[data-pf-key=\"cgrid__faq-text__4\"]",
+      "type": "text",
+      "label": "Contact · Faq-text 5",
+      "section": "Contact"
+    },
+    {
+      "key": "p__4",
+      "selector": "[data-pf-key=\"p__4\"]",
+      "type": "text",
+      "label": "Contact · P 5",
+      "section": "Contact"
+    },
+    {
+      "key": "span__1",
+      "selector": "[data-pf-key=\"span__1\"]",
+      "type": "text",
+      "label": "Contact · Span 2",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__label",
+      "selector": "[data-pf-key=\"cgrid__label\"]",
+      "type": "text",
+      "label": "Contact · Label",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__label__1",
+      "selector": "[data-pf-key=\"cgrid__label__1\"]",
+      "type": "text",
+      "label": "Contact · Label 2",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__label__2",
+      "selector": "[data-pf-key=\"cgrid__label__2\"]",
+      "type": "text",
+      "label": "Contact · Label 3",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__label__3",
+      "selector": "[data-pf-key=\"cgrid__label__3\"]",
+      "type": "text",
+      "label": "Contact · Label 4",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__submit-label",
+      "selector": "[data-pf-key=\"cgrid__submit-label\"]",
+      "type": "text",
+      "label": "Contact · Submit-label",
+      "section": "Contact"
+    },
+    {
+      "key": "cgrid__hint",
+      "selector": "[data-pf-key=\"cgrid__hint\"]",
+      "type": "text",
+      "label": "Contact · Hint",
+      "section": "Contact"
+    }
+  ]
+}

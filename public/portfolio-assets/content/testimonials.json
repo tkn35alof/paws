@@ -1,0 +1,101 @@
+{
+  "img": {
+    "src": "/portfolio-assets/home/rail-avatar.webp",
+    "alt": "Jhuriel Guerra"
+  },
+  "tgrid__cover-img": {
+    "src": "/portfolio-assets/testimonials/client-testimonial-poster.jpg",
+    "alt": ""
+  },
+  "img__1": {
+    "src": "/portfolio-assets/testimonials/client-testimonial-poster.jpg",
+    "alt": ""
+  },
+  "img__2": {
+    "src": "/portfolio-assets/testimonials/client-testimonial-2-poster.jpg",
+    "alt": ""
+  },
+  "img__3": {
+    "src": "/portfolio-assets/brands/authority-drift.webp",
+    "alt": ""
+  },
+  "img__4": {
+    "src": "/portfolio-assets/brands/connekt.png",
+    "alt": ""
+  },
+  "rail__social": {
+    "label": "",
+    "href": "https://www.facebook.com/BrewedOpsHL"
+  },
+  "rail__social__1": {
+    "label": "",
+    "href": "https://www.linkedin.com/in/kenneth-villar-10a05734a/"
+  },
+  "rail__social__2": {
+    "label": "",
+    "href": "https://github.com/brewed-ops"
+  },
+  "rail__social__3": {
+    "label": "",
+    "href": "https://discord.com/users/kapedlvnglgnd"
+  },
+  "rail__link": {
+    "label": "Home",
+    "href": "paws-member-portfolio-home.html"
+  },
+  "rail__link__1": {
+    "label": "Projects",
+    "href": "paws-member-portfolio-projects.html"
+  },
+  "rail__link__2": {
+    "label": "Services",
+    "href": "paws-member-portfolio-services.html"
+  },
+  "rail__link__3": {
+    "label": "Testimonials",
+    "href": "paws-member-portfolio-testimonials.html"
+  },
+  "rail__link__4": {
+    "label": "About",
+    "href": "paws-member-portfolio-about.html"
+  },
+  "rail__link__5": {
+    "label": "FAQs / Contact",
+    "href": "paws-member-portfolio-contact.html"
+  },
+  "rail__name": "Jhuriel Guerra",
+  "rail__visits": "13,991 visits",
+  "rail__copy": "© 2026Jhuriel Guerra. All rights reserved.",
+  "pgrid__eyebrow": "Testimonials",
+  "pgrid__title": "The people who kept me on.",
+  "pgrid__lede": "Hear it from them, then read what I actually hold in each account.",
+  "tgrid__cover-kicker": "Client testimonial 01",
+  "tgrid__cover-sub": "0:28 · Tap to play",
+  "tgrid__pick-kicker": "Testimonial 01",
+  "tgrid__pick-meta": "0:28",
+  "tgrid__pick-kicker__1": "Testimonial 02",
+  "tgrid__pick-meta__1": "0:52",
+  "tgrid__ledger-title": "Three clients. Real systems behind them.",
+  "tgrid__ledger-sub": "A short list on purpose.",
+  "tgrid__client-ghost": "01",
+  "tgrid__client-name": "Client 1",
+  "tgrid__client-role": "Operations Manager & GHL Specialist",
+  "tgrid__client-daily": "I run their GoHighLevel end to end - CRM, workflows, A2P and email, courses and membership, so it keeps moving on its own.",
+  "tgrid__client-tag": "GHL Build",
+  "tgrid__client-tag__1": "Automation",
+  "tgrid__client-tag__2": "Membership",
+  "tgrid__client-ghost__1": "02",
+  "tgrid__client-name__1": "Client 2",
+  "tgrid__client-role__1": "GHL Specialist & Agentic AI Engineer",
+  "tgrid__client-daily__1": "I build inside their GoHighLevel - the ticketing system, branded forms, and workflows - plus the SOPs that keep it running.",
+  "tgrid__client-tag__3": "CRM",
+  "tgrid__client-tag__4": "Pipelines",
+  "tgrid__client-tag__5": "Forms",
+  "tgrid__client-ghost__2": "03",
+  "tgrid__client-name__2": "Client 3",
+  "tgrid__client-role__2": "Web Dev & GHL Specialist",
+  "tgrid__client-daily__2": "I build and maintain the web side and the GoHighLevel behind it - site, landing pages, forms, and automations that book calls.",
+  "tgrid__client-tag__6": "Web Dev",
+  "tgrid__client-tag__7": "GHL",
+  "tgrid__client-tag__8": "Automation"
+}

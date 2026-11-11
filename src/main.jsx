@@ -11,6 +11,7 @@ import Discovery from './pages/Discovery.jsx'
 import Portal from './pages/Portal.jsx'
 import Admin from './pages/Admin.jsx'
 import Login from './pages/Login.jsx'
+import PortfolioPage from './portfolio/PortfolioPage.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -27,6 +28,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/portal" element={<Portal />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/portfolio/:slug/:page" element={<PortfolioPage />} />
+        <Route path="/portfolio/:slug" element={<PortfolioPage />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

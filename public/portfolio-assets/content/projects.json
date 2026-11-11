@@ -1,0 +1,262 @@
+{
+  "img": {
+    "src": "/portfolio-assets/home/rail-avatar.webp",
+    "alt": "Jhuriel Guerra"
+  },
+  "img__1": {
+    "src": "/portfolio-assets/icons/gohighlevel.png",
+    "alt": ""
+  },
+  "img__2": {
+    "src": "/portfolio-assets/workflowsample/Support Ticketing System image.webp",
+    "alt": ""
+  },
+  "img__3": {
+    "src": "/portfolio-assets/workflowsample/Ticketing System Sample image2.webp",
+    "alt": ""
+  },
+  "img__4": {
+    "src": "/portfolio-assets/workflowsample/Ticketing System Sample image3.webp",
+    "alt": ""
+  },
+  "img__5": {
+    "src": "/portfolio-assets/workflowsample/Ticketing System Sample image4.webp",
+    "alt": ""
+  },
+  "img__6": {
+    "src": "/portfolio-assets/workflowsample/Support Ticketing System image.webp",
+    "alt": ""
+  },
+  "img__7": {
+    "src": "/portfolio-assets/workflowsample/Ticketing System Sample image2.webp",
+    "alt": ""
+  },
+  "img__8": {
+    "src": "/portfolio-assets/workflowsample/Ticketing System Sample image3.webp",
+    "alt": ""
+  },
+  "img__9": {
+    "src": "/portfolio-assets/workflowsample/Ticketing System Sample image4.webp",
+    "alt": ""
+  },
+  "img__10": {
+    "src": "/portfolio-assets/icons/gohighlevel.png",
+    "alt": ""
+  },
+  "img__11": {
+    "src": "/portfolio-assets/icons/gohighlevel.png",
+    "alt": ""
+  },
+  "img__12": {
+    "src": "/portfolio-assets/icons/claude-code-logo.png",
+    "alt": ""
+  },
+  "img__13": {
+    "src": "/portfolio-assets/icons/claude-code-logo.png",
+    "alt": ""
+  },
+  "img__14": {
+    "src": "/portfolio-assets/icons/gohighlevel.png",
+    "alt": ""
+  },
+  "img__15": {
+    "src": "/portfolio-assets/funnels/thumbs/sales-page.jpeg",
+    "alt": ""
+  },
+  "img__16": {
+    "src": "/portfolio-assets/funnels/thumbs/real-estate-booking.jpeg",
+    "alt": ""
+  },
+  "img__17": {
+    "src": "/portfolio-assets/samples/thumbs/sample-real-estate-B-tech-luxury-scroll.jpeg",
+    "alt": ""
+  },
+  "img__18": {
+    "src": "/portfolio-assets/icons/claude-code-logo.png",
+    "alt": ""
+  },
+  "img__19": {
+    "src": "/portfolio-assets/icons/ai/codex.svg",
+    "alt": ""
+  },
+  "img__20": {
+    "src": "/portfolio-assets/icons/ai/hermes.svg",
+    "alt": ""
+  },
+  "img__21": {
+    "src": "/portfolio-assets/icons/ai/googleplay.svg",
+    "alt": ""
+  },
+  "img__22": {
+    "src": "/portfolio-assets/icons/ai/expo.svg",
+    "alt": ""
+  },
+  "img__23": {
+    "src": "/portfolio-assets/icons/ai/googlechrome.svg",
+    "alt": ""
+  },
+  "img__24": {
+    "src": "/portfolio-assets/Mobile Apps/KAPEVault.webp",
+    "alt": ""
+  },
+  "img__25": {
+    "src": "/portfolio-assets/Mobile Apps/PickesGooglePlayStore.jpg",
+    "alt": ""
+  },
+  "img__26": {
+    "src": "/portfolio-assets/Mobile Apps/Celery Music.webp",
+    "alt": ""
+  },
+  "img__27": {
+    "src": "/portfolio-assets/Mobile Apps/LettuceRead.webp",
+    "alt": ""
+  },
+  "img__28": {
+    "src": "/portfolio-assets/extensionsimage/brewedshot.webp",
+    "alt": ""
+  },
+  "img__29": {
+    "src": "/portfolio-assets/extensionsimage/ghl-key.webp",
+    "alt": ""
+  },
+  "img__30": {
+    "src": "/portfolio-assets/extensionsimage/brewedglass.webp",
+    "alt": ""
+  },
+  "img__31": {
+    "src": "/portfolio-assets/extensionsimage/yt2text.webp",
+    "alt": ""
+  },
+  "img__32": {
+    "src": "/portfolio-assets/extensionsimage/brewedgrab.webp",
+    "alt": ""
+  },
+  "img__33": {
+    "src": "/portfolio-assets/Mobile Apps/KAPEVault.webp",
+    "alt": ""
+  },
+  "img__34": {
+    "src": "/portfolio-assets/Mobile Apps/PickesGooglePlayStore.jpg",
+    "alt": ""
+  },
+  "img__35": {
+    "src": "/portfolio-assets/Mobile Apps/Celery Music.webp",
+    "alt": ""
+  },
+  "img__36": {
+    "src": "/portfolio-assets/Mobile Apps/LettuceRead.webp",
+    "alt": ""
+  },
+  "img__37": {
+    "src": "/portfolio-assets/extensionsimage/brewedshot.webp",
+    "alt": ""
+  },
+  "img__38": {
+    "src": "/portfolio-assets/extensionsimage/ghl-key.webp",
+    "alt": ""
+  },
+  "img__39": {
+    "src": "/portfolio-assets/extensionsimage/brewedglass.webp",
+    "alt": ""
+  },
+  "img__40": {
+    "src": "/portfolio-assets/extensionsimage/yt2text.webp",
+    "alt": ""
+  },
+  "img__41": {
+    "src": "/portfolio-assets/extensionsimage/brewedgrab.webp",
+    "alt": ""
+  },
+  "rail__social": {
+    "label": "",
+    "href": "https://www.facebook.com/BrewedOpsHL"
+  },
+  "rail__social__1": {
+    "label": "",
+    "href": "https://www.linkedin.com/in/kenneth-villar-10a05734a/"
+  },
+  "rail__social__2": {
+    "label": "",
+    "href": "https://github.com/brewed-ops"
+  },
+  "rail__social__3": {
+    "label": "",
+    "href": "https://discord.com/users/kapedlvnglgnd"
+  },
+  "rail__link": {
+    "label": "Home",
+    "href": "paws-member-portfolio-home.html"
+  },
+  "rail__link__1": {
+    "label": "Projects",
+    "href": "paws-member-portfolio-projects.html"
+  },
+  "rail__link__2": {
+    "label": "Services",
+    "href": "paws-member-portfolio-services.html"
+  },
+  "rail__link__3": {
+    "label": "Testimonials",
+    "href": "paws-member-portfolio-testimonials.html"
+  },
+  "rail__link__4": {
+    "label": "About",
+    "href": "paws-member-portfolio-about.html"
+  },
+  "rail__link__5": {
+    "label": "FAQs / Contact",
+    "href": "paws-member-portfolio-contact.html"
+  },
+  "rail__name": "Jhuriel Guerra",
+  "rail__visits": "13,991 visits",
+  "rail__copy": "© 2026Jhuriel Guerra. All rights reserved.",
+  "pgrid__eyebrow": "Projects",
+  "pgrid__title": "Real apps, funnels and GHL builds you can open.",
+  "pgrid__lede": "Everything here shipped. Open a card to walk through the work at full size.",
+  "pgrid__hint": "Click a card to open it",
+  "bento__title": "Automations",
+  "bento__desc": "Real screens from the GoHighLevel workflows I build.",
+  "bento__title__1": "The build plan",
+  "bento__desc__1": "A real automation plan, before a workflow is clicked together.",
+  "bento__doc-eyebrow": "GoHighLevel build plan",
+  "bento__doc-title": "The full automation blueprint.",
+  "i": "Trigger",
+  "i__1": "Wait",
+  "i__2": "Score?",
+  "is-on": "Convert",
+  "bento__kicker": "GoHighLevel blueprint",
+  "bento__build-title": "Support Ticketing System",
+  "bento__build-desc": "A full support desk built inside GoHighLevel. One pipeline, five stages, four branded emails, six workflows, and zero manual replies.",
+  "bento__kicker__1": "How I build with AI",
+  "bento__build-title__1": "The Agentic Framework",
+  "bento__build-desc__1": "The tools, the rules, and the loop I use to ship apps with AI. The AI does the typing and the busywork. I do the thinking and make the calls.",
+  "bento__kicker__2": "How I ship, end to end",
+  "bento__build-title__2": "The End-to-End Workflow",
+  "bento__build-desc__2": "Every trigger, node, skill, and agent in my framework wired as one live, n8n-style graph, from a fresh prompt to a verified deploy.",
+  "bento__title__2": "Funnels and sites",
+  "bento__desc__2": "Complete funnel builds and websites. Spin the reel.",
+  "bento__title__3": "AI agents and RAG chatbots",
+  "bento__desc__3": "Retrieval chatbots and task agents wired to real data.",
+  "bento__chip": "KapeAI",
+  "bento__chip__1": "KapeSEO",
+  "bento__chip__2": "KAPE Reel worker",
+  "bento__chip__3": "BrewedOps OS roster",
+  "bento__chip__4": "Ken AI Bot",
+  "bento__chip__5": "KapeAI",
+  "bento__chip__6": "KapeSEO",
+  "bento__chip__7": "KAPE Reel worker",
+  "bento__chip__8": "BrewedOps OS roster",
+  "bento__chip__9": "Ken AI Bot",
+  "bento__chip__10": "Kape AI knowledge search",
+  "bento__chip__11": "Workflow Creator",
+  "bento__chip__12": "Voice Call Tester",
+  "bento__chip__13": "Copy Website",
+  "bento__chip__14": "Save-progress watcher",
+  "bento__chip__15": "Kape AI knowledge search",
+  "bento__chip__16": "Workflow Creator",
+  "bento__chip__17": "Voice Call Tester",
+  "bento__chip__18": "Copy Website",
+  "bento__chip__19": "Save-progress watcher",
+  "bento__title__4": "Apps and extensions",
+  "bento__desc__4": "Desktop and mobile apps, plus the Chrome tools I ship alongside them."
+}

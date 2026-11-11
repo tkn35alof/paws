@@ -1,0 +1,296 @@
+{
+  "img": {
+    "src": "/portfolio-assets/home/rail-avatar.webp",
+    "alt": "Jhuriel Guerra"
+  },
+  "tools-marquee__img": {
+    "src": "/portfolio-assets/icons/claude-code-logo.png",
+    "alt": ""
+  },
+  "tools-marquee__img__1": {
+    "src": "/portfolio-assets/icons/vscode.svg",
+    "alt": ""
+  },
+  "tools-marquee__img__2": {
+    "src": "/portfolio-assets/icons/gohighlevel.png",
+    "alt": ""
+  },
+  "tools-marquee__img__3": {
+    "src": "/portfolio-assets/icons/lightspeed.png",
+    "alt": ""
+  },
+  "tools-marquee__img__4": {
+    "src": "/portfolio-assets/icons/googleworkspace.svg",
+    "alt": ""
+  },
+  "tools-marquee__img__5": {
+    "src": "/portfolio-assets/icons/claude-code-logo.png",
+    "alt": ""
+  },
+  "tools-marquee__img__6": {
+    "src": "/portfolio-assets/icons/vscode.svg",
+    "alt": ""
+  },
+  "tools-marquee__img__7": {
+    "src": "/portfolio-assets/icons/gohighlevel.png",
+    "alt": ""
+  },
+  "tools-marquee__img__8": {
+    "src": "/portfolio-assets/icons/lightspeed.png",
+    "alt": ""
+  },
+  "tools-marquee__img__9": {
+    "src": "/portfolio-assets/icons/googleworkspace.svg",
+    "alt": ""
+  },
+  "intro-tile__poster": {
+    "src": "/portfolio-assets/intro/bo-intro-poster.webp",
+    "alt": ""
+  },
+  "img__1": {
+    "src": "/portfolio-assets/home/funnels-sales-page.webp",
+    "alt": ""
+  },
+  "img__2": {
+    "src": "/portfolio-assets/home/funnels-real-estate-booking.webp",
+    "alt": ""
+  },
+  "img__3": {
+    "src": "/portfolio-assets/home/samples-sample-real-estate-B-tech-luxury-scroll.webp",
+    "alt": ""
+  },
+  "img__4": {
+    "src": "/portfolio-assets/home/funnels-optin-free.webp",
+    "alt": ""
+  },
+  "img__5": {
+    "src": "/portfolio-assets/home/funnels-sales-page.webp",
+    "alt": ""
+  },
+  "img__6": {
+    "src": "/portfolio-assets/home/funnels-real-estate-booking.webp",
+    "alt": ""
+  },
+  "img__7": {
+    "src": "/portfolio-assets/home/samples-sample-real-estate-B-tech-luxury-scroll.webp",
+    "alt": ""
+  },
+  "img__8": {
+    "src": "/portfolio-assets/home/funnels-optin-free.webp",
+    "alt": ""
+  },
+  "img__9": {
+    "src": "/portfolio-assets/icons/claude-code-logo.png",
+    "alt": ""
+  },
+  "img__10": {
+    "src": "/portfolio-assets/icons/ai/hermes.svg",
+    "alt": ""
+  },
+  "img__11": {
+    "src": "/portfolio-assets/icons/ai/codex.svg",
+    "alt": ""
+  },
+  "img__12": {
+    "src": "/portfolio-assets/icons/ai/python.svg",
+    "alt": ""
+  },
+  "img__13": {
+    "src": "/portfolio-assets/icons/ai/kimi-color.svg",
+    "alt": ""
+  },
+  "img__14": {
+    "src": "/portfolio-assets/icons/ai/cursor.svg",
+    "alt": ""
+  },
+  "img__15": {
+    "src": "/portfolio-assets/icons/ai/zhipu.svg",
+    "alt": ""
+  },
+  "img__16": {
+    "src": "/portfolio-assets/icons/ai/qwen.svg",
+    "alt": ""
+  },
+  "img__17": {
+    "src": "/portfolio-assets/home/authority-drift.webp",
+    "alt": ""
+  },
+  "img__18": {
+    "src": "/portfolio-assets/brands/connekt.png",
+    "alt": ""
+  },
+  "img__19": {
+    "src": "/portfolio-assets/home/authority-drift.webp",
+    "alt": ""
+  },
+  "img__20": {
+    "src": "/portfolio-assets/brands/connekt.png",
+    "alt": ""
+  },
+  "rail__social": {
+    "label": "",
+    "href": "https://www.facebook.com/BrewedOpsHL"
+  },
+  "rail__social__1": {
+    "label": "",
+    "href": "https://www.linkedin.com/in/kenneth-villar-10a05734a/"
+  },
+  "rail__social__2": {
+    "label": "",
+    "href": "https://github.com/brewed-ops"
+  },
+  "rail__social__3": {
+    "label": "",
+    "href": "https://discord.com/users/kapedlvnglgnd"
+  },
+  "rail__link": {
+    "label": "Home",
+    "href": "paws-member-portfolio-home.html"
+  },
+  "rail__link__1": {
+    "label": "Projects",
+    "href": "paws-member-portfolio-projects.html"
+  },
+  "rail__link__2": {
+    "label": "Services",
+    "href": "paws-member-portfolio-services.html"
+  },
+  "rail__link__3": {
+    "label": "Testimonials",
+    "href": "paws-member-portfolio-testimonials.html"
+  },
+  "rail__link__4": {
+    "label": "About",
+    "href": "paws-member-portfolio-about.html"
+  },
+  "rail__link__5": {
+    "label": "FAQs / Contact",
+    "href": "paws-member-portfolio-contact.html"
+  },
+  "bento__card": {
+    "label": "ProjectsFunnels, workflows and apps built to solve real problems.",
+    "href": "paws-member-portfolio-projects.html"
+  },
+  "bento__card__1": {
+    "label": "AI BuildsAgents, RAG chatbots and the tools I run on them.KapeAIKapeSEOKAPE Reel workerBrewedOps OS rosterKen AI BotKapeAIKapeSEOKAPE Reel workerBrewedOps OS rosterKen AI BotKape AI knowledge searchWorkflow CreatorVoice Call TesterCopy WebsiteSave-progress watcherKape AI knowledge searchWorkflow CreatorVoice Call TesterCopy WebsiteSave-progress watcher",
+    "href": "paws-member-portfolio-projects.html"
+  },
+  "bento__card__2": {
+    "label": "FocusAspiring AI Engineer. AI Native Builder.AI Native BuilderBuilt with Claude Code, Hermes, Codex, Python, Kimi, Cursor, GLM, Qwen.",
+    "href": "paws-member-portfolio-about.html"
+  },
+  "bento__card__3": {
+    "label": "ServicesWhat I build for coaches and agencies.Coded FunnelsPages that convert01GHL AutomationFollow-up that runs itself02CRM SetupA pipeline your team uses03WebsiteFast, custom, yours04AppsSmall tools for real problems05",
+    "href": "paws-member-portfolio-services.html"
+  },
+  "bento__card__4": {
+    "label": "TestimonialsWhat the people I build for say about the work.Client 1Operations Manager & GHL SpecialistGHL Build · Automation · MembershipClient 2GHL Specialist & Agentic AI EngineerCRM · Pipelines · FormsClient 3Web Dev & GHL SpecialistWeb Dev · GHL · AutomationClient 1Operations Manager & GHL SpecialistGHL Build · Automation · MembershipClient 2GHL Specialist & Agentic AI EngineerCRM · Pipelines · FormsClient 3Web Dev & GHL SpecialistWeb Dev · GHL · Automation",
+    "href": "paws-member-portfolio-testimonials.html"
+  },
+  "rail__name": "Jhuriel Guerra",
+  "rail__visits": "13,991 visits",
+  "rail__copy": "© 2026Jhuriel Guerra. All rights reserved.",
+  "home__line": "Build it once. Run it forever.",
+  "home__cta": "Free resources",
+  "home__lede": "I help coaches and agencies turn every lead into a booked call, on autopilot.",
+  "home__tools-eyebrow": "Daily drivers",
+  "home__tools-label": "Tools I work with",
+  "tools-marquee__label": "Claude Code",
+  "tools-marquee__label__1": "Codex",
+  "tools-marquee__label__2": "Cursor",
+  "tools-marquee__label__3": "Hermes AI",
+  "tools-marquee__label__4": "VS Code",
+  "tools-marquee__label__5": "GoHighLevel",
+  "tools-marquee__label__6": "Lightspeed X-Series",
+  "tools-marquee__label__7": "Google Workspace",
+  "tools-marquee__label__8": "Zendesk",
+  "tools-marquee__label__9": "Intercom",
+  "tools-marquee__label__10": "Slack",
+  "tools-marquee__label__11": "Claude Code",
+  "tools-marquee__label__12": "Codex",
+  "tools-marquee__label__13": "Cursor",
+  "tools-marquee__label__14": "Hermes AI",
+  "tools-marquee__label__15": "VS Code",
+  "tools-marquee__label__16": "GoHighLevel",
+  "tools-marquee__label__17": "Lightspeed X-Series",
+  "tools-marquee__label__18": "Google Workspace",
+  "tools-marquee__label__19": "Zendesk",
+  "tools-marquee__label__20": "Intercom",
+  "tools-marquee__label__21": "Slack",
+  "li": "Claude Code",
+  "li__1": "Codex",
+  "li__2": "Cursor",
+  "li__3": "Hermes AI",
+  "li__4": "VS Code",
+  "li__5": "GoHighLevel",
+  "li__6": "Lightspeed X-Series",
+  "li__7": "Google Workspace",
+  "li__8": "Zendesk",
+  "li__9": "Intercom",
+  "li__10": "Slack",
+  "intro-tile__pill": "0:59",
+  "bento__title": "Projects",
+  "bento__desc": "Funnels, workflows and apps built to solve real problems.",
+  "bento__title__1": "AI Builds",
+  "bento__desc__1": "Agents, RAG chatbots and the tools I run on them.",
+  "bento__chip": "KapeAI",
+  "bento__chip__1": "KapeSEO",
+  "bento__chip__2": "KAPE Reel worker",
+  "bento__chip__3": "BrewedOps OS roster",
+  "bento__chip__4": "Ken AI Bot",
+  "bento__chip__5": "KapeAI",
+  "bento__chip__6": "KapeSEO",
+  "bento__chip__7": "KAPE Reel worker",
+  "bento__chip__8": "BrewedOps OS roster",
+  "bento__chip__9": "Ken AI Bot",
+  "bento__chip__10": "Kape AI knowledge search",
+  "bento__chip__11": "Workflow Creator",
+  "bento__chip__12": "Voice Call Tester",
+  "bento__chip__13": "Copy Website",
+  "bento__chip__14": "Save-progress watcher",
+  "bento__chip__15": "Kape AI knowledge search",
+  "bento__chip__16": "Workflow Creator",
+  "bento__chip__17": "Voice Call Tester",
+  "bento__chip__18": "Copy Website",
+  "bento__chip__19": "Save-progress watcher",
+  "bento__title__2": "Focus",
+  "bento__desc__2": "Aspiring AI Engineer. AI Native Builder.",
+  "bento__badge-tag": "AI Native Builder",
+  "bento__title__3": "Services",
+  "bento__desc__3": "What I build for coaches and agencies.",
+  "bento__offer-title": "Coded Funnels",
+  "bento__offer-note": "Pages that convert",
+  "bento__offer-num": "01",
+  "bento__offer-title__1": "GHL Automation",
+  "bento__offer-note__1": "Follow-up that runs itself",
+  "bento__offer-num__1": "02",
+  "bento__offer-title__2": "CRM Setup",
+  "bento__offer-note__2": "A pipeline your team uses",
+  "bento__offer-num__2": "03",
+  "bento__offer-title__3": "Website",
+  "bento__offer-note__3": "Fast, custom, yours",
+  "bento__offer-num__3": "04",
+  "bento__offer-title__4": "Apps",
+  "bento__offer-note__4": "Small tools for real problems",
+  "bento__offer-num__4": "05",
+  "bento__title__4": "Testimonials",
+  "bento__desc__4": "What the people I build for say about the work.",
+  "b": "Client 1",
+  "bento__review-role": "Operations Manager & GHL Specialist",
+  "bento__review-work": "GHL Build · Automation · Membership",
+  "b__1": "Client 2",
+  "bento__review-role__1": "GHL Specialist & Agentic AI Engineer",
+  "bento__review-work__1": "CRM · Pipelines · Forms",
+  "b__2": "Client 3",
+  "bento__review-role__2": "Web Dev & GHL Specialist",
+  "bento__review-work__2": "Web Dev · GHL · Automation",
+  "b__3": "Client 1",
+  "bento__review-role__3": "Operations Manager & GHL Specialist",
+  "bento__review-work__3": "GHL Build · Automation · Membership",
+  "b__4": "Client 2",
+  "bento__review-role__4": "GHL Specialist & Agentic AI Engineer",
+  "bento__review-work__4": "CRM · Pipelines · Forms",
+  "b__5": "Client 3",
+  "bento__review-role__5": "Web Dev & GHL Specialist",
+  "bento__review-work__5": "Web Dev · GHL · Automation"
+}

@@ -1,0 +1,204 @@
+{
+  "img": {
+    "src": "/portfolio-assets/home/rail-avatar.webp",
+    "alt": "Jhuriel Guerra"
+  },
+  "img__1": {
+    "src": "/portfolio-assets/icons/gohighlevel.png",
+    "alt": ""
+  },
+  "img__2": {
+    "src": "/portfolio-assets/icons/ai/react.svg",
+    "alt": ""
+  },
+  "img__3": {
+    "src": "/portfolio-assets/icons/ai/tailwindcss.svg",
+    "alt": ""
+  },
+  "img__4": {
+    "src": "/portfolio-assets/icons/gohighlevel.png",
+    "alt": ""
+  },
+  "img__5": {
+    "src": "/portfolio-assets/icons/ai/n8n.svg",
+    "alt": ""
+  },
+  "img__6": {
+    "src": "/portfolio-assets/icons/openai.svg",
+    "alt": ""
+  },
+  "img__7": {
+    "src": "/portfolio-assets/icons/gohighlevel.png",
+    "alt": ""
+  },
+  "img__8": {
+    "src": "/portfolio-assets/icons/googleworkspace.svg",
+    "alt": ""
+  },
+  "img__9": {
+    "src": "/portfolio-assets/icons/slack.svg",
+    "alt": ""
+  },
+  "img__10": {
+    "src": "/portfolio-assets/icons/ai/react.svg",
+    "alt": ""
+  },
+  "img__11": {
+    "src": "/portfolio-assets/icons/ai/vite.svg",
+    "alt": ""
+  },
+  "img__12": {
+    "src": "/portfolio-assets/icons/ai/cloudflare.svg",
+    "alt": ""
+  },
+  "img__13": {
+    "src": "/portfolio-assets/icons/claude-code-logo.png",
+    "alt": ""
+  },
+  "img__14": {
+    "src": "/portfolio-assets/icons/ai/expo.svg",
+    "alt": ""
+  },
+  "img__15": {
+    "src": "/portfolio-assets/icons/ai/googlechrome.svg",
+    "alt": ""
+  },
+  "rail__social": {
+    "label": "",
+    "href": "https://www.facebook.com/BrewedOpsHL"
+  },
+  "rail__social__1": {
+    "label": "",
+    "href": "https://www.linkedin.com/in/kenneth-villar-10a05734a/"
+  },
+  "rail__social__2": {
+    "label": "",
+    "href": "https://github.com/brewed-ops"
+  },
+  "rail__social__3": {
+    "label": "",
+    "href": "https://discord.com/users/kapedlvnglgnd"
+  },
+  "rail__link": {
+    "label": "Home",
+    "href": "paws-member-portfolio-home.html"
+  },
+  "rail__link__1": {
+    "label": "Projects",
+    "href": "paws-member-portfolio-projects.html"
+  },
+  "rail__link__2": {
+    "label": "Services",
+    "href": "paws-member-portfolio-services.html"
+  },
+  "rail__link__3": {
+    "label": "Testimonials",
+    "href": "paws-member-portfolio-testimonials.html"
+  },
+  "rail__link__4": {
+    "label": "About",
+    "href": "paws-member-portfolio-about.html"
+  },
+  "rail__link__5": {
+    "label": "FAQs / Contact",
+    "href": "paws-member-portfolio-contact.html"
+  },
+  "rail__name": "Jhuriel Guerra",
+  "rail__visits": "13,991 visits",
+  "rail__copy": "© 2026Jhuriel Guerra. All rights reserved.",
+  "pgrid__eyebrow": "Services",
+  "pgrid__title": "Automation, CRM, funnels, sites and AI agents.",
+  "pgrid__lede": "What I build, how it works, and what you get.",
+  "sgrid__method-eyebrow": "The Brewed Method",
+  "span": "Always in that order.",
+  "sgrid__method-sub": "Do the three steps in order and sales happen on their own.",
+  "sgrid__stage-ghost": "01",
+  "sgrid__stage-label": "Catch.",
+  "sgrid__stage-body": "Every lead gets saved. No one slips through.",
+  "sgrid__stage-chip": "Forms",
+  "sgrid__stage-chip__1": "DMs",
+  "sgrid__stage-chip__2": "Ads",
+  "sgrid__stage-chip__3": "Referrals",
+  "sgrid__stage-ghost__1": "02",
+  "sgrid__stage-label__1": "Brew.",
+  "sgrid__stage-body__1": "The system follows up for you, for as long as it takes.",
+  "sgrid__stage-chip__4": "Tags",
+  "sgrid__stage-chip__5": "Emails",
+  "sgrid__stage-chip__6": "Texts",
+  "sgrid__stage-ghost__2": "03",
+  "sgrid__stage-label__2": "Pour.",
+  "sgrid__stage-body__2": "Ready-to-buy people land in your calendar. You just show up.",
+  "sgrid__stage-chip__7": "Calendar",
+  "sgrid__stage-chip__8": "Inbox",
+  "sgrid__stage-chip__9": "CRM",
+  "sgrid__offers-title": "What I can do for you.",
+  "sgrid__offers-sub": "Pick one or stack a few.",
+  "sgrid__service-index": "01 / 05",
+  "bento__title": "AI-assisted Funnels",
+  "bento__desc": "Pages that turn visitors into leads.",
+  "sgrid__chip": "Built to convert",
+  "span__1": "Fast pages people finish",
+  "span__2": "Checkout that just works",
+  "span__3": "Lives in GHL or on its own",
+  "sgrid__service-index__1": "02 / 05",
+  "bento__title__1": "GHL Automation",
+  "bento__desc__1": "Follow-up that runs on its own.",
+  "sgrid__chip__1": "Runs 24/7",
+  "span__4": "Messages send themselves",
+  "span__5": "Leads move on their own",
+  "span__6": "AI does the busywork",
+  "sgrid__service-index__2": "03 / 05",
+  "bento__title__2": "CRM Setup",
+  "bento__desc__2": "A CRM your team will actually use.",
+  "sgrid__chip__2": "Easy to use",
+  "span__7": "Every contact easy to find",
+  "span__8": "A pipeline that fits how you sell",
+  "span__9": "New clients set up without you",
+  "sgrid__service-index__3": "04 / 05",
+  "bento__title__3": "Website",
+  "bento__desc__3": "Fast, custom, and yours to keep.",
+  "sgrid__chip__3": "You own the code",
+  "span__10": "Loads fast on every device",
+  "span__11": "Connects to your GHL",
+  "span__12": "Code you can take anywhere",
+  "sgrid__service-index__4": "05 / 05",
+  "bento__title__4": "Apps",
+  "bento__desc__4": "Small tools that fix real problems.",
+  "sgrid__chip__4": "Ships in days",
+  "span__13": "Web, mobile and Chrome apps",
+  "span__14": "AI built in from day one",
+  "span__15": "Ready in days, not months",
+  "sgrid__flow-eyebrow": "Live automation",
+  "sgrid__flow-title": "One form. The rest runs itself.",
+  "sgrid__flow-sub": "Someone fills a form. The system books the call, sends reminders, and sorts what happens next.",
+  "span__16": "GoHighLevel CRM",
+  "span__17": "Email & SMS",
+  "span__18": "AI Assistant",
+  "autopilot__titlebar-label": "Automation Workflow",
+  "autopilot__caption": "One trigger fires. Everything else runs itself.",
+  "strong": "Submit Form",
+  "span__19": "New lead trigger",
+  "strong__1": "Booking Email",
+  "span__20": "Send booking link",
+  "strong__2": "Client Booked",
+  "span__21": "Slot confirmed",
+  "strong__3": "24hr Reminder",
+  "span__22": "Pre-appt email",
+  "strong__4": "1hr Reminder",
+  "span__23": "Pre-appt email",
+  "strong__5": "Discovery Call",
+  "span__24": "Qualify the lead",
+  "strong__6": "Proposal Sent",
+  "span__25": "Scope + price",
+  "strong__7": "Won",
+  "span__26": "Deal closed",
+  "strong__8": "Maybe / Later",
+  "span__27": "Not ready yet",
+  "strong__9": "Nurture",
+  "span__28": "Long-term drip",
+  "strong__10": "Lost",
+  "span__29": "Closed out",
+  "span__30": "GoHighLevel CRM",
+  "span__31": "Email & SMS",
+  "span__32": "AI Assistant"
+}

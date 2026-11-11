@@ -1,0 +1,733 @@
+{
+  "page": "projects",
+  "regions": [
+    {
+      "key": "img",
+      "selector": "[data-pf-key=\"img\"]",
+      "type": "image",
+      "label": "Rail · Img",
+      "section": "Rail"
+    },
+    {
+      "key": "img__1",
+      "selector": "[data-pf-key=\"img__1\"]",
+      "type": "image",
+      "label": "Bento · Img 2",
+      "section": "Bento"
+    },
+    {
+      "key": "img__2",
+      "selector": "[data-pf-key=\"img__2\"]",
+      "type": "image",
+      "label": "Bento · Img 3",
+      "section": "Bento"
+    },
+    {
+      "key": "img__3",
+      "selector": "[data-pf-key=\"img__3\"]",
+      "type": "image",
+      "label": "Bento · Img 4",
+      "section": "Bento"
+    },
+    {
+      "key": "img__4",
+      "selector": "[data-pf-key=\"img__4\"]",
+      "type": "image",
+      "label": "Bento · Img 5",
+      "section": "Bento"
+    },
+    {
+      "key": "img__5",
+      "selector": "[data-pf-key=\"img__5\"]",
+      "type": "image",
+      "label": "Bento · Img 6",
+      "section": "Bento"
+    },
+    {
+      "key": "img__6",
+      "selector": "[data-pf-key=\"img__6\"]",
+      "type": "image",
+      "label": "Bento · Img 7",
+      "section": "Bento"
+    },
+    {
+      "key": "img__7",
+      "selector": "[data-pf-key=\"img__7\"]",
+      "type": "image",
+      "label": "Bento · Img 8",
+      "section": "Bento"
+    },
+    {
+      "key": "img__8",
+      "selector": "[data-pf-key=\"img__8\"]",
+      "type": "image",
+      "label": "Bento · Img 9",
+      "section": "Bento"
+    },
+    {
+      "key": "img__9",
+      "selector": "[data-pf-key=\"img__9\"]",
+      "type": "image",
+      "label": "Bento · Img 10",
+      "section": "Bento"
+    },
+    {
+      "key": "img__10",
+      "selector": "[data-pf-key=\"img__10\"]",
+      "type": "image",
+      "label": "Bento · Img 11",
+      "section": "Bento"
+    },
+    {
+      "key": "img__11",
+      "selector": "[data-pf-key=\"img__11\"]",
+      "type": "image",
+      "label": "Bento · Img 12",
+      "section": "Bento"
+    },
+    {
+      "key": "img__12",
+      "selector": "[data-pf-key=\"img__12\"]",
+      "type": "image",
+      "label": "Bento · Img 13",
+      "section": "Bento"
+    },
+    {
+      "key": "img__13",
+      "selector": "[data-pf-key=\"img__13\"]",
+      "type": "image",
+      "label": "Bento · Img 14",
+      "section": "Bento"
+    },
+    {
+      "key": "img__14",
+      "selector": "[data-pf-key=\"img__14\"]",
+      "type": "image",
+      "label": "Bento · Img 15",
+      "section": "Bento"
+    },
+    {
+      "key": "img__15",
+      "selector": "[data-pf-key=\"img__15\"]",
+      "type": "image",
+      "label": "Bento · Img 16",
+      "section": "Bento"
+    },
+    {
+      "key": "img__16",
+      "selector": "[data-pf-key=\"img__16\"]",
+      "type": "image",
+      "label": "Bento · Img 17",
+      "section": "Bento"
+    },
+    {
+      "key": "img__17",
+      "selector": "[data-pf-key=\"img__17\"]",
+      "type": "image",
+      "label": "Bento · Img 18",
+      "section": "Bento"
+    },
+    {
+      "key": "img__18",
+      "selector": "[data-pf-key=\"img__18\"]",
+      "type": "image",
+      "label": "Bento · Img 19",
+      "section": "Bento"
+    },
+    {
+      "key": "img__19",
+      "selector": "[data-pf-key=\"img__19\"]",
+      "type": "image",
+      "label": "Bento · Img 20",
+      "section": "Bento"
+    },
+    {
+      "key": "img__20",
+      "selector": "[data-pf-key=\"img__20\"]",
+      "type": "image",
+      "label": "Bento · Img 21",
+      "section": "Bento"
+    },
+    {
+      "key": "img__21",
+      "selector": "[data-pf-key=\"img__21\"]",
+      "type": "image",
+      "label": "Bento · Img 22",
+      "section": "Bento"
+    },
+    {
+      "key": "img__22",
+      "selector": "[data-pf-key=\"img__22\"]",
+      "type": "image",
+      "label": "Bento · Img 23",
+      "section": "Bento"
+    },
+    {
+      "key": "img__23",
+      "selector": "[data-pf-key=\"img__23\"]",
+      "type": "image",
+      "label": "Bento · Img 24",
+      "section": "Bento"
+    },
+    {
+      "key": "img__24",
+      "selector": "[data-pf-key=\"img__24\"]",
+      "type": "image",
+      "label": "Bento · Img 25",
+      "section": "Bento"
+    },
+    {
+      "key": "img__25",
+      "selector": "[data-pf-key=\"img__25\"]",
+      "type": "image",
+      "label": "Bento · Img 26",
+      "section": "Bento"
+    },
+    {
+      "key": "img__26",
+      "selector": "[data-pf-key=\"img__26\"]",
+      "type": "image",
+      "label": "Bento · Img 27",
+      "section": "Bento"
+    },
+    {
+      "key": "img__27",
+      "selector": "[data-pf-key=\"img__27\"]",
+      "type": "image",
+      "label": "Bento · Img 28",
+      "section": "Bento"
+    },
+    {
+      "key": "img__28",
+      "selector": "[data-pf-key=\"img__28\"]",
+      "type": "image",
+      "label": "Bento · Img 29",
+      "section": "Bento"
+    },
+    {
+      "key": "img__29",
+      "selector": "[data-pf-key=\"img__29\"]",
+      "type": "image",
+      "label": "Bento · Img 30",
+      "section": "Bento"
+    },
+    {
+      "key": "img__30",
+      "selector": "[data-pf-key=\"img__30\"]",
+      "type": "image",
+      "label": "Bento · Img 31",
+      "section": "Bento"
+    },
+    {
+      "key": "img__31",
+      "selector": "[data-pf-key=\"img__31\"]",
+      "type": "image",
+      "label": "Bento · Img 32",
+      "section": "Bento"
+    },
+    {
+      "key": "img__32",
+      "selector": "[data-pf-key=\"img__32\"]",
+      "type": "image",
+      "label": "Bento · Img 33",
+      "section": "Bento"
+    },
+    {
+      "key": "img__33",
+      "selector": "[data-pf-key=\"img__33\"]",
+      "type": "image",
+      "label": "Bento · Img 34",
+      "section": "Bento"
+    },
+    {
+      "key": "img__34",
+      "selector": "[data-pf-key=\"img__34\"]",
+      "type": "image",
+      "label": "Bento · Img 35",
+      "section": "Bento"
+    },
+    {
+      "key": "img__35",
+      "selector": "[data-pf-key=\"img__35\"]",
+      "type": "image",
+      "label": "Bento · Img 36",
+      "section": "Bento"
+    },
+    {
+      "key": "img__36",
+      "selector": "[data-pf-key=\"img__36\"]",
+      "type": "image",
+      "label": "Bento · Img 37",
+      "section": "Bento"
+    },
+    {
+      "key": "img__37",
+      "selector": "[data-pf-key=\"img__37\"]",
+      "type": "image",
+      "label": "Bento · Img 38",
+      "section": "Bento"
+    },
+    {
+      "key": "img__38",
+      "selector": "[data-pf-key=\"img__38\"]",
+      "type": "image",
+      "label": "Bento · Img 39",
+      "section": "Bento"
+    },
+    {
+      "key": "img__39",
+      "selector": "[data-pf-key=\"img__39\"]",
+      "type": "image",
+      "label": "Bento · Img 40",
+      "section": "Bento"
+    },
+    {
+      "key": "img__40",
+      "selector": "[data-pf-key=\"img__40\"]",
+      "type": "image",
+      "label": "Bento · Img 41",
+      "section": "Bento"
+    },
+    {
+      "key": "img__41",
+      "selector": "[data-pf-key=\"img__41\"]",
+      "type": "image",
+      "label": "Bento · Img 42",
+      "section": "Bento"
+    },
+    {
+      "key": "rail__social",
+      "selector": "[data-pf-key=\"rail__social\"]",
+      "type": "link",
+      "label": "Rail · Social",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__1",
+      "selector": "[data-pf-key=\"rail__social__1\"]",
+      "type": "link",
+      "label": "Rail · Social 2",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__2",
+      "selector": "[data-pf-key=\"rail__social__2\"]",
+      "type": "link",
+      "label": "Rail · Social 3",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__social__3",
+      "selector": "[data-pf-key=\"rail__social__3\"]",
+      "type": "link",
+      "label": "Rail · Social 4",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link",
+      "selector": "[data-pf-key=\"rail__link\"]",
+      "type": "link",
+      "label": "Rail · Link",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__1",
+      "selector": "[data-pf-key=\"rail__link__1\"]",
+      "type": "link",
+      "label": "Rail · Link 2",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__2",
+      "selector": "[data-pf-key=\"rail__link__2\"]",
+      "type": "link",
+      "label": "Rail · Link 3",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__3",
+      "selector": "[data-pf-key=\"rail__link__3\"]",
+      "type": "link",
+      "label": "Rail · Link 4",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__4",
+      "selector": "[data-pf-key=\"rail__link__4\"]",
+      "type": "link",
+      "label": "Rail · Link 5",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__link__5",
+      "selector": "[data-pf-key=\"rail__link__5\"]",
+      "type": "link",
+      "label": "Rail · Link 6",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__name",
+      "selector": "[data-pf-key=\"rail__name\"]",
+      "type": "text",
+      "label": "Rail · Name",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__visits",
+      "selector": "[data-pf-key=\"rail__visits\"]",
+      "type": "text",
+      "label": "Rail · Visits",
+      "section": "Rail"
+    },
+    {
+      "key": "rail__copy",
+      "selector": "[data-pf-key=\"rail__copy\"]",
+      "type": "text",
+      "label": "Rail · Copy",
+      "section": "Rail"
+    },
+    {
+      "key": "pgrid__eyebrow",
+      "selector": "[data-pf-key=\"pgrid__eyebrow\"]",
+      "type": "text",
+      "label": "Header · Eyebrow",
+      "section": "Header"
+    },
+    {
+      "key": "pgrid__title",
+      "selector": "[data-pf-key=\"pgrid__title\"]",
+      "type": "text",
+      "label": "Header · Title",
+      "section": "Header"
+    },
+    {
+      "key": "pgrid__lede",
+      "selector": "[data-pf-key=\"pgrid__lede\"]",
+      "type": "text",
+      "label": "Header · Lede",
+      "section": "Header"
+    },
+    {
+      "key": "pgrid__hint",
+      "selector": "[data-pf-key=\"pgrid__hint\"]",
+      "type": "text",
+      "label": "Section · Hint",
+      "section": "Section"
+    },
+    {
+      "key": "bento__title",
+      "selector": "[data-pf-key=\"bento__title\"]",
+      "type": "text",
+      "label": "Bento · Title",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc",
+      "selector": "[data-pf-key=\"bento__desc\"]",
+      "type": "text",
+      "label": "Bento · Desc",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__title__1",
+      "selector": "[data-pf-key=\"bento__title__1\"]",
+      "type": "text",
+      "label": "Bento · Title 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__1",
+      "selector": "[data-pf-key=\"bento__desc__1\"]",
+      "type": "text",
+      "label": "Bento · Desc 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__doc-eyebrow",
+      "selector": "[data-pf-key=\"bento__doc-eyebrow\"]",
+      "type": "text",
+      "label": "Bento · Doc-eyebrow",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__doc-title",
+      "selector": "[data-pf-key=\"bento__doc-title\"]",
+      "type": "text",
+      "label": "Bento · Doc-title",
+      "section": "Bento"
+    },
+    {
+      "key": "i",
+      "selector": "[data-pf-key=\"i\"]",
+      "type": "text",
+      "label": "Bento · I",
+      "section": "Bento"
+    },
+    {
+      "key": "i__1",
+      "selector": "[data-pf-key=\"i__1\"]",
+      "type": "text",
+      "label": "Bento · I 2",
+      "section": "Bento"
+    },
+    {
+      "key": "i__2",
+      "selector": "[data-pf-key=\"i__2\"]",
+      "type": "text",
+      "label": "Bento · I 3",
+      "section": "Bento"
+    },
+    {
+      "key": "is-on",
+      "selector": "[data-pf-key=\"is-on\"]",
+      "type": "text",
+      "label": "Bento · Is-on",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__kicker",
+      "selector": "[data-pf-key=\"bento__kicker\"]",
+      "type": "text",
+      "label": "Bento · Kicker",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__build-title",
+      "selector": "[data-pf-key=\"bento__build-title\"]",
+      "type": "text",
+      "label": "Bento · Build-title",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__build-desc",
+      "selector": "[data-pf-key=\"bento__build-desc\"]",
+      "type": "text",
+      "label": "Bento · Build-desc",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__kicker__1",
+      "selector": "[data-pf-key=\"bento__kicker__1\"]",
+      "type": "text",
+      "label": "Bento · Kicker 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__build-title__1",
+      "selector": "[data-pf-key=\"bento__build-title__1\"]",
+      "type": "text",
+      "label": "Bento · Build-title 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__build-desc__1",
+      "selector": "[data-pf-key=\"bento__build-desc__1\"]",
+      "type": "text",
+      "label": "Bento · Build-desc 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__kicker__2",
+      "selector": "[data-pf-key=\"bento__kicker__2\"]",
+      "type": "text",
+      "label": "Bento · Kicker 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__build-title__2",
+      "selector": "[data-pf-key=\"bento__build-title__2\"]",
+      "type": "text",
+      "label": "Bento · Build-title 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__build-desc__2",
+      "selector": "[data-pf-key=\"bento__build-desc__2\"]",
+      "type": "text",
+      "label": "Bento · Build-desc 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__title__2",
+      "selector": "[data-pf-key=\"bento__title__2\"]",
+      "type": "text",
+      "label": "Bento · Title 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__2",
+      "selector": "[data-pf-key=\"bento__desc__2\"]",
+      "type": "text",
+      "label": "Bento · Desc 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__title__3",
+      "selector": "[data-pf-key=\"bento__title__3\"]",
+      "type": "text",
+      "label": "Bento · Title 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__3",
+      "selector": "[data-pf-key=\"bento__desc__3\"]",
+      "type": "text",
+      "label": "Bento · Desc 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip",
+      "selector": "[data-pf-key=\"bento__chip\"]",
+      "type": "text",
+      "label": "Bento · Chip",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__1",
+      "selector": "[data-pf-key=\"bento__chip__1\"]",
+      "type": "text",
+      "label": "Bento · Chip 2",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__2",
+      "selector": "[data-pf-key=\"bento__chip__2\"]",
+      "type": "text",
+      "label": "Bento · Chip 3",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__3",
+      "selector": "[data-pf-key=\"bento__chip__3\"]",
+      "type": "text",
+      "label": "Bento · Chip 4",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__4",
+      "selector": "[data-pf-key=\"bento__chip__4\"]",
+      "type": "text",
+      "label": "Bento · Chip 5",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__5",
+      "selector": "[data-pf-key=\"bento__chip__5\"]",
+      "type": "text",
+      "label": "Bento · Chip 6",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__6",
+      "selector": "[data-pf-key=\"bento__chip__6\"]",
+      "type": "text",
+      "label": "Bento · Chip 7",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__7",
+      "selector": "[data-pf-key=\"bento__chip__7\"]",
+      "type": "text",
+      "label": "Bento · Chip 8",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__8",
+      "selector": "[data-pf-key=\"bento__chip__8\"]",
+      "type": "text",
+      "label": "Bento · Chip 9",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__9",
+      "selector": "[data-pf-key=\"bento__chip__9\"]",
+      "type": "text",
+      "label": "Bento · Chip 10",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__10",
+      "selector": "[data-pf-key=\"bento__chip__10\"]",
+      "type": "text",
+      "label": "Bento · Chip 11",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__11",
+      "selector": "[data-pf-key=\"bento__chip__11\"]",
+      "type": "text",
+      "label": "Bento · Chip 12",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__12",
+      "selector": "[data-pf-key=\"bento__chip__12\"]",
+      "type": "text",
+      "label": "Bento · Chip 13",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__13",
+      "selector": "[data-pf-key=\"bento__chip__13\"]",
+      "type": "text",
+      "label": "Bento · Chip 14",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__14",
+      "selector": "[data-pf-key=\"bento__chip__14\"]",
+      "type": "text",
+      "label": "Bento · Chip 15",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__15",
+      "selector": "[data-pf-key=\"bento__chip__15\"]",
+      "type": "text",
+      "label": "Bento · Chip 16",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__16",
+      "selector": "[data-pf-key=\"bento__chip__16\"]",
+      "type": "text",
+      "label": "Bento · Chip 17",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__17",
+      "selector": "[data-pf-key=\"bento__chip__17\"]",
+      "type": "text",
+      "label": "Bento · Chip 18",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__18",
+      "selector": "[data-pf-key=\"bento__chip__18\"]",
+      "type": "text",
+      "label": "Bento · Chip 19",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__chip__19",
+      "selector": "[data-pf-key=\"bento__chip__19\"]",
+      "type": "text",
+      "label": "Bento · Chip 20",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__title__4",
+      "selector": "[data-pf-key=\"bento__title__4\"]",
+      "type": "text",
+      "label": "Bento · Title 5",
+      "section": "Bento"
+    },
+    {
+      "key": "bento__desc__4",
+      "selector": "[data-pf-key=\"bento__desc__4\"]",
+      "type": "text",
+      "label": "Bento · Desc 5",
+      "section": "Bento"
+    }
+  ]
+}
