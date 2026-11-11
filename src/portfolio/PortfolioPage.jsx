@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import PortfolioView from './PortfolioView.jsx'
 import { PAGES } from './portfolio.js'
@@ -12,12 +12,25 @@ import { PAGES } from './portfolio.js'
  */
 export default function PortfolioPage() {
   const { slug, page = 'home' } = useParams()
+  const navigate = useNavigate()
   const [member, setMember] = useState(null)
   const [content, setContent] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   const pageMeta = PAGES.find((p) => p.key === page)
+
+  // The replica's own nav links post a message here so the PAWS app navigates
+  // instead of the iframe navigating itself (which nests a new SPA).
+  useEffect(() => {
+    function onMessage(e) {
+      if (e.data && e.data.type === 'paws:portfolio-nav' && e.data.href) {
+        navigate(e.data.href)
+      }
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [navigate])
 
   useEffect(() => {
     if (!supabaseReady) { setLoading(false); setError('Supabase not configured.'); return }

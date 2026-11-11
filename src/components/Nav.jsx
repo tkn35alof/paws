@@ -83,7 +83,7 @@ export function Nav() {
             <span className="burger-line"></span>
           </button>
         ) : (
-          <Link to="/portal" className="nav-signin">Sign in</Link>
+          <Link to="/login" className="nav-signin">Sign in</Link>
         )}
         {menuOpen && (
           <div className="nav-dropdown">

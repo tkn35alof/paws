@@ -1,93 +1,38 @@
 import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { analyzePhoto, photoErrorMessage } from '../lib/face-photo.js'
 import { Nav } from '../components/Nav.jsx'
 import { Footer } from '../components/Footer.jsx'
+import PortfolioView from '../portfolio/PortfolioView.jsx'
+import PortfolioEditor from '../portfolio/PortfolioEditor.jsx'
+import { PAGES, fetchRegions } from '../portfolio/portfolio.js'
 
-function TagInput({ label, values, onChange, placeholder }) {
-  const [draft, setDraft] = useState('')
-  function commit(value) {
-    const v = value.trim()
-    if (!v) return
-    if (values.includes(v)) return
-    onChange([...values, v])
-  }
-  function onKeyDown(e) {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault()
-      commit(draft)
-      setDraft('')
-    } else if (e.key === 'Backspace' && draft === '' && values.length > 0) {
-      e.preventDefault()
-      onChange(values.slice(0, -1))
-    }
-  }
-  function onPaste(e) {
-    const pasted = e.clipboardData.getData('text')
-    if (pasted.includes(',') || pasted.includes('\n')) {
-      e.preventDefault()
-      const parts = pasted.split(/[,\n]+/).map((s) => s.trim()).filter(Boolean)
-      const merged = [...values]
-      for (const p of parts) if (!merged.includes(p)) merged.push(p)
-      onChange(merged)
-      setDraft('')
-    }
-  }
-  function remove(idx) { onChange(values.filter((_, i) => i !== idx)) }
-
-  return (
-    <div>
-      <label style={{ display: 'block', fontSize: 13, color: 'var(--paws-muted)', marginBottom: 6 }}>{label}</label>
-      <div style={{
-        display: 'flex', flexWrap: 'wrap', gap: 6,
-        padding: 10, border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-pill)', background: 'rgba(14, 14, 24, 0.6)', color: 'var(--paws-ink)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
-        minHeight: 44, alignItems: 'center',
-      }}>
-        {values.map((v, i) => (
-          <span key={`${v}-${i}`} style={{
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-            background: 'var(--paws-pink-wash)', color: 'var(--paws-pink-deep)',
-            border: '1px solid var(--paws-pink)', borderRadius: 999,
-            padding: '3px 10px', fontSize: 13, fontFamily: 'var(--font-display)', fontWeight: 600,
-          }}>
-            {v}
-            <button
-              type="button"
-              onClick={() => remove(i)}
-              aria-label={`Remove ${v}`}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--paws-pink-deep)', fontSize: 14, lineHeight: 1, padding: 0 }}
-            >×</button>
-          </span>
-        ))}
-        <input
-          type="text"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={onKeyDown}
-          onPaste={onPaste}
-          onBlur={() => { commit(draft); setDraft('') }}
-          placeholder={values.length === 0 ? placeholder : ''}
-          style={{ flex: 1, minWidth: 120, border: 'none', outline: 'none', font: 'inherit', padding: 4 }}
-        />
-      </div>
-      <p style={{ color: 'var(--paws-muted)', fontSize: 12, margin: '6px 0 0' }}>
-        Type and press <kbd>Enter</kbd> or <kbd>,</kbd> to add. <kbd>Backspace</kbd> removes the last tag. Paste with commas works too.
-      </p>
-    </div>
-  )
-}
-
+/**
+ * "My profile" — the member's portfolio, with an edit mode.
+ *
+ * Replaces the old profile form: the portfolio replica is the page, and the
+ * region descriptor drives a form that writes back to portfolio_pages.
+ * The profile details that feed the team cards (name, tagline, bio, photo)
+ * stay on this page, beside the editor.
+ */
 export default function Portal() {
   const [member, setMember] = useState(null)
-  const [form, setForm] = useState({})
-  const [status, setStatus] = useState('')
+  const [notSignedIn, setNotSignedIn] = useState(false)
+  const [page, setPage] = useState('home')
+  const [content, setContent] = useState(null)
+  const [regions, setRegions] = useState([])
+  const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [dirty, setDirty] = useState(false)
+  const [status, setStatus] = useState('')
+
   const [uploading, setUploading] = useState(false)
   const [photoUrl, setPhotoUrl] = useState(null)
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState(null)
   const [photoAnalysis, setPhotoAnalysis] = useState(null)
   const [photoError, setPhotoError] = useState('')
-  const [syncAvatar, setSyncAvatar] = useState(true)  // toggle: fire avatar generation on photo save
+  const [syncAvatar, setSyncAvatar] = useState(true)
   const [avatarGenerating, setAvatarGenerating] = useState(false)
   const fileRef = useRef(null)
   const previewUrlRef = useRef(null)
@@ -96,348 +41,267 @@ export default function Portal() {
     if (previewUrlRef.current) URL.revokeObjectURL(previewUrlRef.current)
   }, [])
 
+  // Who am I?
   useEffect(() => {
     if (!supabaseReady) { setStatus('Supabase not configured.'); return }
     const db = requireSupabase()
     ;(async () => {
       const { data: { user } } = await db.auth.getUser()
-      if (!user) { setStatus('Not signed in. Use /login.'); return }
+      if (!user) { setNotSignedIn(true); return }
       const { data } = await db.from('members').select('*').eq('id', user.id).single()
       setMember(data)
-      setForm(data || {})
       if (data?.photo_raw) {
-        const { data: signed } = await db.storage.from('member-photos')
-          .createSignedUrl(data.photo_raw, 600)
+        const { data: signed } = await db.storage.from('member-photos').createSignedUrl(data.photo_raw, 600)
         setPhotoUrl(signed?.signedUrl || null)
       }
       setSyncAvatar(data?.sync_avatar_on_update ?? true)
-      setAvatarGenerating(false)
     })()
   }, [])
 
-  async function save(e) {
-    e.preventDefault()
-    if (!supabaseReady) { setStatus('Supabase not configured.'); return }
+  // Load the page's regions (static) and content (Supabase).
+  useEffect(() => {
+    if (!member) return
+    let cancelled = false
+    setContent(null)
+    ;(async () => {
+      const [regs, rows] = await Promise.all([
+        fetchRegions(page),
+        supabaseReady
+          ? requireSupabase().from('portfolio_pages').select('content').eq('member_id', member.id).eq('page_key', page).single()
+          : Promise.resolve({ data: null }),
+      ])
+      if (cancelled) return
+      setRegions(regs)
+      setContent(rows?.data?.content || {})
+      setDirty(false)
+    })()
+    return () => { cancelled = true }
+  }, [member, page])
+
+  async function save() {
+    if (!member) return
     setSaving(true)
+    setStatus('')
     const db = requireSupabase()
-    const patch = {
-      display_name: form.display_name,
-      tagline: form.tagline,
-      bio: form.bio,
-      role_tags: form.role_tags || [],
-      skills: form.skills || [],
-      links: form.links || {},
-      availability: form.availability,
-      workflow_video_url: form.workflow_video_url,
-      featured_metric: form.featured_metric,
-      featured_project: form.featured_project
+    const { error } = await db.from('portfolio_pages').upsert(
+      { member_id: member.id, page_key: page, content },
+      { onConflict: 'member_id,page_key' },
+    )
+    if (error) {
+      setStatus('Save failed: ' + error.message)
+      setSaving(false)
+      return
     }
-    const { error } = await db.from('members').update(patch).eq('id', member.id)
-    setStatus(error ? error.message : 'Saved.')
+    await db.from('members').update({
+      display_name: member.display_name,
+      tagline: member.tagline,
+      bio: member.bio,
+    }).eq('id', member.id)
     setSaving(false)
+    setDirty(false)
+    setStatus('Saved.')
   }
 
   function clearPhotoPreview() {
-    if (previewUrlRef.current) {
-      URL.revokeObjectURL(previewUrlRef.current)
-      previewUrlRef.current = null
-    }
+    if (previewUrlRef.current) { URL.revokeObjectURL(previewUrlRef.current); previewUrlRef.current = null }
     setPhotoPreviewUrl(null)
     setPhotoAnalysis(null)
     setPhotoError('')
     if (fileRef.current) fileRef.current.value = ''
   }
 
-  function retryPhotoCheck() {
-    clearPhotoPreview()
-    fileRef.current?.click()
-  }
-
   async function onFileChange(e) {
     const file = e.target.files?.[0]
     if (!file) return
-
-    if (previewUrlRef.current) {
-      URL.revokeObjectURL(previewUrlRef.current)
-      previewUrlRef.current = null
-    }
-    setPhotoPreviewUrl(null)
-    setPhotoAnalysis(null)
-    setPhotoError('')
-    setUploading(true)
+    if (previewUrlRef.current) { URL.revokeObjectURL(previewUrlRef.current); previewUrlRef.current = null }
+    setPhotoPreviewUrl(null); setPhotoAnalysis(null); setPhotoError(''); setUploading(true)
     setStatus('Checking the photo for a clear face…')
 
     let blob = null
-        try {
-          const result = await analyzePhoto(file)
-          blob = result.blob
-          const previewUrl = URL.createObjectURL(blob)
-          previewUrlRef.current = previewUrl
-          setPhotoPreviewUrl(previewUrl)
-          setPhotoAnalysis({
-            crop: result.crop,
-            faceCount: result.faceCount,
-            score: result.score,
-          })
-          setStatus('Face detected. Uploading the standardized crop…')
-        } catch (error) {
-          const message = photoErrorMessage(error)
-          setPhotoError(message)
-          setStatus(message)
-          setUploading(false)
-          e.target.value = ''
-          return
-        }
+    try {
+      const result = await analyzePhoto(file)
+      blob = result.blob
+      const previewUrl = URL.createObjectURL(blob)
+      previewUrlRef.current = previewUrl
+      setPhotoPreviewUrl(previewUrl)
+      setPhotoAnalysis({ crop: result.crop, faceCount: result.faceCount, score: result.score })
+    } catch (error) {
+      const message = photoErrorMessage(error)
+      setPhotoError(message); setStatus(message); setUploading(false); e.target.value = ''
+      return
+    }
+    if (!member) { setStatus('Profile not loaded yet.'); setUploading(false); e.target.value = ''; return }
 
-        // Upload the standardized crop and save the path to the member row.
-        if (!member) {
-          setStatus('Profile not loaded yet. Please wait and try again.')
-          setUploading(false)
-          e.target.value = ''
-          return
-        }
-        const db = requireSupabase()
-        const path = `${member.id}/std-${Date.now()}.jpg`
-        const { error: upErr } = await db.storage.from('member-photos').upload(path, blob, {
-          cacheControl: '3600', upsert: true, contentType: 'image/jpeg',
+    const db = requireSupabase()
+    const path = `${member.id}/std-${Date.now()}.jpg`
+    const { error: upErr } = await db.storage.from('member-photos').upload(path, blob, {
+      cacheControl: '3600', upsert: true, contentType: 'image/jpeg',
+    })
+    if (upErr) { setPhotoError(upErr.message); setStatus('Upload failed: ' + upErr.message); setUploading(false); e.target.value = ''; return }
+    const { data: signed } = await db.storage.from('member-photos').createSignedUrl(path, 600)
+    const { error: dbErr } = await db.from('members').update({ photo_raw: path }).eq('id', member.id)
+    if (dbErr) { setPhotoError(dbErr.message); setStatus('Save failed: ' + dbErr.message); setUploading(false); e.target.value = ''; return }
+
+    setPhotoUrl(signed?.signedUrl || null)
+    setMember((m) => ({ ...m, photo_raw: path }))
+    if (syncAvatar) {
+      setAvatarGenerating(true)
+      try {
+        await db.functions.invoke('generate-avatar', {
+          body: JSON.stringify({ memberId: member.id, photoRaw: path, syncAvatarOnUpdate: true }),
         })
-        if (upErr) {
-          setPhotoError(upErr.message)
-          setStatus(`Upload failed: ${upErr.message}`)
-          setUploading(false)
-          e.target.value = ''
-          return
-        }
-        const { data: signed } = await db.storage.from('member-photos').createSignedUrl(path, 600)
-        const { error: dbErr } = await db.from('members').update({ photo_raw: path }).eq('id', member.id)
-        if (dbErr) {
-          setPhotoError(dbErr.message)
-          setStatus(`Save failed: ${dbErr.message}`)
-          setUploading(false)
-          e.target.value = ''
-          return
-        }
-        setPhotoUrl(signed?.signedUrl || null)
-        setMember({ ...member, photo_raw: path, sync_avatar_on_update: syncAvatar })
-        // Fire avatar generation if the toggle is ON
-        if (syncAvatar && supabaseReady) {
-          setAvatarGenerating(true)
-          setStatus('Photo saved. Generating your homepage avatar…')
-          try {
-            const { data: avData, error: avErr } = await db.functions.invoke('generate-avatar', {
-              body: JSON.stringify({ memberId: member.id, photoRaw: path, syncAvatarOnUpdate: true }),
-            })
-
-            if (avErr) {
-              console.warn('Avatar generation failed:', avErr.message)
-              setStatus('Photo saved. Avatar generation failed — you can retry from the owner admin.')
-            } else if (avData?.generated_avatar_url) {
-              setMember({ ...member, photo_raw: path, sync_avatar_on_update: syncAvatar, generated_avatar_url: avData.generated_avatar_url })
-              setStatus('Photo saved. Avatar generated.')
-            } else if (avData?.skipped) {
-              setStatus('Photo saved. Avatar generation skipped.')
-            } else {
-              setStatus('Photo saved. Avatar generation in progress.')
-            }
-          } catch (avErr) {
-            console.warn('Avatar generation error:', avErr)
-            setStatus('Photo saved. Avatar generation failed.')
-          }
-          setAvatarGenerating(false)
-        } else {
-          setStatus('Photo saved.')
-        }
-        setUploading(false)
-        e.target.value = ''
+      } catch (e) { /* avatar failure is non-fatal */ }
+      setAvatarGenerating(false)
+    }
+    setStatus('Photo saved.')
+    setUploading(false)
+    e.target.value = ''
   }
 
-  if (!member) return <div className="wrap" style={{ padding: 120 }}><Nav /><p>{status || 'Loading…'}</p></div>
+  if (notSignedIn) {
+    return (
+      <div className="wrap" style={{ padding: 120 }}>
+        <Nav />
+        <p>You need to sign in to edit your portfolio.</p>
+        <Link className="btn" to="/login">Sign in</Link>
+      </div>
+    )
+  }
+  if (!member) {
+    return <div className="wrap" style={{ padding: 120 }}><Nav /><p>{status || 'Loading…'}</p></div>
+  }
 
   return (
     <div className="wrap">
       <Nav />
-      <section className="section">
-        <h1>My profile</h1>
-        <p style={{ color: 'var(--paws-muted)' }}>
-          Editing as <strong>{member.display_name}</strong>. Availability is visible to the owner only.
-          You cannot publish yourself — the owner controls what's public.
-        </p>
-
-        <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', margin: '24px 0' }}>
-          <div style={{ width: 160, height: 200, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-            {photoPreviewUrl
-              ? <img src={photoPreviewUrl} alt="Detected face crop preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              : photoUrl
-                ? <img src={photoUrl} alt="Your current photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                : <span style={{ color: 'var(--paws-muted)', fontSize: 13 }}>No photo preview yet</span>}
-          </div>
-          <div style={{ display: 'grid', gap: 12, alignContent: 'center' }}>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              onChange={onFileChange}
-              style={{ display: 'none' }}
-            />
-            <button type="button" className="btn" disabled={uploading} onClick={() => fileRef.current?.click()}>
-              {uploading ? 'Checking face…' : (photoPreviewUrl ? 'Choose another photo' : 'Choose photo')}
-            </button>
-            {photoPreviewUrl && (
-              <p style={{ color: 'var(--paws-muted)', fontSize: 13, maxWidth: 320 }}>
-                Crop preview — saving uploads this automatically.
-              </p>
-            )}
-            {/* Avatar generation toggle */}
-            <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', marginTop: 4 }}>
-              <input
-                type="checkbox"
-                checked={syncAvatar}
-                onChange={(e) => setSyncAvatar(e.target.checked)}
-                style={{ width: 18, height: 18, cursor: 'pointer', accentColor: 'var(--paws-pink)' }}
-              />
-              <span style={{ fontSize: 13, color: 'var(--paws-ink-2)' }}>
-                Update Homepage Avatar Head
-              </span>
-            </label>
-            {avatarGenerating && (
-              <span style={{ fontSize: 12, color: 'var(--paws-pink)' }}>Generating avatar…</span>
-            )}
-            {member?.generated_avatar_url && (
-              <span style={{ fontSize: 12, color: 'var(--paws-success)' }}>✓ Avatar active</span>
-            )}
-            {photoAnalysis && (
-              <span style={{ color: 'var(--paws-muted)', fontSize: 13, maxWidth: 320 }}>
-                {photoAnalysis.faceCount} face{photoAnalysis.faceCount === 1 ? '' : 's'} detected · confidence {(photoAnalysis.score * 100).toFixed(0)}% · output 800 × 1000
-              </span>
-            )}
-            {photoError && (
-              <div role="alert" style={{ color: 'var(--paws-pink-deep)', fontSize: 13, maxWidth: 320 }}>
-                {photoError}
-              </div>
-            )}
-            {photoError && (
-              <button type="button" className="btn btn-ghost" onClick={retryPhotoCheck}>
-                Try another photo
-              </button>
-            )}
-            {!photoPreviewUrl && !photoError && (
-              <p style={{ color: 'var(--paws-muted)', fontSize: 13, maxWidth: 280 }}>
-                Upload a professional portrait. We detect the face, crop it, and save the standardized crop to your profile.
-              </p>
-            )}
-            {/* Avatar generation toggle */}
-            <label style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 12, cursor: 'pointer', fontSize: 14, color: 'var(--paws-ink)' }}>
-              <input
-                type="checkbox"
-                checked={syncAvatar}
-                onChange={(e) => setSyncAvatar(e.target.checked)}
-                style={{ width: 18, height: 18, cursor: 'pointer', accentColor: 'var(--paws-pink)' }}
-              />
-              Update Homepage Avatar Head
-              {avatarGenerating && (
-                <span style={{ color: 'var(--paws-pink)', fontSize: 12, marginLeft: 'auto' }}>generating…</span>
-              )}
-            </label>
-            <p style={{ color: 'var(--paws-muted)', fontSize: 12, marginTop: 4, maxWidth: 320, marginBottom: 0 }}>
-              When ON, saving a new photo also generates a photorealistic 3D avatar for the homepage team experience. Turn OFF to update photos without regenerating.
+      <section className="section" style={{ paddingBottom: 40 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24, flexWrap: 'wrap' }}>
+          <div>
+            <h1 style={{ marginBottom: 6 }}>My profile</h1>
+            <p style={{ color: 'var(--paws-muted)', margin: 0, maxWidth: 640 }}>
+              This is <strong>{member.display_name}</strong>'s portfolio. Pick a page, edit its content, save.
             </p>
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button type="button" className={editing ? 'btn' : 'btn btn-pink'} onClick={() => setEditing((e) => !e)}>
+              {editing ? 'Preview' : 'Edit content'}
+            </button>
+            <button type="button" className="btn btn-pink" disabled={saving || !dirty} onClick={save}>
+              {saving ? 'Saving…' : 'Save'}
+            </button>
           </div>
         </div>
 
-        <form onSubmit={save} style={{ display: 'grid', gap: 20, maxWidth: 640 }}>
-          <Field label="Display name">
-            <input style={inputStyle} value={form.display_name || ''} onChange={(e) => setForm({ ...form, display_name: e.target.value })} placeholder="Display name" />
-          </Field>
-          <Field label="Tagline">
-            <input style={inputStyle} value={form.tagline || ''} onChange={(e) => setForm({ ...form, tagline: e.target.value })} placeholder="Tagline" />
-          </Field>
-          <Field label="Bio">
-            <textarea style={textareaStyle} rows={5} value={form.bio || ''} onChange={(e) => setForm({ ...form, bio: e.target.value })} placeholder="Bio" />
-          </Field>
-          <TagInput
-            label="Role tags"
-            values={form.role_tags || []}
-            onChange={(v) => setForm({ ...form, role_tags: v })}
-            placeholder="e.g. GHL, Front-end, EA"
-          />
-          <TagInput
-            label="Skills"
-            values={form.skills || []}
-            onChange={(v) => setForm({ ...form, skills: v })}
-            placeholder="e.g. React, Inbox triage, Wiring"
-          />
-          {/* BrewedOps: Social & Project Links */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-            <Field label="GitHub">
-              <input style={inputStyle} value={form.links?.github || ''} onChange={(e) => setForm({ ...form, links: { ...form.links, github: e.target.value } })} placeholder="https://github.com/..." />
-            </Field>
-            <Field label="LinkedIn">
-              <input style={inputStyle} value={form.links?.linkedin || ''} onChange={(e) => setForm({ ...form, links: { ...form.links, linkedin: e.target.value } })} placeholder="https://linkedin.com/in/..." />
-            </Field>
-            <Field label="Portfolio URL">
-              <input style={inputStyle} value={form.links?.website || ''} onChange={(e) => setForm({ ...form, links: { ...form.links, website: e.target.value } })} placeholder="https://yourportfolio.com" />
-            </Field>
-            <Field label="Featured Project Link">
-              <input style={inputStyle} value={form.featured_project || ''} onChange={(e) => setForm({ ...form, featured_project: e.target.value })} placeholder="https://project-demo.com" />
-            </Field>
-          </div>
-          {/* BrewedOps: Workflow Video + Featured Metric */}
-          <Field label="Workflow Video URL">
-            <input style={inputStyle} value={form.workflow_video_url || ''} onChange={(e) => setForm({ ...form, workflow_video_url: e.target.value })} placeholder="https://loom.com/... or YouTube link" />
-          </Field>
-          <Field label="Featured Metric Badge">
-            <input style={inputStyle} value={form.featured_metric || ''} onChange={(e) => setForm({ ...form, featured_metric: e.target.value })} placeholder="e.g. 100+ Hours Automated" />
-          </Field>
-          <Field label="Availability (owner only)">
-            <select style={inputStyle} value={form.availability || 'available'} onChange={(e) => setForm({ ...form, availability: e.target.value })}>
-              <option value="available">Available</option>
-              <option value="busy">Busy</option>
-              <option value="away">Away</option>
-            </select>
-          </Field>
-          <p style={{ color: 'var(--paws-muted)', fontSize: 14 }}>
-            Publish state: <strong>{member.published ? 'Published' : 'Not published'}</strong> (owner-controlled)
-          </p>
-          <button className="btn btn-pink" type="submit" disabled={saving}><span className="btn-label">{saving ? 'Saving…' : 'Save'}</span></button>
-          {/* Retry Avatar Generation */}
-          {member?.generated_avatar_url === '' && (
-            <button type="button" className="btn btn-ghost" onClick={async () => {
-              if (!member?.photo_raw) { setStatus('Upload a photo first.'); return }
-              if (!supabaseReady) { setStatus('Supabase not configured.'); return }
-              const db = requireSupabase()
-              setAvatarGenerating(true)
-              setStatus('Retrying avatar generation…')
-              try {
-                const { data: avData, error: avErr } = await db.functions.invoke('generate-avatar', {
-                  body: JSON.stringify({ memberId: member.id, photoRaw: member.photo_raw, syncAvatarOnUpdate: true }),
-                })
-                if (avErr) { setStatus('Retry failed: ' + avErr.message) }
-                else if (avData?.generated_avatar_url) {
-                  setMember({ ...member, generated_avatar_url: avData.generated_avatar_url })
-                  setStatus('Avatar regenerated.')
-                } else { setStatus('Avatar generation in progress.') }
-              } catch (e) { setStatus('Retry error: ' + e.message) }
-              setAvatarGenerating(false)
-            }}>
-              <span className="btn-label">Retry Avatar Generation</span>
+        <div style={{ display: 'flex', gap: 8, margin: '22px 0', flexWrap: 'wrap' }}>
+          {PAGES.map((p) => (
+            <button
+              key={p.key}
+              type="button"
+              className={p.key === page ? 'btn btn-pink' : 'btn btn-ghost'}
+              onClick={() => setPage(p.key)}
+            >
+              {p.label}
             </button>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: 28, alignItems: 'flex-start' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <PortfolioView
+              slug={member.slug}
+              page={page}
+              content={content}
+              regions={regions}
+              height="calc(100vh - 300px)"
+            />
+          </div>
+
+          {editing && (
+            <div style={{
+              width: 400, flexShrink: 0, maxHeight: 'calc(100vh - 300px)',
+              overflow: 'auto', paddingRight: 10,
+              borderLeft: '1px solid var(--paws-line)', paddingLeft: 24,
+            }}>
+              <section style={{ marginBottom: 28 }}>
+                <h3 style={{ margin: '0 0 12px', fontSize: 12, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--paws-pink)' }}>
+                  Profile details
+                </h3>
+                <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 14 }}>
+                  <div style={{ width: 84, height: 105, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)', overflow: 'hidden', flexShrink: 0 }}>
+                    {photoPreviewUrl
+                      ? <img src={photoPreviewUrl} alt="Crop preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      : photoUrl
+                        ? <img src={photoUrl} alt="Your photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        : <span style={{ color: 'var(--paws-muted)', fontSize: 11 }}>No photo</span>}
+                  </div>
+                  <div style={{ display: 'grid', gap: 8 }}>
+                    <input ref={fileRef} type="file" accept="image/*" onChange={onFileChange} style={{ display: 'none' }} />
+                    <button type="button" className="btn btn-ghost" disabled={uploading} onClick={() => fileRef.current?.click()}>
+                      {uploading ? 'Checking…' : 'Change photo'}
+                    </button>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--paws-ink-2)', cursor: 'pointer' }}>
+                      <input type="checkbox" checked={syncAvatar} onChange={(e) => setSyncAvatar(e.target.checked)} style={{ accentColor: 'var(--paws-pink)' }} />
+                      Regenerate avatar
+                    </label>
+                    {avatarGenerating && <span style={{ fontSize: 12, color: 'var(--paws-pink)' }}>Generating…</span>}
+                    {photoAnalysis && (
+                      <span style={{ fontSize: 12, color: 'var(--paws-muted)' }}>
+                        {photoAnalysis.faceCount} face{photoAnalysis.faceCount === 1 ? '' : 's'} · {(photoAnalysis.score * 100).toFixed(0)}%
+                      </span>
+                    )}
+                    {photoError && <span style={{ fontSize: 12, color: 'var(--paws-pink-deep)' }}>{photoError}</span>}
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gap: 10 }}>
+                  <ProfileInput label="Display name" value={member.display_name || ''} disabled={saving}
+                    onChange={(v) => { setMember({ ...member, display_name: v }); setDirty(true) }} />
+                  <ProfileInput label="Tagline" value={member.tagline || ''} disabled={saving}
+                    onChange={(v) => { setMember({ ...member, tagline: v }); setDirty(true) }} />
+                  <ProfileTextArea label="Bio" value={member.bio || ''} disabled={saving}
+                    onChange={(v) => { setMember({ ...member, bio: v }); setDirty(true) }} />
+                </div>
+              </section>
+
+              <PortfolioEditor
+                page={page}
+                content={content}
+                regions={regions}
+                onChange={(v) => { setContent(v); setDirty(true) }}
+                disabled={saving}
+              />
+            </div>
           )}
-          <span className="pink">{status}</span>
-        </form>
+        </div>
+
+        {status && <p style={{ marginTop: 18, color: 'var(--paws-pink)' }}>{status}</p>}
+        {dirty && !status && <p style={{ marginTop: 18, color: 'var(--paws-muted)', fontSize: 13 }}>Unsaved changes</p>}
       </section>
       <Footer />
     </div>
   )
 }
 
-function Field({ label, children }) {
+function ProfileInput({ label, value, onChange, disabled }) {
   return (
     <div>
-      <label style={{ display: 'block', fontSize: 13, color: 'var(--paws-muted)', marginBottom: 6 }}>{label}</label>
-      {children}
+      <label style={{ display: 'block', fontSize: 12, color: 'var(--paws-muted)', marginBottom: 5 }}>{label}</label>
+      <input style={inputStyle} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} />
     </div>
   )
 }
 
-const inputStyle = { font: 'inherit', padding: '12px 16px', border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-pill)', background: 'rgba(14, 14, 24, 0.6)', color: 'var(--paws-ink)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', width: '100%', boxSizing: 'border-box', transition: 'border-color .15s ease, box-shadow .15s ease' }
-const textareaStyle = { font: 'inherit', padding: '14px 16px', border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-md)', background: 'rgba(14, 14, 24, 0.6)', color: 'var(--paws-ink)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', width: '100%', boxSizing: 'border-box', transition: 'border-color .15s ease, box-shadow .15s ease', resize: 'vertical', fontFamily: 'inherit' }
+function ProfileTextArea({ label, value, onChange, disabled }) {
+  return (
+    <div>
+      <label style={{ display: 'block', fontSize: 12, color: 'var(--paws-muted)', marginBottom: 5 }}>{label}</label>
+      <textarea style={{ ...inputStyle, minHeight: 70, resize: 'vertical' }} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} />
+    </div>
+  )
+}
+
+const inputStyle = {
+  font: 'inherit', fontSize: 14, padding: '9px 12px',
+  border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-md)',
+  background: 'rgba(14,14,24,0.6)', color: 'var(--paws-ink)',
+  width: '100%', boxSizing: 'border-box',
+}

@@ -14,7 +14,7 @@ import {
  * fixed-viewport app shell, so the iframe keeps a viewport-sized height and
  * the page scrolls inside it (as it does on its own).
  */
-export default function PortfolioView({ slug, page, content, regions: regionsProp }) {
+export default function PortfolioView({ slug, page, content, regions: regionsProp, height }) {
   const [srcdoc, setSrcdoc] = useState('')
   const [error, setError] = useState('')
 
@@ -51,8 +51,8 @@ export default function PortfolioView({ slug, page, content, regions: regionsPro
       title={`Portfolio — ${page}`}
       style={{
         width: '100%',
-        height: 'calc(100vh - 48px)',
-        minHeight: 560,
+        height: height || 'calc(100vh - 48px)',
+        minHeight: 420,
         border: 'none',
         display: 'block',
         background: 'transparent',

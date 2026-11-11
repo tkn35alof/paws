@@ -91,6 +91,20 @@ export function pageSrcdoc(doc, { title = 'Portfolio' } = {}) {
 <body>
 ${body}
 <script src="${ASSET_BASE}/portfolio.js"></script>
+<script>
+/* The replica's internal nav links must drive the PAWS app, not navigate the
+   iframe itself (which would nest a new SPA and shrink the preview). */
+(function () {
+  document.addEventListener('click', function (e) {
+    var a = e.target && e.target.closest ? e.target.closest('a[href^="/portfolio/"]') : null;
+    if (!a) return;
+    e.preventDefault();
+    try {
+      parent.postMessage({ type: 'paws:portfolio-nav', href: a.getAttribute('href') }, '*');
+    } catch (err) {}
+  }, true);
+})();
+</script>
 </body>
 </html>`
 }
