@@ -240,6 +240,13 @@
       "section": "About"
     },
     {
+      "key": "title",
+      "selector": "[data-pf-key=\"title\"]",
+      "type": "text",
+      "label": "Page · Title",
+      "section": "Page"
+    },
+    {
       "key": "rail__name",
       "selector": "[data-pf-key=\"rail__name\"]",
       "type": "text",

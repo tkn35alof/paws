@@ -17,6 +17,7 @@ from html.parser import HTMLParser
 
 R = r"C:/Users/ALOF/portfolio-replica"
 DST = r"C:/Users/ALOF/paws/public/portfolio-assets"
+SRC = f"{R}/paws-member-portfolio-{{page}}.html"
 TDIR = f"{DST}/templates"
 REG = f"{DST}/regions"
 CON = f"{DST}/content"
@@ -188,7 +189,7 @@ def walk(node, out):
 
 def extract(page):
     tpath = f"{TDIR}/{page}.html"
-    root = parse(tpath)
+    root = parse(SRC.format(page=page))
     all_nodes = walk(root, [])
 
     regions = []
@@ -228,7 +229,13 @@ def extract(page):
                 'label': label_for(n, counters[base]-1, section_of(n)),
                 'section': section_of(n),
             })
-            content[key] = {'label': n.text_content().strip(), 'href': rewrite_url(n.attrs.get('href', ''))}
+            # A link that wraps other editable regions (e.g. a bento card) has
+            # no label of its own — its text_content() is just the concatenation
+            # of its children. Only leaf links get a label.
+            entry = {'href': rewrite_url(n.attrs.get('href', ''))}
+            if not n.has_text_child():
+                entry['label'] = n.text_content().strip()
+            content[key] = entry
 
     # 3. text
     for n in all_nodes:

@@ -20,65 +20,65 @@
     "alt": ""
   },
   "rail__social": {
-    "label": "",
-    "href": "https://www.facebook.com/BrewedOpsHL"
+    "href": "https://www.facebook.com/BrewedOpsHL",
+    "label": ""
   },
   "rail__social__1": {
-    "label": "",
-    "href": "https://www.linkedin.com/in/kenneth-villar-10a05734a/"
+    "href": "https://www.linkedin.com/in/kenneth-villar-10a05734a/",
+    "label": ""
   },
   "rail__social__2": {
-    "label": "",
-    "href": "https://github.com/brewed-ops"
+    "href": "https://github.com/brewed-ops",
+    "label": ""
   },
   "rail__social__3": {
-    "label": "",
-    "href": "https://discord.com/users/kapedlvnglgnd"
+    "href": "https://discord.com/users/kapedlvnglgnd",
+    "label": ""
   },
   "rail__link": {
-    "label": "Home",
-    "href": "paws-member-portfolio-home.html"
+    "href": "paws-member-portfolio-home.html",
+    "label": "Home"
   },
   "rail__link__1": {
-    "label": "Projects",
-    "href": "paws-member-portfolio-projects.html"
+    "href": "paws-member-portfolio-projects.html",
+    "label": "Projects"
   },
   "rail__link__2": {
-    "label": "Services",
-    "href": "paws-member-portfolio-services.html"
+    "href": "paws-member-portfolio-services.html",
+    "label": "Services"
   },
   "rail__link__3": {
-    "label": "Testimonials",
-    "href": "paws-member-portfolio-testimonials.html"
+    "href": "paws-member-portfolio-testimonials.html",
+    "label": "Testimonials"
   },
   "rail__link__4": {
-    "label": "About",
-    "href": "paws-member-portfolio-about.html"
+    "href": "paws-member-portfolio-about.html",
+    "label": "About"
   },
   "rail__link__5": {
-    "label": "FAQs / Contact",
-    "href": "paws-member-portfolio-contact.html"
+    "href": "paws-member-portfolio-contact.html",
+    "label": "FAQs / Contact"
   },
   "cgrid__mail": {
-    "label": "contact@pawsops.io",
     "href": "mailto:contact@pawsops.io"
   },
   "cgrid__social": {
-    "label": "",
-    "href": "https://www.facebook.com/BrewedOpsHL"
+    "href": "https://www.facebook.com/BrewedOpsHL",
+    "label": ""
   },
   "cgrid__social__1": {
-    "label": "",
-    "href": "https://www.linkedin.com/in/kenneth-villar-10a05734a/"
+    "href": "https://www.linkedin.com/in/kenneth-villar-10a05734a/",
+    "label": ""
   },
   "cgrid__social__2": {
-    "label": "",
-    "href": "https://github.com/brewed-ops"
+    "href": "https://github.com/brewed-ops",
+    "label": ""
   },
   "cgrid__social__3": {
-    "label": "",
-    "href": "https://discord.com/users/kapedlvnglgnd"
+    "href": "https://discord.com/users/kapedlvnglgnd",
+    "label": ""
   },
+  "title": "PAWS Ops — FAQs / Contact",
   "rail__name": "Jhuriel Guerra",
   "rail__visits": "13,991 visits",
   "rail__copy": "© 2026Jhuriel Guerra. All rights reserved.",

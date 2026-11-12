@@ -34,6 +34,15 @@ function setText(el, text) {
   if (!inserted) el.appendChild(doc.createTextNode(text))
 }
 
+/** Does this link carry its own label (direct text), rather than wrapping
+ *  other editable regions? Container links must not be given a label, or the
+ *  concatenation of their children's text is injected into the card. */
+function linkHasOwnLabel(el) {
+  return [...el.childNodes].some(
+    (n) => n.nodeType === Node.TEXT_NODE && n.nodeValue.trim(),
+  )
+}
+
 /** Apply a member's content to a parsed template document. */
 export function applyContent(doc, regions, content) {
   if (!regions || !content) return
@@ -51,7 +60,7 @@ export function applyContent(doc, regions, content) {
         if (value.alt != null) el.setAttribute('alt', value.alt)
         break
       case 'link':
-        if (value.label != null) setText(el, String(value.label))
+        if (value.label != null && linkHasOwnLabel(el)) setText(el, String(value.label))
         if (value.href != null) el.setAttribute('href', value.href)
         break
       default:
@@ -87,6 +96,18 @@ export function pageSrcdoc(doc, { title = 'Portfolio' } = {}) {
 <title>${title}</title>
 <link rel="stylesheet" href="${ASSET_BASE}/portfolio.css">
 <link rel="stylesheet" href="${ASSET_BASE}/paws-brand.css">
+<style>
+body.paws-editing [data-pf-key]{outline:1px dashed rgba(255,90,138,.45);outline-offset:2px;cursor:text}
+body.paws-editing [data-pf-key]:hover{outline:2px solid #ff5a8a;background:rgba(255,90,138,.06)}
+body.paws-editing [data-pf-key][contenteditable="true"]{outline:2px solid #ff5a8a;outline-offset:2px}
+.paws-pop{position:absolute;z-index:9999;width:260px;padding:12px;background:#0e0e18;border:1px solid rgba(255,90,138,.55);border-radius:10px;box-shadow:0 10px 34px rgba(0,0,0,.55);font:13px/1.4 system-ui,sans-serif;color:#f5f5f7}
+.paws-pop__title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#ff5a8a;margin-bottom:4px}
+.paws-pop label{display:block;font-size:11px;color:#9a9aa5;margin:8px 0 3px}
+.paws-pop__input{width:100%;box-sizing:border-box;background:#16161f;color:#f5f5f7;border:1px solid #2a2a35;border-radius:6px;padding:6px 8px;font:inherit}
+.paws-pop__row{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
+.paws-pop__btn{background:transparent;color:#f5f5f7;border:1px solid #2a2a35;border-radius:6px;padding:5px 10px;cursor:pointer;font:inherit}
+.paws-pop__btn:hover{border-color:#ff5a8a;color:#ff5a8a}
+</style>
 </head>
 <body>
 ${body}
@@ -98,10 +119,178 @@ ${body}
   document.addEventListener('click', function (e) {
     var a = e.target && e.target.closest ? e.target.closest('a[href^="/portfolio/"]') : null;
     if (!a) return;
+    if (document.body.classList.contains('paws-editing')) return;
     e.preventDefault();
     try {
       parent.postMessage({ type: 'paws:portfolio-nav', href: a.getAttribute('href') }, '*');
     } catch (err) {}
+  }, true);
+})();
+</script>
+<script>
+/* Inline editing: the member edits the portfolio exactly where the content
+   sits. The parent toggles edit mode; changes are posted back as
+   { type: 'paws:portfolio-change', key, value }. */
+(function () {
+  var body = document.body;
+  var pop = null;
+
+  function post(msg) { try { parent.postMessage(msg, '*'); } catch (e) {} }
+
+  function closePop() {
+    if (pop && pop.parentNode) pop.parentNode.removeChild(pop);
+    pop = null;
+  }
+
+  function showPop(anchor, build) {
+    closePop();
+    var box = document.createElement('div');
+    box.className = 'paws-pop';
+    body.appendChild(box);
+    build(box);
+    var r = anchor.getBoundingClientRect();
+    var w = box.offsetWidth;
+    var x = Math.min(Math.max(8, r.left), Math.max(8, window.innerWidth - w - 8));
+    box.style.left = x + 'px';
+    box.style.top = (r.bottom + window.pageYOffset + 6) + 'px';
+    pop = box;
+    return box;
+  }
+
+  function popField(box, label, value) {
+    var l = document.createElement('label');
+    l.textContent = label;
+    var i = document.createElement('input');
+    i.className = 'paws-pop__input';
+    i.value = value || '';
+    box.appendChild(l);
+    box.appendChild(i);
+    return i;
+  }
+
+  function popActions(box, onSave) {
+    var row = document.createElement('div');
+    row.className = 'paws-pop__row';
+    var cancel = document.createElement('button');
+    cancel.className = 'paws-pop__btn';
+    cancel.textContent = 'Cancel';
+    cancel.onclick = closePop;
+    var save = document.createElement('button');
+    save.className = 'paws-pop__btn';
+    save.textContent = 'Apply';
+    save.onclick = function () { onSave(); closePop(); };
+    row.appendChild(cancel);
+    row.appendChild(save);
+    box.appendChild(row);
+  }
+
+  function editText(el, key, wrapValue) {
+    if (el.getAttribute('contenteditable') === 'true') return;
+    el.setAttribute('contenteditable', 'true');
+    el.focus();
+    var range = document.createRange();
+    range.selectNodeContents(el);
+    range.collapse(false);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    function done() {
+      el.removeEventListener('blur', done);
+      el.setAttribute('contenteditable', 'false');
+      var value = (el.textContent || '').trim();
+      post({
+        type: 'paws:portfolio-change',
+        key: key,
+        value: wrapValue ? wrapValue(value) : value,
+      });
+    }
+    el.addEventListener('blur', done);
+  }
+
+  function editImage(el, key) {
+    var src = el.getAttribute('src') || '';
+    var alt = el.getAttribute('alt') || '';
+    showPop(el, function (box) {
+      var t = document.createElement('div');
+      t.className = 'paws-pop__title';
+      t.textContent = 'Image';
+      box.appendChild(t);
+      var srcInput = popField(box, 'URL', src);
+      var altInput = popField(box, 'Alt text', alt);
+      popActions(box, function () {
+        var s = srcInput.value.trim();
+        var a = altInput.value.trim();
+        el.setAttribute('src', s);
+        el.setAttribute('alt', a);
+        post({ type: 'paws:portfolio-change', key: key, value: { src: s, alt: a } });
+      });
+      setTimeout(function () { srcInput.focus(); }, 0);
+    });
+  }
+
+  function editHref(el, key, withLabel) {
+    var href = el.getAttribute('href') || '';
+    showPop(el, function (box) {
+      var t = document.createElement('div');
+      t.className = 'paws-pop__title';
+      t.textContent = 'Link';
+      box.appendChild(t);
+      var hrefInput = popField(box, 'URL', href);
+      popActions(box, function () {
+        var h = hrefInput.value.trim();
+        el.setAttribute('href', h);
+        var value = { href: h };
+        if (withLabel) value.label = (el.textContent || '').trim();
+        post({ type: 'paws:portfolio-change', key: key, value: value });
+      });
+      setTimeout(function () { hrefInput.focus(); }, 0);
+    });
+  }
+
+  function directText(el) {
+    var t = '';
+    for (var i = 0; i < el.childNodes.length; i++) {
+      if (el.childNodes[i].nodeType === 3) t += el.childNodes[i].nodeValue;
+    }
+    return t.trim();
+  }
+
+  document.addEventListener('click', function (e) {
+    if (!body.classList.contains('paws-editing')) return;
+    closePop();
+    var el = e.target && e.target.closest ? e.target.closest('[data-pf-key]') : null;
+    if (!el) return;
+    e.preventDefault();
+    e.stopPropagation();
+    var type = el.getAttribute('data-pf-type');
+    var key = el.getAttribute('data-pf-key');
+    if (type === 'text') {
+      editText(el, key);
+    } else if (type === 'image') {
+      editImage(el, key);
+    } else if (type === 'link') {
+      var label = directText(el);
+      if (label) {
+        editText(el, key, function (v) {
+          return { label: v, href: el.getAttribute('href') || '' };
+        });
+      }
+      editHref(el, key, !!label);
+    }
+  }, true);
+
+  window.addEventListener('message', function (e) {
+    if (!e.data || e.data.type !== 'paws:portfolio-edit') return;
+    if (e.data.enabled) body.classList.add('paws-editing');
+    else { body.classList.remove('paws-editing'); closePop(); }
+  });
+
+  document.addEventListener('click', function (e) {
+    if (!pop) return;
+    if (pop.contains(e.target)) return;
+    var anchor = e.target && e.target.closest ? e.target.closest('[data-pf-key]') : null;
+    if (anchor) return;
+    closePop();
   }, true);
 })();
 </script>

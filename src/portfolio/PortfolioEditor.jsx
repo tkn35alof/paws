@@ -87,13 +87,15 @@ function RegionField({ region, value, disabled, onChange }) {
       <div>
         <Label>{label}</Label>
         <div style={{ display: 'grid', gap: 8 }}>
-          <input
-            style={inputStyle}
-            value={v.label || ''}
-            disabled={disabled}
-            onChange={(e) => onChange({ ...v, label: e.target.value })}
-            placeholder="Label"
-          />
+          {typeof v.label === 'string' && (
+            <input
+              style={inputStyle}
+              value={v.label}
+              disabled={disabled}
+              onChange={(e) => onChange({ ...v, label: e.target.value })}
+              placeholder="Label"
+            />
+          )}
           <input
             style={inputStyle}
             value={v.href || ''}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   buildPageDocument,
   fetchRegions,
@@ -13,13 +13,37 @@ import {
  * replica's CSS and JS run exactly as they do standalone. The replica is a
  * fixed-viewport app shell, so the iframe keeps a viewport-sized height and
  * the page scrolls inside it (as it does on its own).
+ *
+ * When `editable` is on, the iframe lets the member edit the content in place
+ * (contenteditable text, popovers for image/link values) and posts each change
+ * back through `onContentChange`. The document is not rebuilt while editing so
+ * the caret and popover are never torn down mid-edit.
  */
-export default function PortfolioView({ slug, page, content, regions: regionsProp, height }) {
+export default function PortfolioView({
+  slug,
+  page,
+  content,
+  regions: regionsProp,
+  height,
+  editable = false,
+  onContentChange,
+}) {
   const [srcdoc, setSrcdoc] = useState('')
   const [error, setError] = useState('')
+  const iframeRef = useRef(null)
+  const builtRef = useRef(null)
 
-  // Build the document whenever the page or its content changes.
+  // Build the document for a page. Skipped while editing (the member is
+  // editing the live DOM); re-runs when edit mode is switched off.
   useEffect(() => {
+    if (
+      editable &&
+      builtRef.current &&
+      builtRef.current.slug === slug &&
+      builtRef.current.page === page
+    ) {
+      return
+    }
     let cancelled = false
     setError('')
     ;(async () => {
@@ -29,13 +53,39 @@ export default function PortfolioView({ slug, page, content, regions: regionsPro
           regionsProp ? Promise.resolve(regionsProp) : fetchRegions(page),
         ])
         const doc = buildPageDocument({ template, regions, content, slug })
-        if (!cancelled) setSrcdoc(pageSrcdoc(doc, { title: `${slug} · ${page}` }))
+        if (!cancelled) {
+          setSrcdoc(pageSrcdoc(doc, { title: `${slug} · ${page}` }))
+          builtRef.current = { slug, page }
+        }
       } catch (e) {
         if (!cancelled) setError(e.message || 'Failed to load the portfolio page.')
       }
     })()
     return () => { cancelled = true }
-  }, [slug, page, content, regionsProp])
+  }, [slug, page, content, regionsProp, editable])
+
+  // Tell the iframe whether it is in edit mode.
+  const sendEditMode = useCallback(() => {
+    iframeRef.current?.contentWindow?.postMessage(
+      { type: 'paws:portfolio-edit', enabled: !!editable },
+      '*',
+    )
+  }, [editable])
+
+  useEffect(() => {
+    if (srcdoc) sendEditMode()
+  }, [srcdoc, sendEditMode])
+
+  // Receive inline edits.
+  useEffect(() => {
+    if (!onContentChange) return
+    function onMessage(e) {
+      if (!e.data || e.data.type !== 'paws:portfolio-change') return
+      onContentChange(e.data.key, e.data.value)
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [onContentChange])
 
   if (error) {
     return (
@@ -47,8 +97,10 @@ export default function PortfolioView({ slug, page, content, regions: regionsPro
 
   return (
     <iframe
+      ref={iframeRef}
       srcDoc={srcdoc}
       title={`Portfolio — ${page}`}
+      onLoad={sendEditMode}
       style={{
         width: '100%',
         height: height || 'calc(100vh - 48px)',
