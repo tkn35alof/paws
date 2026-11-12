@@ -30,6 +30,7 @@ export default function PortfolioView({
 }) {
   const [srcdoc, setSrcdoc] = useState('')
   const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
   const iframeRef = useRef(null)
   const builtRef = useRef(null)
 
@@ -46,6 +47,7 @@ export default function PortfolioView({
     }
     let cancelled = false
     setError('')
+    setLoading(true)
     ;(async () => {
       try {
         const [template, regions] = await Promise.all([
@@ -58,11 +60,18 @@ export default function PortfolioView({
           builtRef.current = { slug, page }
         }
       } catch (e) {
-        if (!cancelled) setError(e.message || 'Failed to load the portfolio page.')
+        if (!cancelled) { setError(e.message || 'Failed to load the portfolio page.'); setLoading(false) }
       }
     })()
     return () => { cancelled = true }
   }, [slug, page, content, regionsProp, editable])
+
+  // Safety: never let the loading veil stick if the iframe never reports load.
+  useEffect(() => {
+    if (!loading) return
+    const t = setTimeout(() => setLoading(false), 6000)
+    return () => clearTimeout(t)
+  }, [loading])
 
   // Tell the iframe whether it is in edit mode.
   const sendEditMode = useCallback(() => {
@@ -96,19 +105,34 @@ export default function PortfolioView({
   }
 
   return (
-    <iframe
-      ref={iframeRef}
-      srcDoc={srcdoc}
-      title={`Portfolio — ${page}`}
-      onLoad={sendEditMode}
-      style={{
-        width: '100%',
-        height: height || 'calc(100vh - 48px)',
-        minHeight: 420,
-        border: 'none',
-        display: 'block',
-        background: 'transparent',
-      }}
-    />
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <iframe
+        ref={iframeRef}
+        srcDoc={srcdoc}
+        title={`Portfolio — ${page}`}
+        onLoad={() => { setLoading(false); sendEditMode() }}
+        style={{
+          width: '100%',
+          height: height || 'calc(100vh - 48px)',
+          minHeight: 420,
+          border: 'none',
+          display: 'block',
+          background: 'transparent',
+        }}
+      />
+      {loading && !error && (
+        <div style={{
+          position: 'absolute', inset: 0, display: 'grid', placeItems: 'center',
+          background: '#0b0b14',
+        }}>
+          <div style={{
+            width: 34, height: 34, borderRadius: '50%',
+            border: '3px solid rgba(255,90,138,.2)', borderTopColor: '#ff5a8a',
+            animation: 'paws-spin 0.8s linear infinite',
+          }} />
+          <style>{'@keyframes paws-spin{to{transform:rotate(360deg)}}'}</style>
+        </div>
+      )}
+    </div>
   )
 }

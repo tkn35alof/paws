@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { analyzePhoto, photoErrorMessage } from '../lib/face-photo.js'
 import PortfolioView from '../portfolio/PortfolioView.jsx'
-import { fetchRegions } from '../portfolio/portfolio.js'
+import { fetchRegions, preloadPages } from '../portfolio/portfolio.js'
 
 /**
  * "My profile" — the member's portfolio, full screen.
@@ -55,6 +55,8 @@ export default function Portal() {
       if (!user) { setNotSignedIn(true); return }
       const { data } = await db.from('members').select('*').eq('id', user.id).single()
       setMember(data)
+      // Warm the template cache for every page so the rail navigates instantly.
+      preloadPages()
       if (data?.photo_raw) {
         const { data: signed } = await db.storage.from('member-photos').createSignedUrl(data.photo_raw, 600)
         setPhotoUrl(signed?.signedUrl || null)

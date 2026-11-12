@@ -495,16 +495,37 @@ ${body}
 }
 
 /** Fetch a template from the static assets. */
+const templateCache = new Map()
 export async function fetchTemplate(page) {
+  if (templateCache.has(page)) return templateCache.get(page)
   const res = await fetch(`${ASSET_BASE}/templates/${page}.html`)
   if (!res.ok) throw new Error(`Template not found: ${page}`)
-  return res.text()
+  const text = await res.text()
+  templateCache.set(page, text)
+  return text
 }
 
 /** Fetch the region descriptors for a page. */
+const regionCache = new Map()
 export async function fetchRegions(page) {
+  if (regionCache.has(page)) return regionCache.get(page)
   const res = await fetch(`${ASSET_BASE}/regions/${page}.json`)
   if (!res.ok) return []
   const data = await res.json()
-  return data.regions || []
+  const regions = data.regions || []
+  regionCache.set(page, regions)
+  return regions
+}
+
+/**
+ * Warm the template + region caches for every page, in the background.
+ * Called once the member is known so clicking through the rail is instant
+ * instead of fetching a ~400 KB template per page.
+ */
+export function preloadPages(pages = PAGES.map((p) => p.key)) {
+  return Promise.all(
+    pages.map((page) =>
+      Promise.all([fetchTemplate(page), fetchRegions(page)]).catch(() => []),
+    ),
+  )
 }
