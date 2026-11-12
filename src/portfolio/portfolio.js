@@ -529,3 +529,18 @@ export function preloadPages(pages = PAGES.map((p) => p.key)) {
     ),
   )
 }
+
+/**
+ * Saved page content, cached per member. Switching pages then never waits on
+ * Supabase — the content is already in memory.
+ */
+const contentCache = new Map()
+export function getCachedContent(memberId, pageKey) {
+  return contentCache.get(`${memberId}:${pageKey}`)
+}
+export function setCachedContent(memberId, pageKey, content) {
+  contentCache.set(`${memberId}:${pageKey}`, content)
+}
+export function warmContentCache(memberId, rows) {
+  ;(rows || []).forEach((r) => setCachedContent(memberId, r.page_key, r.content || {}))
+}

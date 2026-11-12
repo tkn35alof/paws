@@ -26,6 +26,7 @@ export default function PortfolioView({
   regions: regionsProp,
   height,
   editable = false,
+  loading: loadingProp = false,
   onContentChange,
 }) {
   const [srcdoc, setSrcdoc] = useState('')
@@ -120,7 +121,7 @@ export default function PortfolioView({
           background: 'transparent',
         }}
       />
-      {loading && !error && (
+      {(loading || loadingProp) && !error && (
         <div style={{
           position: 'absolute', inset: 0, display: 'grid', placeItems: 'center',
           background: '#0b0b14',

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { analyzePhoto, photoErrorMessage } from '../lib/face-photo.js'
 import PortfolioView from '../portfolio/PortfolioView.jsx'
-import { fetchRegions, preloadPages } from '../portfolio/portfolio.js'
+import { fetchRegions, preloadPages, getCachedContent, setCachedContent, warmContentCache } from '../portfolio/portfolio.js'
 
 /**
  * "My profile" — the member's portfolio, full screen.
@@ -24,6 +24,7 @@ export default function Portal() {
   const [dirty, setDirty] = useState(false)
   const [status, setStatus] = useState('')
   const [showDetails, setShowDetails] = useState(false)
+  const [switching, setSwitching] = useState(false)
 
   const [uploading, setUploading] = useState(false)
   const [photoUrl, setPhotoUrl] = useState(null)
@@ -47,6 +48,14 @@ export default function Portal() {
     // production builds.
     if (import.meta.env.DEV && new URLSearchParams(location.search).has('devmock')) {
       setMember({ id: 'b2b4cd5a-0a3a-4108-8812-f6dd78a88548', slug: 'jhuriel', display_name: 'Jhuriel Guerra', tagline: 'Founder & Lead', bio: '' })
+      if (supabaseReady) {
+        requireSupabase()
+          .from('portfolio_pages')
+          .select('page_key, content')
+          .eq('member_id', 'b2b4cd5a-0a3a-4108-8812-f6dd78a88548')
+          .then(({ data: rows }) => { if (rows) warmContentCache('b2b4cd5a-0a3a-4108-8812-f6dd78a88548', rows) })
+          .catch(() => {})
+      }
       return
     }
     const db = requireSupabase()
@@ -57,6 +66,16 @@ export default function Portal() {
       setMember(data)
       // Warm the template cache for every page so the rail navigates instantly.
       preloadPages()
+      // One query for every page's saved content, so switching pages never
+      // waits on Supabase.
+      if (supabaseReady) {
+        requireSupabase()
+          .from('portfolio_pages')
+          .select('page_key, content')
+          .eq('member_id', data.id)
+          .then(({ data: rows }) => { if (rows) warmContentCache(data.id, rows) })
+          .catch(() => {})
+      }
       if (data?.photo_raw) {
         const { data: signed } = await db.storage.from('member-photos').createSignedUrl(data.photo_raw, 600)
         setPhotoUrl(signed?.signedUrl || null)
@@ -65,25 +84,51 @@ export default function Portal() {
     })()
   }, [])
 
-  // Load the page's regions (static) and content (Supabase).
-  useEffect(() => {
-    if (!member) return
-    let cancelled = false
-    setContent(null)
-    ;(async () => {
-      const [regs, rows] = await Promise.all([
-        fetchRegions(page),
-        supabaseReady
-          ? requireSupabase().from('portfolio_pages').select('content').eq('member_id', member.id).eq('page_key', page).single()
-          : Promise.resolve({ data: null }),
-      ])
-      if (cancelled) return
-      setRegions(regs)
-      setContent(rows?.data?.content || {})
+  // Load a page's regions (static) and content (Supabase), then commit page +
+  // content together. Committing them separately made the iframe build an
+  // empty document first and then rebuild with the real content — two full
+  // page loads per click.
+  const pageRef = useRef('home')
+  const seqRef = useRef(0)
+  const loadPage = useCallback(async (key) => {
+    const seq = ++seqRef.current
+    const cached = member ? getCachedContent(member.id, key) : undefined
+    if (cached) {
+      // Everything is already local — no spinner, no waiting.
+      setPage(key)
+      setRegions(await fetchRegions(key))
+      setContent(cached)
       setDirty(false)
-    })()
-    return () => { cancelled = true }
-  }, [member, page])
+      return
+    }
+    setSwitching(true)
+    const [regs, rows] = await Promise.all([
+      fetchRegions(key),
+      supabaseReady
+        ? requireSupabase().from('portfolio_pages').select('content').eq('member_id', member.id).eq('page_key', key).single()
+        : Promise.resolve({ data: null }),
+    ])
+    if (seq !== seqRef.current) return
+    const c = rows?.data?.content || {}
+    setCachedContent(member.id, key, c)
+    setPage(key)
+    setRegions(regs)
+    setContent(c)
+    setDirty(false)
+    setSwitching(false)
+  }, [member])
+
+  // Initial load once the member is known.
+  useEffect(() => {
+    if (member) loadPage(pageRef.current)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [member])
+
+  const navigate = useCallback((key) => {
+    pageRef.current = key
+    setEditing(false)
+    loadPage(key)
+  }, [loadPage])
 
   // The portfolio's own rail navigates by posting a message; in the portal that
   // switches the internal page instead of leaving /portal.
@@ -91,15 +136,12 @@ export default function Portal() {
     function onMessage(e) {
       if (e.data && e.data.type === 'paws:portfolio-nav' && e.data.href) {
         const m = e.data.href.match(/^\/portfolio\/[^/]+\/(\w+)$/)
-        if (m) {
-          setEditing(false)
-          setPage(m[1])
-        }
+        if (m) navigate(m[1])
       }
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
-  }, [])
+  }, [navigate])
 
   // Uploads requested from the portfolio's inline editor. The iframe has no
   // Supabase credentials, so the parent owns the file picker and the upload.
@@ -175,6 +217,7 @@ export default function Portal() {
     }).eq('id', member.id)
     setSaving(false)
     setDirty(false)
+    setCachedContent(member.id, page, content)
     setStatus('Saved.')
   }
 
@@ -246,6 +289,7 @@ export default function Portal() {
         content={content}
         regions={regions}
         editable={editing}
+        loading={switching}
         onContentChange={onContentChange}
         height="100vh"
       />
