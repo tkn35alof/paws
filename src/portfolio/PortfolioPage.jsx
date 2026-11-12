@@ -2,7 +2,13 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import PortfolioView from './PortfolioView.jsx'
-import { PAGES } from './portfolio.js'
+import {
+  PAGES,
+  preloadPages,
+  getCachedContent,
+  setCachedContent,
+  warmContentCache,
+} from './portfolio.js'
 
 /**
  * Public member portfolio: /portfolio/:slug/:page
@@ -34,11 +40,10 @@ export default function PortfolioPage() {
 
   useEffect(() => {
     if (!supabaseReady) { setLoading(false); setError('Supabase not configured.'); return }
-    const db = requireSupabase()
     let cancelled = false
-    setLoading(true)
+    setMember(null)
     ;(async () => {
-      const { data: m, error: mErr } = await db
+      const { data: m, error: mErr } = await requireSupabase()
         .from('members')
         .select('id, slug, display_name, tagline, published')
         .eq('slug', slug)
@@ -47,10 +52,33 @@ export default function PortfolioPage() {
       if (cancelled) return
       if (mErr || !m) { setError('Member not found.'); setLoading(false); return }
       setMember(m)
-      const { data: rows, error: pErr } = await db
+      // Warm the templates and every page's content (one query) so clicking
+      // through the rail is a local cache hit instead of a round-trip.
+      preloadPages()
+      const { data: rows } = await requireSupabase()
+        .from('portfolio_pages')
+        .select('page_key, content')
+        .eq('member_id', m.id)
+      if (!cancelled && rows) warmContentCache(m.id, rows)
+    })()
+    return () => { cancelled = true }
+  }, [slug])
+
+  useEffect(() => {
+    if (!member) return
+    let cancelled = false
+    const cached = getCachedContent(member.id, page)
+    if (cached) {
+      setContent(cached)
+      setLoading(false)
+      return
+    }
+    setLoading(true)
+    ;(async () => {
+      const { data: rows, error: pErr } = await requireSupabase()
         .from('portfolio_pages')
         .select('content')
-        .eq('member_id', m.id)
+        .eq('member_id', member.id)
         .eq('page_key', page)
         .single()
       if (cancelled) return
@@ -59,11 +87,13 @@ export default function PortfolioPage() {
         setLoading(false)
         return
       }
-      setContent(rows.content)
+      const c = rows.content || {}
+      setCachedContent(member.id, page, c)
+      setContent(c)
       setLoading(false)
     })()
     return () => { cancelled = true }
-  }, [slug, page])
+  }, [member, page])
 
   if (loading) {
     return <div style={{ padding: 120, color: 'var(--paws-muted)' }}>Loading portfolio…</div>
