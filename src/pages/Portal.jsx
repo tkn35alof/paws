@@ -263,8 +263,9 @@ export default function Portal() {
         <div style={{
           position: 'fixed', top: 22, left: 22,
           zIndex: 100, padding: '8px 16px', borderRadius: 999,
-          background: 'rgba(14,14,24,.9)', border: '1px solid var(--paws-line)',
+          background: 'rgba(14,14,24,.95)', border: '1px solid var(--paws-line)',
           color: dirty ? 'var(--paws-muted)' : 'var(--paws-pink)', fontSize: 13,
+          textShadow: '0 0 4px rgba(0,0,0,.5)',
         }}>
           {status}
         </div>
@@ -274,7 +275,8 @@ export default function Portal() {
           position: 'fixed', top: 22, left: 22,
           zIndex: 100, padding: '6px 14px', borderRadius: 999,
           background: 'rgba(14,14,24,.75)', border: '1px solid var(--paws-line)',
-          color: 'var(--paws-muted)', fontSize: 12,
+          color: 'var(--paws-ink)', textShadow: '0 0 4px rgba(0,0,0,.5)',
+        fontSize: 12,
         }}>
           Unsaved changes
         </div>
