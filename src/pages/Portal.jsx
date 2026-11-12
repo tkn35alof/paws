@@ -2,18 +2,16 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { analyzePhoto, photoErrorMessage } from '../lib/face-photo.js'
-import { Nav } from '../components/Nav.jsx'
-import { Footer } from '../components/Footer.jsx'
 import PortfolioView from '../portfolio/PortfolioView.jsx'
-import { PAGES, fetchRegions } from '../portfolio/portfolio.js'
+import { fetchRegions } from '../portfolio/portfolio.js'
 
 /**
- * "My profile" — the member's portfolio, full view, edited in place.
+ * "My profile" — the member's portfolio, full screen.
  *
- * There is no side panel: clicking any text, image or link in the portfolio
- * edits it where it sits, and each change is written back to portfolio_pages.
- * The profile details that feed the team cards (name, tagline, bio, photo)
- * live in a collapsible section so the portfolio keeps the whole page.
+ * There is no header and no page tab strip: the portfolio's own rail navigates
+ * between pages. The only chrome is a small floating cluster over the portfolio
+ * (details / edit / save). Clicking any text, image or link edits it in place;
+ * each change is written back to portfolio_pages.
  */
 export default function Portal() {
   const [member, setMember] = useState(null)
@@ -78,6 +76,22 @@ export default function Portal() {
     return () => { cancelled = true }
   }, [member, page])
 
+  // The portfolio's own rail navigates by posting a message; in the portal that
+  // switches the internal page instead of leaving /portal.
+  useEffect(() => {
+    function onMessage(e) {
+      if (e.data && e.data.type === 'paws:portfolio-nav' && e.data.href) {
+        const m = e.data.href.match(/^\/portfolio\/[^/]+\/(\w+)$/)
+        if (m) {
+          setEditing(false)
+          setPage(m[1])
+        }
+      }
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [])
+
   // An inline edit from the iframe.
   const onContentChange = useCallback((key, value) => {
     setContent((c) => ({ ...(c || {}), [key]: value }))
@@ -107,11 +121,6 @@ export default function Portal() {
     setSaving(false)
     setDirty(false)
     setStatus('Saved.')
-  }
-
-  function switchPage(next) {
-    setEditing(false)
-    setPage(next)
   }
 
   async function onFileChange(e) {
@@ -165,145 +174,155 @@ export default function Portal() {
   if (notSignedIn) {
     return (
       <div className="wrap" style={{ padding: 120 }}>
-        <Nav />
         <p>You need to sign in to edit your portfolio.</p>
         <Link className="btn" to="/login">Sign in</Link>
       </div>
     )
   }
   if (!member) {
-    return <div className="wrap" style={{ padding: 120 }}><Nav /><p>{status || 'Loading…'}</p></div>
+    return <div style={{ padding: 120, color: 'var(--paws-muted)' }}>{status || 'Loading…'}</div>
   }
 
   return (
-    <div className="wrap">
-      <Nav />
-      <section className="section" style={{ paddingBottom: 40 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24, flexWrap: 'wrap' }}>
-          <div>
-            <h1 style={{ marginBottom: 6 }}>My profile</h1>
-            <p style={{ color: 'var(--paws-muted)', margin: 0, maxWidth: 640 }}>
-              <strong>{member.display_name}</strong> · {editing
-                ? 'editing — click any text, image or link to change it.'
-                : 'your portfolio.'}
-            </p>
-          </div>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={() => setShowDetails((s) => !s)}
-            >
-              {showDetails ? 'Hide details' : 'Profile details'}
-            </button>
-            <button
-              type="button"
-              className={editing ? 'btn' : 'btn btn-pink'}
-              onClick={() => setEditing((e) => !e)}
-            >
-              {editing ? 'Done' : 'Activate Inline Edit'}
-            </button>
-            <button
-              type="button"
-              className="btn btn-pink"
-              disabled={saving || !dirty}
-              onClick={save}
-            >
-              {saving ? 'Saving…' : 'Save'}
-            </button>
-          </div>
-        </div>
+    <div style={{ position: 'fixed', inset: 0, background: '#0b0b14', overflow: 'hidden' }}>
+      <PortfolioView
+        slug={member.slug}
+        page={page}
+        content={content}
+        regions={regions}
+        editable={editing}
+        onContentChange={onContentChange}
+        height="100vh"
+      />
 
-        {showDetails && (
-          <div style={{
-            marginTop: 20, padding: 20, border: '1px solid var(--paws-line)',
-            borderRadius: 'var(--radius-lg)', background: 'rgba(14,14,24,0.5)',
+      {/* Floating chrome over the portfolio */}
+      <div style={{
+        position: 'fixed', top: 18, right: 18, zIndex: 100,
+        display: 'flex', gap: 8, alignItems: 'center',
+      }}>
+        <FloatingBtn onClick={() => setShowDetails((s) => !s)} label="Details" />
+        <FloatingBtn onClick={() => setEditing((e) => !e)} label={editing ? 'Done' : 'Edit'} primary />
+        <FloatingBtn onClick={save} label={saving ? 'Saving…' : 'Save'} disabled={saving || !dirty} />
+        <Link to="/" style={fbStyle(false)}>← PAWS</Link>
+      </div>
+
+      {status && (
+        <div style={{
+          position: 'fixed', bottom: 22, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 100, padding: '8px 16px', borderRadius: 999,
+          background: 'rgba(14,14,24,.9)', border: '1px solid var(--paws-line)',
+          color: dirty ? 'var(--paws-muted)' : 'var(--paws-pink)', fontSize: 13,
+        }}>
+          {status}
+        </div>
+      )}
+      {dirty && !status && (
+        <div style={{
+          position: 'fixed', bottom: 22, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 100, padding: '6px 14px', borderRadius: 999,
+          background: 'rgba(14,14,24,.75)', border: '1px solid var(--paws-line)',
+          color: 'var(--paws-muted)', fontSize: 12,
+        }}>
+          Unsaved changes
+        </div>
+      )}
+
+      {/* Profile details, floating over the portfolio */}
+      {showDetails && (
+        <div style={{
+          position: 'fixed', top: 70, right: 18, zIndex: 100, width: 340,
+          maxHeight: 'calc(100vh - 100px)', overflow: 'auto',
+          padding: 18, borderRadius: 'var(--radius-lg)',
+          background: 'rgba(14,14,24,.94)', border: '1px solid var(--paws-line)',
+          backdropFilter: 'blur(10px)',
+        }}>
+          <h3 style={{
+            margin: '0 0 14px', fontSize: 12, letterSpacing: '0.12em',
+            textTransform: 'uppercase', color: 'var(--paws-pink)',
           }}>
-            <h3 style={{ margin: '0 0 14px', fontSize: 12, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--paws-pink)' }}>
-              Profile details
-            </h3>
-            <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', flexWrap: 'wrap' }}>
-              <div style={{ width: 84, height: 105, background: 'var(--paws-paper-2)', border: '1px solid var(--paws-line)', overflow: 'hidden', flexShrink: 0 }}>
-                {photoPreviewUrl
-                  ? <img src={photoPreviewUrl} alt="Crop preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  : photoUrl
-                    ? <img src={photoUrl} alt="Your photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    : <span style={{ color: 'var(--paws-muted)', fontSize: 11 }}>No photo</span>}
-              </div>
-              <div style={{ display: 'grid', gap: 8 }}>
-                <input ref={fileRef} type="file" accept="image/*" onChange={onFileChange} style={{ display: 'none' }} />
-                <button type="button" className="btn btn-ghost" disabled={uploading} onClick={() => fileRef.current?.click()}>
-                  {uploading ? 'Checking…' : 'Change photo'}
-                </button>
-                <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--paws-ink-2)', cursor: 'pointer' }}>
-                  <input type="checkbox" checked={syncAvatar} onChange={(e) => setSyncAvatar(e.target.checked)} style={{ accentColor: 'var(--paws-pink)' }} />
-                  Regenerate avatar
-                </label>
-                {avatarGenerating && <span style={{ fontSize: 12, color: 'var(--paws-pink)' }}>Generating…</span>}
-                {photoAnalysis && (
-                  <span style={{ fontSize: 12, color: 'var(--paws-muted)' }}>
-                    {photoAnalysis.faceCount} face{photoAnalysis.faceCount === 1 ? '' : 's'} · {(photoAnalysis.score * 100).toFixed(0)}%
-                  </span>
-                )}
-                {photoError && <span style={{ fontSize: 12, color: 'var(--paws-pink-deep)' }}>{photoError}</span>}
-              </div>
-              <div style={{ display: 'grid', gap: 10, flex: 1, minWidth: 240 }}>
-                <ProfileInput label="Display name" value={member.display_name || ''} disabled={saving}
-                  onChange={(v) => { setMember({ ...member, display_name: v }); setDirty(true) }} />
-                <ProfileInput label="Tagline" value={member.tagline || ''} disabled={saving}
-                  onChange={(v) => { setMember({ ...member, tagline: v }); setDirty(true) }} />
-                <ProfileTextArea label="Bio" value={member.bio || ''} disabled={saving}
-                  onChange={(v) => { setMember({ ...member, bio: v }); setDirty(true) }} />
-              </div>
+            Profile details
+          </h3>
+          <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', marginBottom: 14 }}>
+            <div style={{
+              width: 72, height: 90, background: 'var(--paws-paper-2)',
+              border: '1px solid var(--paws-line)', overflow: 'hidden', flexShrink: 0,
+            }}>
+              {photoPreviewUrl
+                ? <img src={photoPreviewUrl} alt="Crop preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                : photoUrl
+                  ? <img src={photoUrl} alt="Your photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <span style={{ color: 'var(--paws-muted)', fontSize: 11 }}>No photo</span>}
+            </div>
+            <div style={{ display: 'grid', gap: 8 }}>
+              <input ref={fileRef} type="file" accept="image/*" onChange={onFileChange} style={{ display: 'none' }} />
+              <button type="button" className="btn btn-ghost" disabled={uploading} onClick={() => fileRef.current?.click()}>
+                {uploading ? 'Checking…' : 'Change photo'}
+              </button>
+              <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'var(--paws-ink-2)', cursor: 'pointer' }}>
+                <input type="checkbox" checked={syncAvatar} onChange={(e) => setSyncAvatar(e.target.checked)} style={{ accentColor: 'var(--paws-pink)' }} />
+                Regenerate avatar
+              </label>
+              {avatarGenerating && <span style={{ fontSize: 12, color: 'var(--paws-pink)' }}>Generating…</span>}
+              {photoAnalysis && (
+                <span style={{ fontSize: 12, color: 'var(--paws-muted)' }}>
+                  {photoAnalysis.faceCount} face{photoAnalysis.faceCount === 1 ? '' : 's'} · {(photoAnalysis.score * 100).toFixed(0)}%
+                </span>
+              )}
+              {photoError && <span style={{ fontSize: 12, color: 'var(--paws-pink-deep)' }}>{photoError}</span>}
             </div>
           </div>
-        )}
-
-        <div style={{ display: 'flex', gap: 8, margin: '22px 0', flexWrap: 'wrap' }}>
-          {PAGES.map((p) => (
-            <button
-              key={p.key}
-              type="button"
-              className={p.key === page ? 'btn btn-pink' : 'btn btn-ghost'}
-              onClick={() => switchPage(p.key)}
-            >
-              {p.label}
-            </button>
-          ))}
+          <div style={{ display: 'grid', gap: 10 }}>
+            <Field label="Display name" value={member.display_name || ''} disabled={saving}
+              onChange={(v) => { setMember({ ...member, display_name: v }); setDirty(true) }} />
+            <Field label="Tagline" value={member.tagline || ''} disabled={saving}
+              onChange={(v) => { setMember({ ...member, tagline: v }); setDirty(true) }} />
+            <Field label="Bio" value={member.bio || ''} disabled={saving} textarea
+              onChange={(v) => { setMember({ ...member, bio: v }); setDirty(true) }} />
+          </div>
         </div>
-
-        <PortfolioView
-          slug={member.slug}
-          page={page}
-          content={content}
-          regions={regions}
-          editable={editing}
-          onContentChange={onContentChange}
-          height="calc(100vh - 240px)"
-        />
-
-        {status && <p style={{ marginTop: 18, color: 'var(--paws-pink)' }}>{status}</p>}
-        {dirty && !status && <p style={{ marginTop: 18, color: 'var(--paws-muted)', fontSize: 13 }}>Unsaved changes</p>}
-      </section>
-      <Footer />
+      )}
     </div>
   )
 }
 
-function ProfileInput({ label, value, onChange, disabled }) {
+function FloatingBtn({ onClick, label, primary, disabled }) {
   return (
-    <div>
-      <label style={{ display: 'block', fontSize: 12, color: 'var(--paws-muted)', marginBottom: 5 }}>{label}</label>
-      <input style={inputStyle} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} />
-    </div>
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      style={{
+        ...fbStyle(!!primary),
+        opacity: disabled ? 0.45 : 1,
+        cursor: disabled ? 'default' : 'pointer',
+      }}
+    >
+      {label}
+    </button>
   )
 }
 
-function ProfileTextArea({ label, value, onChange, disabled }) {
+function fbStyle(primary) {
+  return {
+    padding: '8px 16px',
+    borderRadius: 999,
+    fontSize: 13,
+    font: 'inherit',
+    background: primary ? 'var(--paws-pink)' : 'rgba(14,14,24,.85)',
+    color: primary ? '#fff' : 'var(--paws-ink)',
+    border: primary ? 'none' : '1px solid var(--paws-line)',
+    backdropFilter: 'blur(8px)',
+    cursor: 'pointer',
+  }
+}
+
+function Field({ label, value, onChange, disabled, textarea }) {
   return (
     <div>
       <label style={{ display: 'block', fontSize: 12, color: 'var(--paws-muted)', marginBottom: 5 }}>{label}</label>
-      <textarea style={{ ...inputStyle, minHeight: 70, resize: 'vertical' }} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} />
+      {textarea
+        ? <textarea style={{ ...inputStyle, minHeight: 70, resize: 'vertical' }} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} />
+        : <input style={inputStyle} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} />}
     </div>
   )
 }
@@ -311,6 +330,6 @@ function ProfileTextArea({ label, value, onChange, disabled }) {
 const inputStyle = {
   font: 'inherit', fontSize: 14, padding: '9px 12px',
   border: '1px solid var(--paws-line)', borderRadius: 'var(--radius-md)',
-  background: 'rgba(14,14,24,0.6)', color: 'var(--paws-ink)',
+  background: 'rgba(22,22,31,0.9)', color: 'var(--paws-ink)',
   width: '100%', boxSizing: 'border-box',
 }
