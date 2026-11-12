@@ -243,7 +243,9 @@ ${body}
         if (withLabel) value.label = (el.textContent || '').trim();
         post({ type: 'paws:portfolio-change', key: key, value: value });
       });
-      setTimeout(function () { hrefInput.focus(); }, 0);
+      // When the label is also being edited inline, stealing focus here would
+      // blur the contenteditable and cancel the label edit before it starts.
+      if (!withLabel) setTimeout(function () { hrefInput.focus(); }, 0);
     });
   }
 

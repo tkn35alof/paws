@@ -80,18 +80,6 @@ export default function PortfolioPage() {
   return (
     <div style={{ position: 'relative' }}>
       <Link
-        to={`/team/${slug}`}
-        style={{
-          position: 'fixed', top: 16, left: 16, zIndex: 50,
-          padding: '8px 16px', borderRadius: 999,
-          background: 'rgba(14,14,24,.85)', color: 'var(--paws-ink)',
-          border: '1px solid var(--paws-line)', fontSize: 13,
-          textDecoration: 'none', backdropFilter: 'blur(8px)',
-        }}
-      >
-        ← Full profile
-      </Link>
-      <Link
         to="/"
         style={{
           position: 'fixed', top: 16, right: 16, zIndex: 50,
