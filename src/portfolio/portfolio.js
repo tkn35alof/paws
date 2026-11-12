@@ -74,6 +74,17 @@ export function applyContent(doc, regions, content) {
       case 'icon':
         // The sprite is injected into every rendered page, so a <use> resolves.
         if (value.icon) el.innerHTML = `<use href="#${value.icon}"/>`
+        else if (value.src) {
+          // An uploaded logo replaces the inline SVG.
+          const img = el.ownerDocument.createElement('img')
+          img.src = value.src
+          img.alt = value.alt || ''
+          img.setAttribute('class', el.getAttribute('class') || '')
+          img.setAttribute('data-pf-key', region.key)
+          img.setAttribute('data-pf-type', 'image')
+          img.style.cssText = 'width:1em;height:1em;object-fit:contain'
+          el.parentNode.replaceChild(img, el)
+        }
         break
       default:
         break
@@ -119,6 +130,7 @@ body.paws-editing [data-pf-key][contenteditable="true"]{outline:2px solid #ff5a8
 .paws-pop__row{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
 .paws-pop__btn{background:transparent;color:#f5f5f7;border:1px solid #2a2a35;border-radius:6px;padding:5px 10px;cursor:pointer;font:inherit}
 .paws-pop__btn:hover{border-color:#ff5a8a;color:#ff5a8a}
+.paws-pop__btn--wide{display:block;width:100%;margin-top:10px;padding:7px 10px;color:#ff5a8a;border-color:rgba(255,90,138,.5)}
 .paws-pop__grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:6px}
 .paws-pop__group{grid-column:1/-1;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9a9aa5;margin-top:8px}
 .paws-pop__icon{background:#16161f;border:1px solid #2a2a35;border-radius:6px;padding:6px;cursor:pointer;display:grid;place-items:center}
@@ -153,6 +165,7 @@ ${body}
 (function () {
   var body = document.body;
   var pop = null;
+  var pendingUpload = null;
   var ICONS = ${JSON.stringify(ICONS)};
 
   function post(msg) { try { parent.postMessage(msg, '*'); } catch (e) {} }
@@ -253,7 +266,49 @@ ${body}
         postChange(key, { icon: id }, el, sig);
         closePop();
       });
+      var uploadBtn = document.createElement('button');
+      uploadBtn.type = 'button';
+      uploadBtn.className = 'paws-pop__btn paws-pop__btn--wide';
+      uploadBtn.textContent = 'Upload from device';
+      uploadBtn.onclick = function (ev) {
+        ev.stopPropagation();
+        pendingUpload = { el: el, key: key, sig: sig, kind: 'icon' };
+        post({ type: 'paws:portfolio-upload', key: key, kind: 'image' });
+      };
+      box.appendChild(uploadBtn);
     });
+  }
+
+  // The parent uploads to Supabase Storage and posts the public URL back.
+  function applyUpload(url) {
+    var p = pendingUpload;
+    if (!p || !url) { pendingUpload = null; return }
+    pendingUpload = null
+    if (p.kind !== 'icon') {
+      p.el.setAttribute('src', url)
+      postChange(p.key, { src: url, alt: p.el.getAttribute('alt') || '' }, p.el, p.sig)
+      return
+    }
+    // An uploaded logo replaces the inline SVG (and its twin, if any).
+    var keys = [p.key]
+    var build = function (k) {
+      var img = document.createElement('img')
+      img.src = url
+      img.alt = ''
+      img.setAttribute('data-pf-key', k)
+      img.setAttribute('data-pf-type', 'image')
+      img.style.cssText = 'width:1em;height:1em;object-fit:contain'
+      return img
+    }
+    var parent = p.el.parentNode
+    parent.replaceChild(build(p.key), p.el)
+    document.querySelectorAll('[data-pf-key]').forEach(function (n) {
+      if (n === p.el || signature(n) !== p.sig) return
+      var k = n.getAttribute('data-pf-key')
+      keys.push(k)
+      n.parentNode.replaceChild(build(k), n)
+    })
+    post({ type: 'paws:portfolio-change', key: p.key, value: { src: url, alt: '' }, twins: keys.slice(1) })
   }
 
   // The marquee track is doubled for its seamless loop, so several regions are
@@ -327,6 +382,17 @@ ${body}
       box.appendChild(t);
       var srcInput = popField(box, 'URL', src);
       var altInput = popField(box, 'Alt text', alt);
+      // Uploads go through the parent: the iframe has no Supabase credentials.
+      var uploadBtn = document.createElement('button');
+      uploadBtn.type = 'button';
+      uploadBtn.className = 'paws-pop__btn paws-pop__btn--wide';
+      uploadBtn.textContent = 'Upload from device';
+      uploadBtn.onclick = function (ev) {
+        ev.stopPropagation();
+        pendingUpload = { el: el, key: key, sig: sig, kind: 'image' };
+        post({ type: 'paws:portfolio-upload', key: key, kind: 'image' });
+      };
+      box.appendChild(uploadBtn);
       popActions(box, function () {
         var s = srcInput.value.trim();
         var a = altInput.value.trim();
@@ -408,6 +474,11 @@ ${body}
     if (!e.data || e.data.type !== 'paws:portfolio-edit') return;
     if (e.data.enabled) body.classList.add('paws-editing');
     else { body.classList.remove('paws-editing'); closePop(); }
+  });
+
+  window.addEventListener('message', function (e) {
+    if (!e.data || e.data.type !== 'paws:portfolio-upload-done') return;
+    applyUpload(e.data.url);
   });
 
   document.addEventListener('click', function (e) {

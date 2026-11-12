@@ -99,6 +99,47 @@ export default function Portal() {
     return () => window.removeEventListener('message', onMessage)
   }, [])
 
+  // Uploads requested from the portfolio's inline editor. The iframe has no
+  // Supabase credentials, so the parent owns the file picker and the upload.
+  useEffect(() => {
+    if (!member) return
+    function onMessage(e) {
+      if (!e.data || e.data.type !== 'paws:portfolio-upload') return
+      const { key, kind } = e.data
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = kind === 'video' ? 'video/*' : 'image/*'
+      input.onchange = async () => {
+        const file = input.files && input.files[0]
+        if (!file) return
+        setStatus('Uploading…')
+        try {
+          const db = requireSupabase()
+          const ext = (file.name.split('.').pop() || 'png').toLowerCase()
+          const path = `${member.id}/portfolio/${page}/${key}-${Date.now()}.${ext}`
+          const { error } = await db.storage.from('portfolio-media').upload(path, file, {
+            contentType: file.type || 'application/octet-stream',
+            upsert: true,
+          })
+          if (error) { setStatus('Upload failed: ' + error.message); return }
+          const { data } = db.storage.from('portfolio-media').getPublicUrl(path)
+          document.querySelector('iframe')?.contentWindow?.postMessage(
+            { type: 'paws:portfolio-upload-done', key, url: data?.publicUrl || '' },
+            '*',
+          )
+          setStatus('')
+        } catch (err) {
+          setStatus('Upload failed: ' + (err.message || 'unknown error'))
+        }
+      }
+      document.body.appendChild(input)
+      input.click()
+      input.remove()
+    }
+    window.addEventListener('message', onMessage)
+    return () => window.removeEventListener('message', onMessage)
+  }, [member, page])
+
   // An inline edit from the iframe. `twins` are the marquee's duplicate keys —
   // the track is doubled for its loop, so every copy must be written.
   const onContentChange = useCallback((key, value, twins) => {
@@ -217,6 +258,17 @@ export default function Portal() {
         <FloatingBtn onClick={save} label={saving ? 'Saving…' : 'Save'} disabled={saving || !dirty} />
         <Link to="/" style={fbStyle(false)}>← PAWS</Link>
       </div>
+
+      {editing && (
+        <div style={{
+          position: 'fixed', bottom: 62, left: '50%', transform: 'translateX(-50%)',
+          zIndex: 99, padding: '7px 14px', borderRadius: 999, whiteSpace: 'nowrap',
+          background: 'rgba(14,14,24,.85)', border: '1px solid var(--paws-line)',
+          color: 'var(--paws-muted)', fontSize: 12, pointerEvents: 'none',
+        }}>
+          Click text to edit · click an image, logo or icon to swap it
+        </div>
+      )}
 
       {status && (
         <div style={{
