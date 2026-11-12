@@ -81,7 +81,7 @@ export default function PortfolioView({
     if (!onContentChange) return
     function onMessage(e) {
       if (!e.data || e.data.type !== 'paws:portfolio-change') return
-      onContentChange(e.data.key, e.data.value)
+      onContentChange(e.data.key, e.data.value, e.data.twins)
     }
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)

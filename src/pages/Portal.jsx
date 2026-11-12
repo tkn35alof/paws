@@ -42,6 +42,13 @@ export default function Portal() {
   // Who am I?
   useEffect(() => {
     if (!supabaseReady) { setStatus('Supabase not configured.'); return }
+    // Dev-only: `?devmock=1` fakes the signed-in member so the portal can be
+    // worked on without a session. import.meta.env.DEV is stripped from
+    // production builds.
+    if (import.meta.env.DEV && new URLSearchParams(location.search).has('devmock')) {
+      setMember({ id: 'b2b4cd5a-0a3a-4108-8812-f6dd78a88548', slug: 'jhuriel', display_name: 'Jhuriel Guerra', tagline: 'Founder & Lead', bio: '' })
+      return
+    }
     const db = requireSupabase()
     ;(async () => {
       const { data: { user } } = await db.auth.getUser()
@@ -92,9 +99,14 @@ export default function Portal() {
     return () => window.removeEventListener('message', onMessage)
   }, [])
 
-  // An inline edit from the iframe.
-  const onContentChange = useCallback((key, value) => {
-    setContent((c) => ({ ...(c || {}), [key]: value }))
+  // An inline edit from the iframe. `twins` are the marquee's duplicate keys —
+  // the track is doubled for its loop, so every copy must be written.
+  const onContentChange = useCallback((key, value, twins) => {
+    setContent((c) => {
+      const next = { ...(c || {}), [key]: value }
+      ;(twins || []).forEach((k) => { next[k] = value })
+      return next
+    })
     setDirty(true)
     setStatus('')
   }, [])

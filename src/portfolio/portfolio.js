@@ -8,6 +8,14 @@
 
 export const ASSET_BASE = '/portfolio-assets'
 
+import { ICONS, ICON_SPRITE } from './icons-sprite.js'
+
+/** Icon regions are stored as { icon: 'pi-name' }; the sprite supplies the art. */
+export function iconPath(id) {
+  const hit = ICONS.find((i) => i.id === id)
+  return hit ? hit.path : ''
+}
+
 export const PAGES = [
   { key: 'home', label: 'Home' },
   { key: 'projects', label: 'Projects' },
@@ -63,6 +71,10 @@ export function applyContent(doc, regions, content) {
         if (value.label != null && linkHasOwnLabel(el)) setText(el, String(value.label))
         if (value.href != null) el.setAttribute('href', value.href)
         break
+      case 'icon':
+        // The sprite is injected into every rendered page, so a <use> resolves.
+        if (value.icon) el.innerHTML = `<use href="#${value.icon}"/>`
+        break
       default:
         break
     }
@@ -107,9 +119,16 @@ body.paws-editing [data-pf-key][contenteditable="true"]{outline:2px solid #ff5a8
 .paws-pop__row{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
 .paws-pop__btn{background:transparent;color:#f5f5f7;border:1px solid #2a2a35;border-radius:6px;padding:5px 10px;cursor:pointer;font:inherit}
 .paws-pop__btn:hover{border-color:#ff5a8a;color:#ff5a8a}
+.paws-pop__grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:6px}
+.paws-pop__group{grid-column:1/-1;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9a9aa5;margin-top:8px}
+.paws-pop__icon{background:#16161f;border:1px solid #2a2a35;border-radius:6px;padding:6px;cursor:pointer;display:grid;place-items:center}
+.paws-pop__icon img{width:18px;height:18px;object-fit:contain}
+.paws-pop__icon:hover{border-color:#ff5a8a}
+.paws-pop__icon.is-active{border-color:#ff5a8a;background:rgba(255,90,138,.12)}
 </style>
 </head>
 <body>
+${ICON_SPRITE}
 ${body}
 <script src="${ASSET_BASE}/portfolio.js"></script>
 <script>
@@ -134,6 +153,7 @@ ${body}
 (function () {
   var body = document.body;
   var pop = null;
+  var ICONS = ${JSON.stringify(ICONS)};
 
   function post(msg) { try { parent.postMessage(msg, '*'); } catch (e) {} }
 
@@ -184,8 +204,101 @@ ${body}
     box.appendChild(row);
   }
 
+  // --- icons -------------------------------------------------------------
+
+  function currentIconId(el) {
+    var u = el.querySelector('use');
+    if (!u) return '';
+    var m = (u.getAttribute('href') || '').match(/#(.+)/);
+    return m ? m[1] : '';
+  }
+
+  function iconGrid(box, current, onPick) {
+    var t = document.createElement('div');
+    t.className = 'paws-pop__title';
+    t.textContent = 'Icon';
+    box.appendChild(t);
+    var grid = document.createElement('div');
+    grid.className = 'paws-pop__grid';
+    var groups = {};
+    ICONS.forEach(function (ic) {
+      (groups[ic.group] || (groups[ic.group] = [])).push(ic);
+    });
+    Object.keys(groups).forEach(function (name) {
+      var h = document.createElement('div');
+      h.className = 'paws-pop__group';
+      h.textContent = name;
+      grid.appendChild(h);
+      groups[name].forEach(function (ic) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'paws-pop__icon' + (ic.id === current ? ' is-active' : '');
+        b.title = ic.label;
+        var img = document.createElement('img');
+        img.src = '${ASSET_BASE}/' + ic.path;
+        img.alt = ic.label;
+        b.appendChild(img);
+        b.onclick = function (ev) { ev.stopPropagation(); onPick(ic.id); };
+        grid.appendChild(b);
+      });
+    });
+    box.appendChild(grid);
+  }
+
+  function editIcon(el, key) {
+    var sig = signature(el);
+    showPop(el, function (box) {
+      iconGrid(box, currentIconId(el), function (id) {
+        el.innerHTML = '<use href="#' + id + '"/>';
+        postChange(key, { icon: id }, el, sig);
+        closePop();
+      });
+    });
+  }
+
+  // The marquee track is doubled for its seamless loop, so several regions are
+  // exact twins of each other. One edit must update every copy, and the change
+  // has to be written to every twin key or the copies drift apart on rebuild.
+  function signature(el) {
+    // SVG icons carry no text/src/href, so their markup is the only way to
+    // tell two different icons apart.
+    if (el.tagName === 'svg') return 'svg|' + el.innerHTML
+    return el.tagName + '|' + (el.getAttribute('class') || '') + '|' +
+      (el.getAttribute('src') || el.getAttribute('href') || el.textContent || '').trim();
+  }
+
+  function postChange(key, value, el, sig) {
+    var msg = { type: 'paws:portfolio-change', key: key, value: value };
+    if (el) {
+      // sig is the element's signature BEFORE the edit — comparing after the
+      // DOM has changed would never match the untouched twins.
+      var match = sig || signature(el);
+      var twins = [];
+      document.querySelectorAll('[data-pf-key]').forEach(function (n) {
+        if (n === el) return;
+        if (n.getAttribute('data-pf-key') === key) return;
+        if (signature(n) === match) twins.push(n.getAttribute('data-pf-key'));
+      });
+      if (twins.length) {
+        msg.twins = twins;
+        twins.forEach(function (k) {
+          var n = document.querySelector('[data-pf-key="' + k + '"]');
+          if (n && n.outerHTML !== el.outerHTML) {
+            // keep the twin visually in step for the rest of the session
+            if (el.tagName === 'IMG') { n.setAttribute('src', el.getAttribute('src')); n.setAttribute('alt', el.getAttribute('alt')); }
+            else if (el.tagName === 'A') { n.setAttribute('href', el.getAttribute('href')); }
+            else if (el.tagName === 'svg') { n.innerHTML = el.innerHTML; }
+            else { n.textContent = el.textContent; }
+          }
+        });
+      }
+    }
+    post(msg);
+  }
+
   function editText(el, key, wrapValue) {
     if (el.getAttribute('contenteditable') === 'true') return;
+    var sig = signature(el);
     el.setAttribute('contenteditable', 'true');
     el.focus();
     var range = document.createRange();
@@ -198,11 +311,7 @@ ${body}
       el.removeEventListener('blur', done);
       el.setAttribute('contenteditable', 'false');
       var value = (el.textContent || '').trim();
-      post({
-        type: 'paws:portfolio-change',
-        key: key,
-        value: wrapValue ? wrapValue(value) : value,
-      });
+      postChange(key, wrapValue ? wrapValue(value) : value, el, sig);
     }
     el.addEventListener('blur', done);
   }
@@ -210,6 +319,7 @@ ${body}
   function editImage(el, key) {
     var src = el.getAttribute('src') || '';
     var alt = el.getAttribute('alt') || '';
+    var sig = signature(el);
     showPop(el, function (box) {
       var t = document.createElement('div');
       t.className = 'paws-pop__title';
@@ -222,7 +332,7 @@ ${body}
         var a = altInput.value.trim();
         el.setAttribute('src', s);
         el.setAttribute('alt', a);
-        post({ type: 'paws:portfolio-change', key: key, value: { src: s, alt: a } });
+        postChange(key, { src: s, alt: a }, el, sig);
       });
       setTimeout(function () { srcInput.focus(); }, 0);
     });
@@ -230,18 +340,29 @@ ${body}
 
   function editHref(el, key, withLabel) {
     var href = el.getAttribute('href') || '';
+    var svg = el.querySelector('svg');
+    var sig = signature(el);
     showPop(el, function (box) {
       var t = document.createElement('div');
       t.className = 'paws-pop__title';
       t.textContent = 'Link';
       box.appendChild(t);
       var hrefInput = popField(box, 'URL', href);
+      if (svg) {
+        iconGrid(box, currentIconId(svg), function (id) {
+          svg.innerHTML = '<use href="#' + id + '"/>';
+          var value = { icon: id, href: el.getAttribute('href') || '' };
+          if (withLabel) value.label = (el.textContent || '').trim();
+          postChange(key, value, el, sig);
+        });
+      }
       popActions(box, function () {
         var h = hrefInput.value.trim();
         el.setAttribute('href', h);
         var value = { href: h };
         if (withLabel) value.label = (el.textContent || '').trim();
-        post({ type: 'paws:portfolio-change', key: key, value: value });
+        if (svg && currentIconId(svg)) value.icon = currentIconId(svg);
+        postChange(key, value, el, sig);
       });
       // When the label is also being edited inline, stealing focus here would
       // blur the contenteditable and cancel the label edit before it starts.
@@ -270,6 +391,8 @@ ${body}
       editText(el, key);
     } else if (type === 'image') {
       editImage(el, key);
+    } else if (type === 'icon') {
+      editIcon(el, key);
     } else if (type === 'link') {
       var label = directText(el);
       if (label) {
