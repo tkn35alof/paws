@@ -259,20 +259,9 @@ export default function Portal() {
         <Link to="/" style={fbStyle(false)}>← PAWS</Link>
       </div>
 
-      {editing && (
-        <div style={{
-          position: 'fixed', bottom: 62, left: '50%', transform: 'translateX(-50%)',
-          zIndex: 99, padding: '7px 14px', borderRadius: 999, whiteSpace: 'nowrap',
-          background: 'rgba(14,14,24,.85)', border: '1px solid var(--paws-line)',
-          color: 'var(--paws-muted)', fontSize: 12, pointerEvents: 'none',
-        }}>
-          Click text to edit · click an image, logo or icon to swap it
-        </div>
-      )}
-
       {status && (
         <div style={{
-          position: 'fixed', bottom: 22, left: '50%', transform: 'translateX(-50%)',
+          position: 'fixed', top: 22, left: 22,
           zIndex: 100, padding: '8px 16px', borderRadius: 999,
           background: 'rgba(14,14,24,.9)', border: '1px solid var(--paws-line)',
           color: dirty ? 'var(--paws-muted)' : 'var(--paws-pink)', fontSize: 13,
@@ -282,7 +271,7 @@ export default function Portal() {
       )}
       {dirty && !status && (
         <div style={{
-          position: 'fixed', bottom: 22, left: '50%', transform: 'translateX(-50%)',
+          position: 'fixed', top: 22, left: 22,
           zIndex: 100, padding: '6px 14px', borderRadius: 999,
           background: 'rgba(14,14,24,.75)', border: '1px solid var(--paws-line)',
           color: 'var(--paws-muted)', fontSize: 12,
