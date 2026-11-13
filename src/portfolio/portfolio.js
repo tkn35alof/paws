@@ -483,8 +483,11 @@ ${body}
 
   document.addEventListener('click', function (e) {
     if (!body.classList.contains('paws-editing')) return;
-    closePop();
     var el = e.target && e.target.closest ? e.target.closest('[data-pf-key]') : null;
+    // Starting a new edit tears down any open popover first — but never when
+    // the click is inside the popover itself, or the URL field could not be
+    // focused. (showPop also closes, yet editText does not.)
+    if (el && pop && !pop.contains(e.target)) closePop();
     if (!el) return;
     e.preventDefault();
     e.stopPropagation();
