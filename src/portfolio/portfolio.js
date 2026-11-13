@@ -100,6 +100,19 @@ export function rewritePageLinks(doc, slug) {
   })
 }
 
+/** The left rail (name, socials, nav, visits, copy) is identical on every page,
+ *  but the content model stores a copy per page. These keys are shared: an edit
+ *  on one page must be written back to all of them, or the rail drifts. */
+export const RAIL_PREFIX = 'rail__'
+export function isRailKey(key) {
+  return typeof key === 'string' && key.startsWith(RAIL_PREFIX)
+}
+export function railOf(content) {
+  const rail = {}
+  Object.keys(content || {}).forEach((k) => { if (isRailKey(k)) rail[k] = content[k] })
+  return rail
+}
+
 /** Build a parsed document from a template + content. */
 export function buildPageDocument({ template, regions, content, slug }) {
   const doc = new DOMParser().parseFromString(template, 'text/html')
@@ -123,7 +136,7 @@ export function pageSrcdoc(doc, { title = 'Portfolio' } = {}) {
 body.paws-editing [data-pf-key]{outline:1px dashed rgba(255,90,138,.45);outline-offset:2px;cursor:text}
 body.paws-editing [data-pf-key]:hover{outline:2px solid #ff5a8a;background:rgba(255,90,138,.06)}
 body.paws-editing [data-pf-key][contenteditable="true"]{outline:2px solid #ff5a8a;outline-offset:2px}
-.paws-pop{position:absolute;z-index:9999;width:260px;padding:12px;background:#0e0e18;border:1px solid rgba(255,90,138,.55);border-radius:10px;box-shadow:0 10px 34px rgba(0,0,0,.55);font:13px/1.4 system-ui,sans-serif;color:#f5f5f7}
+.paws-pop{position:absolute;z-index:9999;width:260px;max-height:calc(100vh - 16px);overflow:auto;padding:12px;background:#0e0e18;border:1px solid rgba(255,90,138,.55);border-radius:10px;box-shadow:0 10px 34px rgba(0,0,0,.55);font:13px/1.4 system-ui,sans-serif;color:#f5f5f7}
 .paws-pop__title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#ff5a8a;margin-bottom:4px}
 .paws-pop label{display:block;font-size:11px;color:#9a9aa5;margin:8px 0 3px}
 .paws-pop__input{width:100%;box-sizing:border-box;background:#16161f;color:#f5f5f7;border:1px solid #2a2a35;border-radius:6px;padding:6px 8px;font:inherit}
@@ -148,12 +161,26 @@ ${body}
    iframe itself (which would nest a new SPA and shrink the preview). */
 (function () {
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href^="/portfolio/"]') : null;
+    var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
     if (!a) return;
     if (document.body.classList.contains('paws-editing')) return;
+    var href = a.getAttribute('href') || '';
+    var isPortfolio = href === '/portfolio' || href.indexOf('/portfolio/') === 0;
+    var isExternal = href.indexOf('//') === 0 || href.indexOf('http://') === 0 ||
+      href.indexOf('https://') === 0 || href.indexOf('mailto:') === 0 ||
+      href.indexOf('tel:') === 0;
+    // Anything the PAWS app does not own is left to the browser.
+    if (!isPortfolio && !isExternal) return;
     e.preventDefault();
+    // External links open in a new tab: loading one inside the iframe either
+    // renders nothing (many sites refuse to be framed) or nests a whole new
+    // app inside the preview.
+    if (isExternal) {
+      try { window.open(href, '_blank', 'noopener,noreferrer'); } catch (err) {}
+      return;
+    }
     try {
-      parent.postMessage({ type: 'paws:portfolio-nav', href: a.getAttribute('href') }, '*');
+      parent.postMessage({ type: 'paws:portfolio-nav', href: href }, '*');
     } catch (err) {}
   }, true);
 })();
@@ -183,9 +210,19 @@ ${body}
     build(box);
     var r = anchor.getBoundingClientRect();
     var w = box.offsetWidth;
+    var h = box.offsetHeight;
     var x = Math.min(Math.max(8, r.left), Math.max(8, window.innerWidth - w - 8));
+    var y = r.bottom + window.pageYOffset + 6;
+    var viewBottom = window.innerHeight + window.pageYOffset;
+    if (y + h > viewBottom) {
+      // The box (the icon grid makes link popovers tall) would run off the
+      // bottom of the screen and take the Apply button with it. Flip it above
+      // the anchor, or clamp it into view as a last resort.
+      var above = r.top + window.pageYOffset - h - 6;
+      y = above > window.pageYOffset ? above : Math.max(window.pageYOffset + 8, viewBottom - h - 8);
+    }
     box.style.left = x + 'px';
-    box.style.top = (r.bottom + window.pageYOffset + 6) + 'px';
+    box.style.top = y + 'px';
     pop = box;
     return box;
   }

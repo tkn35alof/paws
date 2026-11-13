@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { supabaseReady, requireSupabase } from '../lib/supabase.js'
 import { analyzePhoto, photoErrorMessage } from '../lib/face-photo.js'
 import PortfolioView from '../portfolio/PortfolioView.jsx'
-import { fetchRegions, preloadPages, getCachedContent, setCachedContent, warmContentCache } from '../portfolio/portfolio.js'
+import { fetchRegions, preloadPages, getCachedContent, setCachedContent, warmContentCache, PAGES, isRailKey, railOf } from '../portfolio/portfolio.js'
 
 /**
  * "My profile" — the member's portfolio, full screen.
@@ -184,6 +184,17 @@ export default function Portal() {
     return () => window.removeEventListener('message', onMessage)
   }, [member, page])
 
+  // The rail is shared by every page, so a rail edit has to land in all of the
+  // cached pages too — otherwise navigating to another page shows the old rail
+  // until the next save.
+  const syncRailCache = useCallback((rail) => {
+    if (!member) return
+    PAGES.forEach((p) => {
+      const c = getCachedContent(member.id, p.key)
+      if (c) setCachedContent(member.id, p.key, { ...c, ...rail })
+    })
+  }, [member])
+
   // An inline edit from the iframe. `twins` are the marquee's duplicate keys —
   // the track is doubled for its loop, so every copy must be written.
   const onContentChange = useCallback((key, value, twins) => {
@@ -192,19 +203,37 @@ export default function Portal() {
       ;(twins || []).forEach((k) => { next[k] = value })
       return next
     })
+    if (isRailKey(key)) syncRailCache({ [key]: value })
     setDirty(true)
     setStatus('')
-  }, [])
+  }, [syncRailCache])
 
   async function save() {
     if (!member) return
     setSaving(true)
     setStatus('')
     const db = requireSupabase()
-    const { error } = await db.from('portfolio_pages').upsert(
-      { member_id: member.id, page_key: page, content },
-      { onConflict: 'member_id,page_key' },
-    )
+
+    // The rail is shared: write the rail keys from this page into every page,
+    // so a nav edit made here shows up on all of them after saving.
+    const rail = {}
+    PAGES.forEach((p) => { if (p.key !== page) Object.assign(rail, railOf(getCachedContent(member.id, p.key))) })
+    Object.assign(rail, railOf(content))
+
+    const writes = PAGES.map((p) => {
+      const base = p.key === page ? content : getCachedContent(member.id, p.key)
+      // Never write a page we have not loaded — that would replace its content
+      // with just the rail.
+      if (!base) return Promise.resolve({})
+      const merged = { ...base, ...rail }
+      setCachedContent(member.id, p.key, merged)
+      return db.from('portfolio_pages').upsert(
+        { member_id: member.id, page_key: p.key, content: merged },
+        { onConflict: 'member_id,page_key' },
+      )
+    })
+    const results = await Promise.all(writes)
+    const error = results.find((r) => r.error)?.error
     if (error) {
       setStatus('Save failed: ' + error.message)
       setSaving(false)
@@ -217,7 +246,6 @@ export default function Portal() {
     }).eq('id', member.id)
     setSaving(false)
     setDirty(false)
-    setCachedContent(member.id, page, content)
     setStatus('Saved.')
   }
 
